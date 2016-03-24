@@ -1,0 +1,28 @@
+name: Animations
+main: com.ivan1pl.animations.AnimationsPlugin
+version: 1.0
+description: Animations plugin
+commands:
+    anim:
+        description: Manage animations.
+        usage: TBA
+    aplay:
+        description: Play animation.
+        usage: /aplay <animation_name>
+    alist:
+        description: List animations.
+permissions:
+    animations.*:
+        description: Gives access to all animations commands.
+        default: op
+        children:
+            animations.admin: true
+            animations.user: true
+    animations.admin:
+        description: Allows to create, remove and edit animations.
+        default: op
+        children:
+            animations.user: true
+    animations.user:
+        description: Allows to play animations.
+        default: op
