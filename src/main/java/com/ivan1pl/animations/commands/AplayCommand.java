@@ -16,33 +16,24 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Animations.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.ivan1pl.animations;
+package com.ivan1pl.animations.commands;
 
-import com.ivan1pl.animations.commands.AnimationsCommandExecutor;
-import lombok.Getter;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.ivan1pl.animations.constants.Permissions;
+import org.bukkit.command.CommandSender;
 
 /**
  *
  * @author Ivan1pl
  */
-public class AnimationsPlugin extends JavaPlugin {
+public class AplayCommand extends AnimationsCommand {
     
-    @Getter
-    private static AnimationsPlugin pluginInstance;
-    
-    private final AnimationsCommandExecutor executor = new AnimationsCommandExecutor();
-    
+    public AplayCommand() {
+        super(Permissions.PERMISSION_USER, 1);
+    }
+
     @Override
-    public void onEnable() {
-        pluginInstance = this;
-        this.saveDefaultConfig();
-        
-        getCommand("anim").setExecutor(executor);
-        getCommand("aplay").setExecutor(executor);
-        getCommand("alist").setExecutor(executor);
-        
-        getLogger().info("Enabled!");
+    protected void execute(CommandSender cs, String... args) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

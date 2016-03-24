@@ -35,4 +35,8 @@ public class Messages {
                                                          "previewFrame <frame index>, preview, swapFrames <first index> <second index>, " +
                                                          "cancel, save";
     
+    public static final String MSG_NOT_PERMITTED = "You don't have permission to run this command.";
+    
+    public static final String MSG_EXPECTED_MORE_ARGS = "You're missing arguments for this command. Expected at least {0}.";
+    
 }

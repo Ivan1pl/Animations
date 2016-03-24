@@ -16,33 +16,18 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Animations.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.ivan1pl.animations;
-
-import com.ivan1pl.animations.commands.AnimationsCommandExecutor;
-import lombok.Getter;
-import org.bukkit.plugin.java.JavaPlugin;
+package com.ivan1pl.animations.constants;
 
 /**
  *
  * @author Ivan1pl
  */
-public class AnimationsPlugin extends JavaPlugin {
+public class Permissions {
     
-    @Getter
-    private static AnimationsPlugin pluginInstance;
+    public static final String PERMISSION_USER = "animations.user";
     
-    private final AnimationsCommandExecutor executor = new AnimationsCommandExecutor();
+    public static final String PERMISSION_ADMIN = "animations.admin";
     
-    @Override
-    public void onEnable() {
-        pluginInstance = this;
-        this.saveDefaultConfig();
-        
-        getCommand("anim").setExecutor(executor);
-        getCommand("aplay").setExecutor(executor);
-        getCommand("alist").setExecutor(executor);
-        
-        getLogger().info("Enabled!");
-    }
+    private Permissions() { };
     
 }
