@@ -45,6 +45,10 @@ public class Messages {
     
     public static final String MSG_SAVE_FAILED = "Failed to save animation: {0}.";
     
+    public static final String MSG_POINT1_SET = "First point set{0}.";
+    
+    public static final String MSG_POINT2_SET = "Secont point set{0}.";
+    
     public static final String INFO_ANIMATION_LOADED = "Animation loaded: ";
     
     public static final String INFO_ENABLED = "Enabled!";

@@ -21,6 +21,7 @@ package com.ivan1pl.animations;
 import com.ivan1pl.animations.commands.AnimationsCommandExecutor;
 import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.data.Animations;
+import com.ivan1pl.animations.listeners.PlayerListener;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -44,6 +45,8 @@ public class AnimationsPlugin extends JavaPlugin {
         getCommand("aplay").setExecutor(executor);
         getCommand("alist").setExecutor(executor);
         getCommand("acreate").setExecutor(executor);
+        
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         
         Animations.reload();
         

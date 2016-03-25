@@ -31,8 +31,12 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import lombok.Getter;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -42,8 +46,13 @@ public class Animations {
     
     private static final Map<String, Animation> animations = new HashMap<>();
     
+    private static final Map<UUID, Selection> selections = new HashMap<>();
+    
     private static final File PLUGIN_DIR = new File(AnimationsPlugin.getPluginInstance().getDataFolder()
             + File.separator + "animations");
+    
+    @Getter
+    private static Material wandMaterial = null;
     
     static {
         if (!PLUGIN_DIR.exists()) {
@@ -60,6 +69,9 @@ public class Animations {
             }
             
         };
+        
+        String wand = AnimationsPlugin.getPluginInstance().getConfig().getString("wand");
+        wandMaterial = Material.valueOf(wand);
         
         animations.clear();
         
@@ -144,6 +156,20 @@ public class Animations {
             }
         }
         return result;
+    }
+    
+    public static Selection getSelection(Player p) {
+        if (p == null) {
+            return null;
+        }
+        
+        Selection s = selections.get(p.getUniqueId());
+        if (s == null) {
+            selections.put(p.getUniqueId(), new Selection());
+            s = selections.get(p.getUniqueId());
+        }
+        
+        return s;
     }
     
 }

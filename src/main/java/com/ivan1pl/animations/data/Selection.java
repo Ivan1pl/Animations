@@ -20,7 +20,6 @@ package com.ivan1pl.animations.data;
 
 import java.io.Serializable;
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Location;
 
 /**
@@ -30,11 +29,9 @@ import org.bukkit.Location;
 public class Selection implements Serializable {
     
     @Getter
-    @Setter
     private AnimationsLocation point1;
     
     @Getter
-    @Setter
     private AnimationsLocation point2;
     
     private boolean validate() {
@@ -44,6 +41,25 @@ public class Selection implements Serializable {
     public static boolean isValid(Selection sel) {
         boolean ret = sel == null ? false : sel.validate();
         return ret;
+    }
+    
+    public void setPoint1(Location loc) {
+        point1 = AnimationsLocation.fromLocation(loc);
+    }
+    
+    public void setPoint2(Location loc) {
+        point2 = AnimationsLocation.fromLocation(loc);
+    }
+    
+    public int getVolume() {
+        if (!validate()) {
+            return 0;
+        }
+        
+        int dx = Math.abs(point1.getBlockX() - point2.getBlockX()) + 1;
+        int dy = Math.abs(point1.getBlockY() - point2.getBlockY()) + 1;
+        int dz = Math.abs(point1.getBlockZ() - point2.getBlockZ()) + 1;
+        return dx*dy*dz;
     }
     
 }
