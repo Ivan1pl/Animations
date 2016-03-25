@@ -19,6 +19,7 @@
 package com.ivan1pl.animations.data;
 
 import com.ivan1pl.animations.AnimationsPlugin;
+import com.ivan1pl.animations.exceptions.InvalidSelectionException;
 import com.ivan1pl.animations.tasks.AnimationTask;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,8 +39,19 @@ public class Animation implements Serializable {
     @Setter
     private int interval = 1;
     
-    public void addFrame(Frame frame) {
-        frames.add(frame);
+    @Getter
+    private final Selection selection;
+    
+    public Animation(Selection selection) throws InvalidSelectionException {
+        if (!Selection.isValid(selection)) {
+            throw new InvalidSelectionException();
+        }
+        this.selection = selection;
+    }
+    
+    public void addFrame() {
+        Frame f = Frame.fromSelection(selection);
+        frames.add(f);
     }
     
     public boolean removeFrame(int index) {

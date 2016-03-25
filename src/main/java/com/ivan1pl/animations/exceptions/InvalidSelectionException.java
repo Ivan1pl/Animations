@@ -16,34 +16,28 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Animations.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.ivan1pl.animations.data;
-
-import java.io.Serializable;
-import lombok.Getter;
-import lombok.Setter;
-import org.bukkit.Location;
+package com.ivan1pl.animations.exceptions;
 
 /**
  *
  * @author Ivan1pl
  */
-public class Selection implements Serializable {
+public class InvalidSelectionException extends Exception {
     
-    @Getter
-    @Setter
-    private AnimationsLocation point1;
-    
-    @Getter
-    @Setter
-    private AnimationsLocation point2;
-    
-    private boolean validate() {
-        return (point1 != null && point2 != null && point1.getWorld().getUID().equals(point2.getWorld().getUID()));
+    public InvalidSelectionException() {
+        super();
     }
     
-    public static boolean isValid(Selection sel) {
-        boolean ret = sel == null ? false : sel.validate();
-        return ret;
+    public InvalidSelectionException(String message) {
+        super(message);
+    }
+    
+    public InvalidSelectionException(String message, Throwable cause) {
+        super(message, cause);
+    }
+    
+    public InvalidSelectionException(Throwable cause) {
+        super(cause);
     }
     
 }

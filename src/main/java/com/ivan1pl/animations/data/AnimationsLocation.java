@@ -19,31 +19,58 @@
 package com.ivan1pl.animations.data;
 
 import java.io.Serializable;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 /**
  *
  * @author Ivan1pl
  */
-public class Selection implements Serializable {
+public class AnimationsLocation implements Serializable {
     
     @Getter
     @Setter
-    private AnimationsLocation point1;
+    private double x;
     
     @Getter
     @Setter
-    private AnimationsLocation point2;
+    private double y;
     
-    private boolean validate() {
-        return (point1 != null && point2 != null && point1.getWorld().getUID().equals(point2.getWorld().getUID()));
+    @Getter
+    @Setter
+    private double z;
+    
+    private UUID worldId;
+    
+    public AnimationsLocation(World world, double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.worldId = world == null ? null : world.getUID();
     }
     
-    public static boolean isValid(Selection sel) {
-        boolean ret = sel == null ? false : sel.validate();
-        return ret;
+    public int getBlockX() {
+        return Location.locToBlock(x);
+    }
+    
+    public int getBlockY() {
+        return Location.locToBlock(y);
+    }
+    
+    public int getBlockZ() {
+        return Location.locToBlock(z);
+    }
+    
+    public void setWorld(World world) {
+        this.worldId = world == null ? null : world.getUID();
+    }
+    
+    public World getWorld() {
+        return worldId == null ? null : Bukkit.getWorld(worldId);
     }
     
 }
