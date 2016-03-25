@@ -19,6 +19,8 @@
 package com.ivan1pl.animations;
 
 import com.ivan1pl.animations.commands.AnimationsCommandExecutor;
+import com.ivan1pl.animations.constants.Messages;
+import com.ivan1pl.animations.data.Animations;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -41,8 +43,11 @@ public class AnimationsPlugin extends JavaPlugin {
         getCommand("anim").setExecutor(executor);
         getCommand("aplay").setExecutor(executor);
         getCommand("alist").setExecutor(executor);
+        getCommand("acreate").setExecutor(executor);
         
-        getLogger().info("Enabled!");
+        Animations.reload();
+        
+        getLogger().info(Messages.INFO_ENABLED);
     }
     
 }

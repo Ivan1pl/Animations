@@ -39,4 +39,14 @@ public class Messages {
     
     public static final String MSG_EXPECTED_MORE_ARGS = "You're missing arguments for this command. Expected at least {0}.";
     
+    public static final String MSG_CREATE_ANIMATION = "Creating {0}. Select area using {1} and confirm by typing 'y' or exit with 'cancel'";
+    
+    public static final String MSG_ANIMATION_CREATED = "Animation {0} created.";
+    
+    public static final String MSG_SAVE_FAILED = "Failed to save animation: {0}.";
+    
+    public static final String INFO_ANIMATION_LOADED = "Animation loaded: ";
+    
+    public static final String INFO_ENABLED = "Enabled!";
+    
 }
