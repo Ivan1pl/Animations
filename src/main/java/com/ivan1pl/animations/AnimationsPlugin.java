@@ -44,7 +44,6 @@ public class AnimationsPlugin extends JavaPlugin {
         getCommand("anim").setExecutor(executor);
         getCommand("aplay").setExecutor(executor);
         getCommand("alist").setExecutor(executor);
-        getCommand("acreate").setExecutor(executor);
         
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         

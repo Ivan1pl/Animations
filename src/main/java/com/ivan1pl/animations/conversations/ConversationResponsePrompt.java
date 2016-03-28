@@ -16,24 +16,35 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Animations.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.ivan1pl.animations.commands;
+package com.ivan1pl.animations.conversations;
 
-import com.ivan1pl.animations.constants.Permissions;
-import org.bukkit.command.CommandSender;
+import org.bukkit.conversations.ConversationContext;
+import org.bukkit.conversations.MessagePrompt;
+import org.bukkit.conversations.Prompt;
 
 /**
  *
  * @author Ivan1pl
  */
-public class AcreateCommand extends AnimationsCommand {
+public class ConversationResponsePrompt extends MessagePrompt {
     
-    public AcreateCommand() {
-        super(Permissions.PERMISSION_ADMIN, 1);
+    private final Prompt next;
+    
+    private final String message;
+    
+    public ConversationResponsePrompt(Prompt next, String message) {
+        this.next = next;
+        this.message = message;
     }
 
     @Override
-    protected void execute(CommandSender cs, String... args) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected Prompt getNextPrompt(ConversationContext cc) {
+        return next;
+    }
+
+    @Override
+    public String getPromptText(ConversationContext cc) {
+        return message;
     }
     
 }

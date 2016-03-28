@@ -81,4 +81,21 @@ public class Animation implements Serializable {
         return frames.size();
     }
     
+    public void stop() {
+        //TODO: stop if playing
+    }
+    
+    public boolean swapFrames(int i1, int i2) {
+        if (i1 < 0 || i1 >= frames.size() || i2 < 0 || i2 >= frames.size()) {
+            return false;
+        }
+        
+        Frame f1 = frames.get(i1);
+        Frame f2 = frames.get(i2);
+        
+        frames.set(i1, f2);
+        frames.set(i2, f1);
+        return true;
+    }
+    
 }

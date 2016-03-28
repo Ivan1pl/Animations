@@ -24,16 +24,14 @@ package com.ivan1pl.animations.constants;
  */
 public class Messages {
     
-    public static final String MSG_INVALID_SELECTION = "Invalid selection!";
+    public static final String MSG_INVALID_SELECTION = "Invalid selection! Select 2 points in the same world.";
     
     public static final String MSG_WRONG_FRAME_INDEX = "Frame index out of range. Index should be between {0} and {1}.";
     
     public static final String MSG_ANIMATION_NOT_FOUND = "Could not find animation with name: {0}.";
     
     public static final String MSG_ANIMATION_EDIT_INFO = "Editing {0}, {1} frames, interval = {2}.\n" +
-                                                         "Available operations: addFrame, removeFrame <frame index>, " +
-                                                         "previewFrame <frame index>, preview, swapFrames <first index> <second index>, " +
-                                                         "cancel, save";
+                                                         "Available operations: {3}";
     
     public static final String MSG_NOT_PERMITTED = "You don't have permission to run this command.";
     
@@ -49,8 +47,20 @@ public class Messages {
     
     public static final String MSG_POINT2_SET = "Secont point set{0}.";
     
+    public static final String MSG_FRAME_ADDED = "Frame added.";
+    
+    public static final String MSG_FRAME_REMOVED = "Frame removed.";
+    
+    public static final String MSG_FRAMES_SWAPPED = "Frames swapped.";
+    
+    public static final String MSG_EDIT_CANCELLED = "Edit cancelled.";
+    
+    public static final String MSG_ANIMATION_SAVED = "Animation saved.";
+    
     public static final String INFO_ANIMATION_LOADED = "Animation loaded: ";
     
     public static final String INFO_ENABLED = "Enabled!";
+    
+    public static final String INFO_INVALID_MATERIAL = "Invalid material name: {0}. Using default ({1}).";
     
 }

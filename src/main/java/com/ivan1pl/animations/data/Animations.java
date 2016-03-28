@@ -21,6 +21,7 @@ package com.ivan1pl.animations.data;
 import com.ivan1pl.animations.AnimationsPlugin;
 import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.constants.OperationResult;
+import com.ivan1pl.animations.utils.MessageUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -60,6 +61,8 @@ public class Animations {
         }
     }
     
+    private Animations() { }
+    
     public static void reload() {
         FilenameFilter aFilter = new FilenameFilter() {
 
@@ -73,37 +76,18 @@ public class Animations {
         String wand = AnimationsPlugin.getPluginInstance().getConfig().getString("wand");
         wandMaterial = Material.valueOf(wand);
         
+        if (wandMaterial == null) {
+            wandMaterial = Material.BLAZE_POWDER;
+            AnimationsPlugin.getPluginInstance().getLogger().info(MessageUtil.formatMessage(Messages.INFO_INVALID_MATERIAL, wand, Material.BLAZE_POWDER.toString()));
+        }
+        
         animations.clear();
         
         for (File f : PLUGIN_DIR.listFiles(aFilter)) {
-            FileInputStream fstream = null;
-            ObjectInputStream ostream = null;
-            try {
-                String name = f.getName();
-                name = name.substring(0, name.length()-5);
-                
-                fstream = new FileInputStream(f);
-                ostream = new ObjectInputStream(fstream);
-                
-                Animation animation = (Animation) ostream.readObject();
-                if (animation != null) {
-                    animations.put(name, animation);
-                    AnimationsPlugin.getPluginInstance().getLogger().info(Messages.INFO_ANIMATION_LOADED + name);
-                }
-            } catch (IOException | ClassNotFoundException ex) {
-                Logger.getLogger(Animations.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                try {
-                    if (ostream != null) {
-                        ostream.close();
-                    }
-                    if (fstream != null) {
-                        fstream.close();
-                    }
-                } catch (IOException ex) {
-                    Logger.getLogger(Animations.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            String name = f.getName();
+            name = name.substring(0, name.length()-5);
+            
+            reloadAnimation(name);
         }
     }
     
@@ -170,6 +154,36 @@ public class Animations {
         }
         
         return s;
+    }
+    
+    public static void reloadAnimation(String name) {
+        File f = new File(PLUGIN_DIR, name + ".anim");
+        
+        FileInputStream fstream = null;
+        ObjectInputStream ostream = null;
+        try {
+            fstream = new FileInputStream(f);
+            ostream = new ObjectInputStream(fstream);
+
+            Animation animation = (Animation) ostream.readObject();
+            if (animation != null) {
+                animations.put(name, animation);
+                AnimationsPlugin.getPluginInstance().getLogger().info(Messages.INFO_ANIMATION_LOADED + name);
+            }
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(Animations.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (ostream != null) {
+                    ostream.close();
+                }
+                if (fstream != null) {
+                    fstream.close();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Animations.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
 }

@@ -3,11 +3,8 @@ main: com.ivan1pl.animations.AnimationsPlugin
 version: 1.0
 description: Animations plugin
 commands:
-    acreate:
-        description: Create animation
-        usage: /acreate <animation_name>
     anim:
-        description: Manage animations.
+        description: Create or edit animation.
         usage: /anim <animation_name>
     aplay:
         description: Play animation.

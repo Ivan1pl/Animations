@@ -53,4 +53,12 @@ public class MessageUtil {
         }
     }
     
+    public static String formatMessage(String message, Object... messageParams) {
+        return MessageFormat.format(message, messageParams);
+    }
+    
+    public static String formatMessageWithPrefix(String message, Object... messageParams) {
+        return PREFIX_NOFORMAT + formatMessage(message, messageParams);
+    }
+    
 }
