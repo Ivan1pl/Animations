@@ -21,6 +21,7 @@ package com.ivan1pl.animations.data;
 import com.ivan1pl.animations.AnimationsPlugin;
 import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.constants.OperationResult;
+import com.ivan1pl.animations.tasks.AnimationTask;
 import com.ivan1pl.animations.utils.MessageUtil;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,8 +31,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,6 +60,10 @@ public class Animations {
     
     @Getter
     private static Material wandMaterial = null;
+    
+    private static final Set<AnimationTask> runningTasks = new HashSet<>();
+    
+    private static final int PAGE_SIZE = 10;
     
     static {
         if (!PLUGIN_DIR.exists()) {
@@ -142,6 +152,15 @@ public class Animations {
         return result;
     }
     
+    public static boolean deleteAnimation(String name) {
+        File f = new File(PLUGIN_DIR, name + ".anim");
+        boolean retval = f.delete();
+        if (retval) {
+            animations.remove(name);
+        }
+        return retval;
+    }
+    
     public static Selection getSelection(Player p) {
         if (p == null) {
             return null;
@@ -184,6 +203,42 @@ public class Animations {
                 Logger.getLogger(Animations.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    public static void registerTask(AnimationTask task) {
+        runningTasks.add(task);
+    }
+    
+    public static AnimationTask retrieveTask(Animation animation) {
+        for (AnimationTask task : runningTasks) {
+            if (task.getAnimation() == animation) {
+                return task;
+            }
+        }
+        return null;
+    }
+    
+    public static void deleteTask(AnimationTask task) {
+        runningTasks.remove(task);
+    }
+    
+    public static int countPages() {
+        return Math.max(1, (animations.size() + PAGE_SIZE - 1)/PAGE_SIZE);
+    }
+    
+    public static List<String> getPage(int page) {
+        Set<String> animationSet = animations.keySet();
+        List<String> list = new ArrayList<>(animationSet);
+        Collections.sort(list);
+        int from = (page - 1)*PAGE_SIZE;
+        int to = page*PAGE_SIZE;
+        if (from > list.size()) {
+            from = list.size();
+        }
+        if (to > list.size()) {
+            to = list.size();
+        }
+        return list.subList(from, to);
     }
     
 }

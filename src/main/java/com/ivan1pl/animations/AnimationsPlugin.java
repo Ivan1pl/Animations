@@ -20,6 +20,7 @@ package com.ivan1pl.animations;
 
 import com.ivan1pl.animations.commands.AnimationsCommandExecutor;
 import com.ivan1pl.animations.constants.Messages;
+import com.ivan1pl.animations.conversations.EditAnimationConversationFactory;
 import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.listeners.PlayerListener;
 import lombok.Getter;
@@ -36,6 +37,9 @@ public class AnimationsPlugin extends JavaPlugin {
     
     private final AnimationsCommandExecutor executor = new AnimationsCommandExecutor();
     
+    @Getter
+    private final EditAnimationConversationFactory conversationFactory = new EditAnimationConversationFactory(this);
+    
     @Override
     public void onEnable() {
         pluginInstance = this;
@@ -44,6 +48,7 @@ public class AnimationsPlugin extends JavaPlugin {
         getCommand("anim").setExecutor(executor);
         getCommand("aplay").setExecutor(executor);
         getCommand("alist").setExecutor(executor);
+        getCommand("adelete").setExecutor(executor);
         
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         

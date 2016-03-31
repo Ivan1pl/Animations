@@ -18,7 +18,11 @@
  */
 package com.ivan1pl.animations.commands;
 
+import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.constants.Permissions;
+import com.ivan1pl.animations.data.Animations;
+import com.ivan1pl.animations.utils.MessageUtil;
+import java.util.List;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -28,12 +32,23 @@ import org.bukkit.command.CommandSender;
 public class AlistCommand extends AnimationsCommand {
     
     public AlistCommand() {
-        super(Permissions.PERMISSION_USER, 0);
+        super(Permissions.PERMISSION_ADMIN, 0);
     }
 
     @Override
     protected void execute(CommandSender cs, String... args) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int page = 1;
+        if (args.length > 0 && isNumeric(args[0])) {
+            page = Integer.parseUnsignedInt(args[0]);
+        }
+        if (page < 1) {
+            page = 1;
+        }
+        MessageUtil.sendInfoMessage(cs, Messages.MSG_DISPLAYING_PAGE, page, Animations.countPages());
+        List<String> list = Animations.getPage(page);
+        for (String item : list) {
+            MessageUtil.sendInfoMessage(cs, Messages.MSG_ITEM, item);
+        }
     }
     
 }

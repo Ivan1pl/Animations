@@ -53,6 +53,7 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         EDIT_COMMANDS.add(new ConversationAnswer("previewframe", 1, "frame_index"));
         EDIT_COMMANDS.add(new ConversationAnswer("preview", 0));
         EDIT_COMMANDS.add(new ConversationAnswer("swapframes", 2, "first_index", "second_index"));
+        EDIT_COMMANDS.add(new ConversationAnswer("interval", 1, "interval"));
         EDIT_COMMANDS.add(new ConversationAnswer("cancel", 0));
         EDIT_COMMANDS.add(new ConversationAnswer("save", 0));
     }
@@ -100,6 +101,11 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
                 } else {
                     return new ConversationResponsePrompt(this, MessageUtil.formatMessageWithPrefix(Messages.MSG_WRONG_FRAME_INDEX, 0, animation.getFrameCount()-1));
                 }
+            } else if (realInput[0].equalsIgnoreCase("interval")) {
+                int interval = Integer.parseUnsignedInt(realInput[1]);
+                animation.stop();
+                animation.setInterval(interval);
+                return new ConversationResponsePrompt(this, MessageUtil.formatMessageWithPrefix(Messages.MSG_INTERVAL_SET, interval));
             } else if (realInput[0].equalsIgnoreCase("cancel")) {
                 animation.stop();
                 Animations.reloadAnimation(name);

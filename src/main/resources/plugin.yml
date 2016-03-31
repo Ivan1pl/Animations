@@ -11,6 +11,9 @@ commands:
         usage: /aplay <animation_name>
     alist:
         description: List animations.
+    adelete:
+        description: Delete animation.
+        usage: /adelete <animation_name>
 permissions:
     animations.*:
         description: Gives access to all animations commands.

@@ -18,8 +18,10 @@
  */
 package com.ivan1pl.animations.commands;
 
+import com.ivan1pl.animations.AnimationsPlugin;
 import com.ivan1pl.animations.constants.Permissions;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -28,12 +30,13 @@ import org.bukkit.command.CommandSender;
 public class AnimCommand extends AnimationsCommand {
     
     public AnimCommand() {
-        super(Permissions.PERMISSION_ADMIN, 1);
+        super(Permissions.PERMISSION_ADMIN, 1, true);
     }
 
     @Override
     protected void execute(CommandSender cs, String... args) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String name = args[0];
+        AnimationsPlugin.getPluginInstance().getConversationFactory().startConversation((Player) cs, name);
     }
     
 }

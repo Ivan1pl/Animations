@@ -35,15 +35,24 @@ public abstract class AnimationsCommand {
     @Getter
     private final int minArgs;
     
-    public AnimationsCommand(String requiredPermission, int minArgs) {
+    private final boolean playerOnly;
+    
+    public AnimationsCommand(String requiredPermission, int minArgs, boolean playerOnly) {
         this.requiredPermission = requiredPermission;
         this.minArgs = minArgs;
+        this.playerOnly = playerOnly;
+    }
+    
+    public AnimationsCommand(String requiredPermission, int minArgs) {
+        this(requiredPermission, minArgs, false);
     }
     
     public final void handle(CommandSender cs, String... args) {
         Player p = null;
         if(cs instanceof Player) {
             p = (Player) cs;
+        } else if (playerOnly) {
+            MessageUtil.sendErrorMessage(cs, Messages.MSG_PLAYER_ONLY);
         }
         
         if(p != null && !p.hasPermission(requiredPermission)) {
@@ -52,7 +61,7 @@ public abstract class AnimationsCommand {
         }
         
         if(args.length < minArgs) {
-            MessageUtil.sendErrorMessage(cs, Messages.MSG_EXPECTED_MORE_ARGS, minArgs);
+            MessageUtil.sendErrorMessage(cs, Messages.MSG_EXPECTED_MORE_ARGS, new Long(minArgs));
             return;
         }
         
@@ -60,5 +69,18 @@ public abstract class AnimationsCommand {
     }
     
     protected abstract void execute(CommandSender cs, String... args);
+    
+    protected static boolean isNumeric(String str) {
+        if (str == null) {
+            return false;
+        }
+        int sz = str.length();
+        for (int i = 0; i < sz; i++) {
+            if (Character.isDigit(str.charAt(i)) == false) {
+                return false;
+            }
+        }
+        return true;
+    }
     
 }

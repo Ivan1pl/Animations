@@ -20,6 +20,9 @@ package com.ivan1pl.animations.tasks;
 
 import com.ivan1pl.animations.AnimationsPlugin;
 import com.ivan1pl.animations.data.Animation;
+import com.ivan1pl.animations.data.Animations;
+import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -28,6 +31,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  */
 public class AnimationTask extends BukkitRunnable {
     
+    @Getter
     private final Animation animation;
     
     private int stage = 0;
@@ -35,14 +39,28 @@ public class AnimationTask extends BukkitRunnable {
     public AnimationTask(Animation animation) {
         this.animation = animation;
     }
+    
+    public void start() {
+        this.runTaskTimer(AnimationsPlugin.getPluginInstance(), 0, animation.getInterval());
+    }
 
     @Override
     public void run() {
         animation.showFrame(stage);
         stage++;
-        if (stage < animation.getFrameCount()) {
-            this.runTaskLater(AnimationsPlugin.getPluginInstance(), animation.getInterval());
+        if (stage >= animation.getFrameCount()) {
+            Animations.deleteTask(this);
+            this.cancel();
         }
+    }
+    
+    public synchronized void stop() {
+        int id = this.getTaskId();
+        if (Bukkit.getScheduler().isCurrentlyRunning(id) || Bukkit.getScheduler().isQueued(id)) {
+            this.cancel();
+        }
+        stage = animation.getFrameCount() + 1;
+        animation.showFrame(0);
     }
     
 }

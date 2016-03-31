@@ -57,6 +57,18 @@ public class Messages {
     
     public static final String MSG_ANIMATION_SAVED = "Animation saved.";
     
+    public static final String MSG_INTERVAL_SET = "Interval set to {0} ticks.";
+    
+    public static final String MSG_PLAYER_ONLY = "You can only use this command ingame.";
+    
+    public static final String MSG_ANIMATION_DELETED = "Animation deleted.";
+    
+    public static final String MSG_DELETE_FAILED = "Failed to delete animation: {0}.";
+    
+    public static final String MSG_DISPLAYING_PAGE = "Displaying page {0}/{1}.";
+    
+    public static final String MSG_ITEM = " - {0}";
+    
     public static final String INFO_ANIMATION_LOADED = "Animation loaded: ";
     
     public static final String INFO_ENABLED = "Enabled!";

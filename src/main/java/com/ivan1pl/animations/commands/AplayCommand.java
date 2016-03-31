@@ -18,7 +18,11 @@
  */
 package com.ivan1pl.animations.commands;
 
+import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.constants.Permissions;
+import com.ivan1pl.animations.data.Animation;
+import com.ivan1pl.animations.data.Animations;
+import com.ivan1pl.animations.utils.MessageUtil;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -33,7 +37,13 @@ public class AplayCommand extends AnimationsCommand {
 
     @Override
     protected void execute(CommandSender cs, String... args) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String name = args[0];
+        Animation animation = Animations.getAnimation(name);
+        if (animation != null) {
+            animation.play();
+        } else {
+            MessageUtil.sendErrorMessage(cs, Messages.MSG_ANIMATION_NOT_FOUND, name);
+        }
     }
     
 }

@@ -68,13 +68,13 @@ public class Frame implements Serializable {
     public void show() {
         World w = Bukkit.getWorld(worldId);
         Set<Chunk> chunksToUpdate = new HashSet<>();
-        for (int i = 0; i <= sizeX; ++i) {
-            for (int j = 0; j <= sizeY; ++j) {
-                for (int k = 0; k <= sizeZ; ++k) {
+        for (int i = 0; i < sizeX; ++i) {
+            for (int j = 0; j < sizeY; ++j) {
+                for (int k = 0; k < sizeZ; ++k) {
                     Location loc = new Location(w, i+x, j+y, k+z);
                     Block b = loc.getBlock();
-                    Material mat = blockMaterials[i*(sizeY+1)*(sizeZ+1) + j*(sizeZ+1) + k];
-                    Byte matData = blockData[i*(sizeY+1)*(sizeZ+1) + j*(sizeZ+1) + k];
+                    Material mat = blockMaterials[i*(sizeY)*(sizeZ) + j*(sizeZ) + k];
+                    Byte matData = blockData[i*(sizeY)*(sizeZ) + j*(sizeZ) + k];
                     b.setTypeIdAndData(mat.getId(), matData, false);
                     chunksToUpdate.add(b.getChunk());
                 }
@@ -115,8 +115,10 @@ public class Frame implements Serializable {
                     }
                 }
             }
-            f.blockMaterials = (Material[]) materials.toArray();
-            f.blockData = (Byte[]) datas.toArray();
+            f.blockMaterials = new Material[materials.size()];
+            f.blockMaterials = materials.toArray(f.blockMaterials);
+            f.blockData = new Byte[datas.size()];
+            f.blockData = datas.toArray(f.blockData);
             return f;
         }
         return null;

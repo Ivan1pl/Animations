@@ -74,7 +74,9 @@ public class Animation implements Serializable {
     }
     
     public void play() {
-        new AnimationTask(this).runTask(AnimationsPlugin.getPluginInstance());
+        AnimationTask task = new AnimationTask(this);
+        Animations.registerTask(task);
+        task.start();
     }
     
     public int getFrameCount() {
@@ -82,7 +84,11 @@ public class Animation implements Serializable {
     }
     
     public void stop() {
-        //TODO: stop if playing
+        AnimationTask task = Animations.retrieveTask(this);
+        if (task != null) {
+            task.stop();
+            Animations.deleteTask(task);
+        }
     }
     
     public boolean swapFrames(int i1, int i2) {

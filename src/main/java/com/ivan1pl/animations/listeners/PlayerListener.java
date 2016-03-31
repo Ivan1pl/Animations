@@ -46,6 +46,7 @@ public class PlayerListener implements Listener {
         Selection selection = Animations.getSelection(player);
         
         if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+            event.setCancelled(true);
             selection.setPoint1(event.getClickedBlock().getLocation());
             int volume = selection.getVolume();
             if (volume == 0) {
@@ -55,6 +56,7 @@ public class PlayerListener implements Listener {
             }
         } else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             selection.setPoint2(event.getClickedBlock().getLocation());
+            event.setCancelled(true);
             int volume = selection.getVolume();
             if (volume == 0) {
                 MessageUtil.sendInfoMessage(player, Messages.MSG_POINT2_SET, "");
