@@ -44,7 +44,7 @@ public class AlistCommand extends AnimationsCommand {
         if (page < 1) {
             page = 1;
         }
-        MessageUtil.sendInfoMessage(cs, Messages.MSG_DISPLAYING_PAGE, page, Animations.countPages());
+        MessageUtil.sendInfoMessage(cs, Messages.MSG_DISPLAYING_PAGE, new Long(page), new Long(Animations.countPages()));
         List<String> list = Animations.getPage(page);
         for (String item : list) {
             MessageUtil.sendInfoMessage(cs, Messages.MSG_ITEM, item);

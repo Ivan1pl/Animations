@@ -52,7 +52,7 @@ public class PlayerListener implements Listener {
             if (volume == 0) {
                 MessageUtil.sendInfoMessage(player, Messages.MSG_POINT1_SET, "");
             } else {
-                MessageUtil.sendInfoMessage(player, Messages.MSG_POINT1_SET, " (", volume, ")");
+                MessageUtil.sendInfoMessage(player, Messages.MSG_POINT1_SET, " (" + new Long(volume) + ")");
             }
         } else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             selection.setPoint2(event.getClickedBlock().getLocation());
@@ -61,7 +61,7 @@ public class PlayerListener implements Listener {
             if (volume == 0) {
                 MessageUtil.sendInfoMessage(player, Messages.MSG_POINT2_SET, "");
             } else {
-                MessageUtil.sendInfoMessage(player, Messages.MSG_POINT2_SET, " (", volume, ")");
+                MessageUtil.sendInfoMessage(player, Messages.MSG_POINT2_SET, " (" + new Long(volume) + ")");
             }
         }
     }

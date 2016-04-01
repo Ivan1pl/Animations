@@ -72,14 +72,14 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
             if (realInput[0].equalsIgnoreCase("addframe")) {
                 animation.stop();
                 animation.addFrame();
-                return new ConversationResponsePrompt(this, MessageUtil.formatMessageWithPrefix(Messages.MSG_FRAME_ADDED));
+                return new ConversationResponsePrompt(this, MessageUtil.formatInfoMessage(Messages.MSG_FRAME_ADDED));
             } else if (realInput[0].equalsIgnoreCase("removeframe")) {
                 int index = Integer.parseUnsignedInt(realInput[1]);
                 animation.stop();
                 if (animation.removeFrame(index)) {
-                    return new ConversationResponsePrompt(this, MessageUtil.formatMessageWithPrefix(Messages.MSG_FRAME_REMOVED));
+                    return new ConversationResponsePrompt(this, MessageUtil.formatInfoMessage(Messages.MSG_FRAME_REMOVED));
                 } else {
-                    return new ConversationResponsePrompt(this, MessageUtil.formatMessageWithPrefix(Messages.MSG_WRONG_FRAME_INDEX, 0, animation.getFrameCount()-1));
+                    return new ConversationResponsePrompt(this, MessageUtil.formatErrorMessage(Messages.MSG_WRONG_FRAME_INDEX, new Long(0), new Long(animation.getFrameCount()-1)));
                 }
             } else if (realInput[0].equalsIgnoreCase("previewframe")) {
                 int index = Integer.parseUnsignedInt(realInput[1]);
@@ -87,40 +87,41 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
                 if (animation.showFrame(index)) {
                     return this;
                 } else {
-                    return new ConversationResponsePrompt(this, MessageUtil.formatMessageWithPrefix(Messages.MSG_WRONG_FRAME_INDEX, 0, animation.getFrameCount()-1));
+                    return new ConversationResponsePrompt(this, MessageUtil.formatErrorMessage(Messages.MSG_WRONG_FRAME_INDEX, new Long(0), new Long(animation.getFrameCount()-1)));
                 }
             } else if (realInput[0].equalsIgnoreCase("preview")) {
                 animation.stop();
                 animation.play();
+                return this;
             } else if (realInput[0].equalsIgnoreCase("swapframes")) {
                 int i1 = Integer.parseUnsignedInt(realInput[1]);
                 int i2 = Integer.parseUnsignedInt(realInput[2]);
                 animation.stop();
                 if (animation.swapFrames(i1, i2)) {
-                    return new ConversationResponsePrompt(this, MessageUtil.formatMessageWithPrefix(Messages.MSG_FRAMES_SWAPPED));
+                    return new ConversationResponsePrompt(this, MessageUtil.formatInfoMessage(Messages.MSG_FRAMES_SWAPPED));
                 } else {
-                    return new ConversationResponsePrompt(this, MessageUtil.formatMessageWithPrefix(Messages.MSG_WRONG_FRAME_INDEX, 0, animation.getFrameCount()-1));
+                    return new ConversationResponsePrompt(this, MessageUtil.formatErrorMessage(Messages.MSG_WRONG_FRAME_INDEX, new Long(0), new Long(animation.getFrameCount()-1)));
                 }
             } else if (realInput[0].equalsIgnoreCase("interval")) {
                 int interval = Integer.parseUnsignedInt(realInput[1]);
                 animation.stop();
                 animation.setInterval(interval);
-                return new ConversationResponsePrompt(this, MessageUtil.formatMessageWithPrefix(Messages.MSG_INTERVAL_SET, interval));
+                return new ConversationResponsePrompt(this, MessageUtil.formatInfoMessage(Messages.MSG_INTERVAL_SET, new Long(interval)));
             } else if (realInput[0].equalsIgnoreCase("cancel")) {
                 animation.stop();
                 Animations.reloadAnimation(name);
-                return new ConversationResponsePrompt(END_OF_CONVERSATION, MessageUtil.formatMessageWithPrefix(Messages.MSG_EDIT_CANCELLED));
+                return new ConversationResponsePrompt(END_OF_CONVERSATION, MessageUtil.formatInfoMessage(Messages.MSG_EDIT_CANCELLED));
             } else if (realInput[0].equalsIgnoreCase("save")) {
                 animation.stop();
                 OperationResult result = Animations.saveAnimation(name);
                 String message = "";
                 switch (result) {
                     case SUCCESS:
-                        message = MessageUtil.formatMessageWithPrefix(Messages.MSG_ANIMATION_SAVED);
+                        message = MessageUtil.formatInfoMessage(Messages.MSG_ANIMATION_SAVED);
                         break;
                     case INTERNAL_ERROR:
                     case NOT_FOUND:
-                        message = MessageUtil.formatMessageWithPrefix(Messages.MSG_SAVE_FAILED, name);
+                        message = MessageUtil.formatErrorMessage(Messages.MSG_SAVE_FAILED, name);
                         break;
                 }
                 return new ConversationResponsePrompt(this, message);
@@ -135,21 +136,21 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
                     String message = "";
                     switch (result) {
                         case SUCCESS:
-                            message = MessageUtil.formatMessageWithPrefix(Messages.MSG_ANIMATION_SAVED);
+                            message = MessageUtil.formatInfoMessage(Messages.MSG_ANIMATION_SAVED);
                             isEdit = true;
                             cc.setSessionData("animation", anim);
                             break;
                         case INTERNAL_ERROR:
                         case NOT_FOUND:
-                            message = MessageUtil.formatMessageWithPrefix(Messages.MSG_SAVE_FAILED, name);
+                            message = MessageUtil.formatErrorMessage(Messages.MSG_SAVE_FAILED, name);
                             break;
                     }
                     return new ConversationResponsePrompt(this, message);
                 } catch (InvalidSelectionException ex) {
-                    return new ConversationResponsePrompt(this, MessageUtil.formatMessageWithPrefix(Messages.MSG_INVALID_SELECTION));
+                    return new ConversationResponsePrompt(this, MessageUtil.formatErrorMessage(Messages.MSG_INVALID_SELECTION));
                 }
             } else if (realInput[0].equalsIgnoreCase("cancel")) {
-                return new ConversationResponsePrompt(END_OF_CONVERSATION, MessageUtil.formatMessageWithPrefix(Messages.MSG_EDIT_CANCELLED));
+                return new ConversationResponsePrompt(END_OF_CONVERSATION, MessageUtil.formatInfoMessage(Messages.MSG_EDIT_CANCELLED));
             }
         }
         return END_OF_CONVERSATION;
@@ -160,9 +161,9 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         String name = (String) cc.getSessionData("name");
         Animation animation = (Animation) cc.getSessionData("animation");
         if (isEdit) {
-            return MessageUtil.formatMessage(Messages.MSG_ANIMATION_EDIT_INFO, name, animation.getFrameCount(), animation.getInterval(), formatAnswers(EDIT_COMMANDS));
+            return MessageUtil.formatPromptMessage(Messages.MSG_ANIMATION_EDIT_INFO, name, animation.getFrameCount(), animation.getInterval(), formatAnswers(EDIT_COMMANDS));
         } else {
-            return MessageUtil.formatMessage(Messages.MSG_CREATE_ANIMATION, name, Animations.getWandMaterial().toString());
+            return MessageUtil.formatPromptMessage(Messages.MSG_CREATE_ANIMATION, name, Animations.getWandMaterial().toString());
         }
     }
 
@@ -191,9 +192,9 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         String ret = "";
         for (ConversationAnswer answer : answers) {
             if (ret.length() > 0) {
-                ret += ", ";
+                ret += "\n";
             }
-            ret += answer.format();
+            ret += MessageUtil.formatPromptMessage(Messages.MSG_ITEM, answer.format());
         }
         return ret;
     }

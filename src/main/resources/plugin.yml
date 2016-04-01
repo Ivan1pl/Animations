@@ -11,6 +11,7 @@ commands:
         usage: /aplay <animation_name>
     alist:
         description: List animations.
+        usage: /alist [page]
     adelete:
         description: Delete animation.
         usage: /adelete <animation_name>

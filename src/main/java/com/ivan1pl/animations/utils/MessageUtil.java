@@ -31,9 +31,11 @@ public class MessageUtil {
     
     private static final String NAME = "Animations";
     
-    private static final String PREFIX_ERR = ChatColor.RED + "[" + ChatColor.DARK_RED + NAME + ChatColor.RED + "] " + ChatColor.RESET;
+    private static final String PREFIX_ERR = ChatColor.RED + "[" + ChatColor.DARK_RED + NAME + ChatColor.RED + "] ";
     
-    private static final String PREFIX_INFO = ChatColor.AQUA + "[" + ChatColor.BLUE + NAME + ChatColor.AQUA + "] " + ChatColor.RESET;
+    private static final String PREFIX_INFO = ChatColor.AQUA + "[" + ChatColor.BLUE + NAME + ChatColor.AQUA + "] ";
+    
+    private static final String PREFIX_PROMPT = ChatColor.GREEN + "[" + ChatColor.DARK_GREEN + NAME + ChatColor.GREEN + "] ";
     
     private static final String PREFIX_NOFORMAT = "[" + NAME + "] ";
     
@@ -59,6 +61,18 @@ public class MessageUtil {
     
     public static String formatMessageWithPrefix(String message, Object... messageParams) {
         return PREFIX_NOFORMAT + formatMessage(message, messageParams);
+    }
+    
+    public static String formatInfoMessage(String message, Object... messageParams) {
+        return PREFIX_INFO + MessageFormat.format(message, messageParams);
+    }
+    
+    public static String formatErrorMessage(String message, Object... messageParams) {
+        return PREFIX_ERR + MessageFormat.format(message, messageParams);
+    }
+    
+    public static String formatPromptMessage(String message, Object... messageParams) {
+        return PREFIX_PROMPT + MessageFormat.format(message, messageParams);
     }
     
 }
