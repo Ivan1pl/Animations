@@ -32,11 +32,13 @@ public class Messages {
     
     public static final String MSG_ANIMATION_EDIT_INFO = "Editing {0}, {1} frames, interval = {2}. Available operations:\n{3}";
     
+    public static final String MSG_ANIMATION_EDIT_INFO_SIMPLE = "Editing {0}, {1} frames, interval = {2}. For list of available operations, type ''help''.";
+    
     public static final String MSG_NOT_PERMITTED = "You don't have permission to run this command.";
     
     public static final String MSG_EXPECTED_MORE_ARGS = "Expected at least {0} arguments for this command.";
     
-    public static final String MSG_CREATE_ANIMATION = "Creating {0}. Select area using {1} and confirm by typing 'y' or exit with 'cancel'";
+    public static final String MSG_CREATE_ANIMATION = "Creating {0}. Select area using {1} and confirm by typing ''y'' or exit with ''cancel'";
     
     public static final String MSG_ANIMATION_CREATED = "Animation {0} created.";
     

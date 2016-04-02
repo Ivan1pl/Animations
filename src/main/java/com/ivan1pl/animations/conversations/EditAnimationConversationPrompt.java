@@ -44,6 +44,8 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
     
     private boolean isEdit;
     
+    private boolean simplePrompt;
+    
     static {
         CREATE_COMMANDS.add(new ConversationAnswer("y", 0));
         CREATE_COMMANDS.add(new ConversationAnswer("cancel", 0));
@@ -54,12 +56,14 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         EDIT_COMMANDS.add(new ConversationAnswer("preview", 0));
         EDIT_COMMANDS.add(new ConversationAnswer("swapframes", 2, "first_index", "second_index"));
         EDIT_COMMANDS.add(new ConversationAnswer("interval", 1, "interval"));
+        EDIT_COMMANDS.add(new ConversationAnswer("help", 0));
         EDIT_COMMANDS.add(new ConversationAnswer("cancel", 0));
         EDIT_COMMANDS.add(new ConversationAnswer("save", 0));
     }
     
     public EditAnimationConversationPrompt(boolean isEdit) {
         this.isEdit = isEdit;
+        this.simplePrompt = false;
     }
 
     @Override
@@ -67,6 +71,7 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         String[] realInput = string.split("\\s+");
         String name = (String) cc.getSessionData("name");
         Animation animation = (Animation) cc.getSessionData("animation");
+        simplePrompt = true;
         
         if (isEdit) {
             if (realInput[0].equalsIgnoreCase("addframe")) {
@@ -107,6 +112,9 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
                 animation.stop();
                 animation.setInterval(interval);
                 return new ConversationResponsePrompt(this, MessageUtil.formatInfoMessage(Messages.MSG_INTERVAL_SET, new Long(interval)));
+            } else if (realInput[0].equalsIgnoreCase("help")) {
+                simplePrompt = false;
+                return this;
             } else if (realInput[0].equalsIgnoreCase("cancel")) {
                 animation.stop();
                 Animations.reloadAnimation(name);
@@ -138,6 +146,7 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
                         case SUCCESS:
                             message = MessageUtil.formatInfoMessage(Messages.MSG_ANIMATION_SAVED);
                             isEdit = true;
+                            simplePrompt = false;
                             cc.setSessionData("animation", anim);
                             break;
                         case INTERNAL_ERROR:
@@ -160,8 +169,10 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
     public String getPromptText(ConversationContext cc) {
         String name = (String) cc.getSessionData("name");
         Animation animation = (Animation) cc.getSessionData("animation");
-        if (isEdit) {
+        if (isEdit && !simplePrompt) {
             return MessageUtil.formatPromptMessage(Messages.MSG_ANIMATION_EDIT_INFO, name, animation.getFrameCount(), animation.getInterval(), formatAnswers(EDIT_COMMANDS));
+        } else if (isEdit && simplePrompt) {
+            return MessageUtil.formatPromptMessage(Messages.MSG_ANIMATION_EDIT_INFO_SIMPLE, name, animation.getFrameCount(), animation.getInterval());
         } else {
             return MessageUtil.formatPromptMessage(Messages.MSG_CREATE_ANIMATION, name, Animations.getWandMaterial().toString());
         }
