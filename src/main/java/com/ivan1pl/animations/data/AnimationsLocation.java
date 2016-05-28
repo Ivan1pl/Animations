@@ -77,4 +77,10 @@ public class AnimationsLocation implements Serializable {
         return loc == null ? null : new AnimationsLocation(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ());
     }
     
+    public void add(double x, double y, double z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
+    }
+    
 }

@@ -41,5 +41,11 @@
             <scope>compile</scope>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

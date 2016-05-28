@@ -16,39 +16,29 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Animations.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.ivan1pl.animations.data;
+package com.ivan1pl.animations.constants;
 
-import com.ivan1pl.animations.tasks.AnimationTask;
-import java.io.Serializable;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  *
  * @author Ivan1pl
  */
-public abstract class Animation implements Serializable {
+public enum AnimationType {
+    TYPE_MOVING("moving"),
+    TYPE_STATIONARY("stationary");
     
     @Getter
-    @Setter
-    private int interval = 1;
+    private final String name;
     
-    public abstract boolean showFrame(int index);
-    
-    public void play() {
-        AnimationTask task = new AnimationTask(this);
-        Animations.registerTask(task);
-        task.start();
+    AnimationType(String name) {
+        this.name = name;
     }
     
-    public abstract int getFrameCount();
-    
-    public void stop() {
-        AnimationTask task = Animations.retrieveTask(this);
-        if (task != null) {
-            task.stop();
-            Animations.deleteTask(task);
+    public static AnimationType fromString(String value) {
+        if ("m".equalsIgnoreCase(value) || "moving".equalsIgnoreCase(value)) {
+            return TYPE_MOVING;
         }
+        return TYPE_STATIONARY;
     }
-    
 }

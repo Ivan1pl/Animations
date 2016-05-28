@@ -62,4 +62,48 @@ public class Selection implements Serializable {
         return dx*dy*dz;
     }
     
+    public void expand(int dx, int dy, int dz) {
+        if (dx < 0) {
+            if (point1.getBlockX() < point2.getBlockX()) {
+                point1.add(-dx, 0, 0);
+            } else {
+                point2.add(-dx, 0, 0);
+            }
+        } else {
+            if (point1.getBlockX() < point2.getBlockX()) {
+                point2.add(dx, 0, 0);
+            } else {
+                point1.add(dx, 0, 0);
+            }
+        }
+        
+        if (dy < 0) {
+            if (point1.getBlockY() < point2.getBlockY()) {
+                point1.add(0, -dy, 0);
+            } else {
+                point2.add(0, -dy, 0);
+            }
+        } else {
+            if (point1.getBlockY() < point2.getBlockY()) {
+                point2.add(0, dy, 0);
+            } else {
+                point1.add(0, dy, 0);
+            }
+        }
+        
+        if (dz < 0) {
+            if (point1.getBlockZ() < point2.getBlockZ()) {
+                point1.add(0, 0, -dz);
+            } else {
+                point2.add(0, 0, -dz);
+            }
+        } else {
+            if (point1.getBlockZ() < point2.getBlockZ()) {
+                point2.add(0, 0, dz);
+            } else {
+                point1.add(0, 0, dz);
+            }
+        }
+    }
+    
 }
