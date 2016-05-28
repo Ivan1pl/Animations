@@ -18,19 +18,37 @@
  */
 package com.ivan1pl.animations.conversations;
 
+import com.ivan1pl.animations.constants.AnimationType;
+import com.ivan1pl.animations.conversations.handlers.ConversationCommandHandler;
 import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.constants.OperationResult;
+import com.ivan1pl.animations.conversations.handlers.AddframeCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.CancelCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.HelpCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.IntervalCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.PreviewCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.PreviewframeCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.RemoveframeCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.SaveCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.SwapframesCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.TypeCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.YCommandHandler;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.data.Selection;
+import com.ivan1pl.animations.data.StationaryAnimation;
+import com.ivan1pl.animations.exceptions.AnimationTypeException;
 import com.ivan1pl.animations.exceptions.InvalidSelectionException;
 import com.ivan1pl.animations.utils.MessageUtil;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.ValidatingPrompt;
-import org.bukkit.entity.Player;
 
 /**
  *
@@ -38,30 +56,40 @@ import org.bukkit.entity.Player;
  */
 public class EditAnimationConversationPrompt extends ValidatingPrompt {
     
-    private static final List<ConversationAnswer> CREATE_COMMANDS = new ArrayList<>();
+    private final List<ConversationCommandHandler> CREATE_COMMANDS = new ArrayList<>();
     
-    private static final List<ConversationAnswer> EDIT_COMMANDS = new ArrayList<>();
+    private final List<ConversationCommandHandler> STATIONARY_EDIT_COMMANDS = new ArrayList<>();
     
+    private final List<ConversationCommandHandler> MOVING_EDIT_COMMANDS = new ArrayList<>();
+    
+    @Setter
     private boolean isEdit;
     
+    @Setter
     private boolean simplePrompt;
     
-    static {
-        CREATE_COMMANDS.add(new ConversationAnswer("y", 0));
-        CREATE_COMMANDS.add(new ConversationAnswer("cancel", 0));
+    @Getter
+    @Setter
+    private AnimationType type;
+    
+    {
+        CREATE_COMMANDS.add(new YCommandHandler(this, this, this));
+        CREATE_COMMANDS.add(new TypeCommandHandler(this, this));
+        CREATE_COMMANDS.add(new CancelCommandHandler(END_OF_CONVERSATION));
         
-        EDIT_COMMANDS.add(new ConversationAnswer("addframe", 0));
-        EDIT_COMMANDS.add(new ConversationAnswer("removeframe", 1, "frame_index"));
-        EDIT_COMMANDS.add(new ConversationAnswer("previewframe", 1, "frame_index"));
-        EDIT_COMMANDS.add(new ConversationAnswer("preview", 0));
-        EDIT_COMMANDS.add(new ConversationAnswer("swapframes", 2, "first_index", "second_index"));
-        EDIT_COMMANDS.add(new ConversationAnswer("interval", 1, "interval"));
-        EDIT_COMMANDS.add(new ConversationAnswer("help", 0));
-        EDIT_COMMANDS.add(new ConversationAnswer("cancel", 0));
-        EDIT_COMMANDS.add(new ConversationAnswer("save", 0));
+        STATIONARY_EDIT_COMMANDS.add(new AddframeCommandHandler(this));
+        STATIONARY_EDIT_COMMANDS.add(new RemoveframeCommandHandler(this, this));
+        STATIONARY_EDIT_COMMANDS.add(new PreviewframeCommandHandler(this, this));
+        STATIONARY_EDIT_COMMANDS.add(new PreviewCommandHandler(this));
+        STATIONARY_EDIT_COMMANDS.add(new SwapframesCommandHandler(this, this));
+        STATIONARY_EDIT_COMMANDS.add(new IntervalCommandHandler(this));
+        STATIONARY_EDIT_COMMANDS.add(new HelpCommandHandler(this));
+        STATIONARY_EDIT_COMMANDS.add(new CancelCommandHandler(END_OF_CONVERSATION));
+        STATIONARY_EDIT_COMMANDS.add(new SaveCommandHandler(this));
     }
     
     public EditAnimationConversationPrompt(boolean isEdit) {
+        this.type = AnimationType.TYPE_STATIONARY;
         this.isEdit = isEdit;
         this.simplePrompt = false;
     }
@@ -71,95 +99,38 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         String[] realInput = string.split("\\s+");
         String name = (String) cc.getSessionData("name");
         Animation animation = (Animation) cc.getSessionData("animation");
+        StationaryAnimation sAnimation = animation instanceof StationaryAnimation ? (StationaryAnimation) animation : null;
         simplePrompt = true;
         
-        if (isEdit) {
-            if (realInput[0].equalsIgnoreCase("addframe")) {
-                animation.stop();
-                animation.addFrame();
-                return new ConversationResponsePrompt(this, MessageUtil.formatInfoMessage(Messages.MSG_FRAME_ADDED));
-            } else if (realInput[0].equalsIgnoreCase("removeframe")) {
-                int index = Integer.parseUnsignedInt(realInput[1]);
-                animation.stop();
-                if (animation.removeFrame(index)) {
-                    return new ConversationResponsePrompt(this, MessageUtil.formatInfoMessage(Messages.MSG_FRAME_REMOVED));
-                } else {
-                    return new ConversationResponsePrompt(this, MessageUtil.formatErrorMessage(Messages.MSG_WRONG_FRAME_INDEX, new Long(0), new Long(animation.getFrameCount()-1)));
+        if (isEdit && sAnimation != null) {
+            for (ConversationCommandHandler handler : STATIONARY_EDIT_COMMANDS) {
+                if (realInput[0].equalsIgnoreCase(handler.getName())) {
+                    try {
+                        return handler.handle(cc, animation, name, realInput);
+                    } catch (AnimationTypeException ex) {
+                        Logger.getLogger(EditAnimationConversationPrompt.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-            } else if (realInput[0].equalsIgnoreCase("previewframe")) {
-                int index = Integer.parseUnsignedInt(realInput[1]);
-                animation.stop();
-                if (animation.showFrame(index)) {
-                    return this;
-                } else {
-                    return new ConversationResponsePrompt(this, MessageUtil.formatErrorMessage(Messages.MSG_WRONG_FRAME_INDEX, new Long(0), new Long(animation.getFrameCount()-1)));
+            }
+        } else if (isEdit) {
+            for (ConversationCommandHandler handler : MOVING_EDIT_COMMANDS) {
+                if (realInput[0].equalsIgnoreCase(handler.getName())) {
+                    try {
+                        return handler.handle(cc, animation, name, realInput);
+                    } catch (AnimationTypeException ex) {
+                        Logger.getLogger(EditAnimationConversationPrompt.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-            } else if (realInput[0].equalsIgnoreCase("preview")) {
-                animation.stop();
-                animation.play();
-                return this;
-            } else if (realInput[0].equalsIgnoreCase("swapframes")) {
-                int i1 = Integer.parseUnsignedInt(realInput[1]);
-                int i2 = Integer.parseUnsignedInt(realInput[2]);
-                animation.stop();
-                if (animation.swapFrames(i1, i2)) {
-                    return new ConversationResponsePrompt(this, MessageUtil.formatInfoMessage(Messages.MSG_FRAMES_SWAPPED));
-                } else {
-                    return new ConversationResponsePrompt(this, MessageUtil.formatErrorMessage(Messages.MSG_WRONG_FRAME_INDEX, new Long(0), new Long(animation.getFrameCount()-1)));
-                }
-            } else if (realInput[0].equalsIgnoreCase("interval")) {
-                int interval = Integer.parseUnsignedInt(realInput[1]);
-                animation.stop();
-                animation.setInterval(interval);
-                return new ConversationResponsePrompt(this, MessageUtil.formatInfoMessage(Messages.MSG_INTERVAL_SET, new Long(interval)));
-            } else if (realInput[0].equalsIgnoreCase("help")) {
-                simplePrompt = false;
-                return this;
-            } else if (realInput[0].equalsIgnoreCase("cancel")) {
-                animation.stop();
-                Animations.reloadAnimation(name);
-                return new ConversationResponsePrompt(END_OF_CONVERSATION, MessageUtil.formatInfoMessage(Messages.MSG_EDIT_CANCELLED));
-            } else if (realInput[0].equalsIgnoreCase("save")) {
-                animation.stop();
-                OperationResult result = Animations.saveAnimation(name);
-                String message = "";
-                switch (result) {
-                    case SUCCESS:
-                        message = MessageUtil.formatInfoMessage(Messages.MSG_ANIMATION_SAVED);
-                        break;
-                    case INTERNAL_ERROR:
-                    case NOT_FOUND:
-                        message = MessageUtil.formatErrorMessage(Messages.MSG_SAVE_FAILED, name);
-                        break;
-                }
-                return new ConversationResponsePrompt(this, message);
             }
         } else {
-            if (realInput[0].equalsIgnoreCase("y")) {
-                Selection sel = Animations.getSelection((Player) cc.getForWhom());
-                try {
-                    Animation anim = new Animation(sel);
-                    Animations.setAnimation(name, anim);
-                    OperationResult result = Animations.saveAnimation(name);
-                    String message = "";
-                    switch (result) {
-                        case SUCCESS:
-                            message = MessageUtil.formatInfoMessage(Messages.MSG_ANIMATION_SAVED);
-                            isEdit = true;
-                            simplePrompt = false;
-                            cc.setSessionData("animation", anim);
-                            break;
-                        case INTERNAL_ERROR:
-                        case NOT_FOUND:
-                            message = MessageUtil.formatErrorMessage(Messages.MSG_SAVE_FAILED, name);
-                            break;
+            for (ConversationCommandHandler handler : CREATE_COMMANDS) {
+                if (realInput[0].equalsIgnoreCase(handler.getName())) {
+                    try {
+                        return handler.handle(cc, animation, name, realInput);
+                    } catch (AnimationTypeException ex) {
+                        Logger.getLogger(EditAnimationConversationPrompt.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    return new ConversationResponsePrompt(this, message);
-                } catch (InvalidSelectionException ex) {
-                    return new ConversationResponsePrompt(this, MessageUtil.formatErrorMessage(Messages.MSG_INVALID_SELECTION));
                 }
-            } else if (realInput[0].equalsIgnoreCase("cancel")) {
-                return new ConversationResponsePrompt(END_OF_CONVERSATION, MessageUtil.formatInfoMessage(Messages.MSG_EDIT_CANCELLED));
             }
         }
         return END_OF_CONVERSATION;
@@ -169,8 +140,13 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
     public String getPromptText(ConversationContext cc) {
         String name = (String) cc.getSessionData("name");
         Animation animation = (Animation) cc.getSessionData("animation");
+        StationaryAnimation sAnimation = animation instanceof StationaryAnimation ? (StationaryAnimation) animation : null;
         if (isEdit && !simplePrompt) {
-            return MessageUtil.formatPromptMessage(Messages.MSG_ANIMATION_EDIT_INFO, name, animation.getFrameCount(), animation.getInterval(), formatAnswers(EDIT_COMMANDS));
+            if (sAnimation != null) {
+                return MessageUtil.formatPromptMessage(Messages.MSG_ANIMATION_EDIT_INFO, name, animation.getFrameCount(), animation.getInterval(), formatAnswers(STATIONARY_EDIT_COMMANDS));
+            } else {
+                return MessageUtil.formatPromptMessage(Messages.MSG_ANIMATION_EDIT_INFO, name, animation.getFrameCount(), animation.getInterval(), formatAnswers(MOVING_EDIT_COMMANDS));
+            }
         } else if (isEdit && simplePrompt) {
             return MessageUtil.formatPromptMessage(Messages.MSG_ANIMATION_EDIT_INFO_SIMPLE, name, animation.getFrameCount(), animation.getInterval());
         } else {
@@ -181,27 +157,35 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
     @Override
     protected boolean isInputValid(ConversationContext cc, String string) {
         String[] realInput = string.split("\\s+");
-        List<ConversationAnswer> cmpList;
-        if (isEdit) {
-            cmpList = EDIT_COMMANDS;
+        List<ConversationCommandHandler> cmpList;
+        Animation animation = (Animation) cc.getSessionData("animation");
+        StationaryAnimation sAnimation = animation instanceof StationaryAnimation ? (StationaryAnimation) animation : null;
+        if (isEdit && sAnimation != null) {
+            cmpList = STATIONARY_EDIT_COMMANDS;
+        } else if (isEdit && sAnimation == null) {
+            cmpList = MOVING_EDIT_COMMANDS;
         } else {
             cmpList = CREATE_COMMANDS;
         }
         
-        if (cmpList.contains(new ConversationAnswer(realInput[0].toLowerCase(), realInput.length-1))) {
-            for (int i = 1; i < realInput.length; ++i) {
-                if (!isNumeric(realInput[i])) {
-                    return false;
+        for (ConversationCommandHandler handler : cmpList) {
+            if (handler.getName().equalsIgnoreCase(realInput[0]) && handler.getParamsCount() == realInput.length-1) {
+                if (handler.isCheckParamTypes()) {
+                    for (int i = 1; i < realInput.length; ++i) {
+                        if (!isNumeric(realInput[i])) {
+                            return false;
+                        }
+                    }
                 }
+                return true;
             }
-            return true;
         }
         return false;
     }
     
-    private static String formatAnswers(List<ConversationAnswer> answers) {
+    private static String formatAnswers(List<ConversationCommandHandler> answers) {
         String ret = "";
-        for (ConversationAnswer answer : answers) {
+        for (ConversationCommandHandler answer : answers) {
             if (ret.length() > 0) {
                 ret += "\n";
             }

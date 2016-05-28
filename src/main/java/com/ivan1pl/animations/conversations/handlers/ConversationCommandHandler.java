@@ -16,35 +16,47 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Animations.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.ivan1pl.animations.conversations;
+package com.ivan1pl.animations.conversations.handlers;
 
+import com.ivan1pl.animations.data.Animation;
+import com.ivan1pl.animations.exceptions.AnimationTypeException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
+import org.bukkit.conversations.ConversationContext;
+import org.bukkit.conversations.Prompt;
 
 /**
  *
  * @author Ivan1pl
  */
-public class ConversationAnswer {
+public abstract class ConversationCommandHandler {
     
     @Getter
-    private final String answer;
+    private final String name;
     
     @Getter
     private final int paramsCount;
     
     private final List<String> paramDescriptions;
     
-    public ConversationAnswer(String answer, int paramsCount, String... paramDescriptions) {
-        this.answer = answer;
+    @Getter
+    private final boolean checkParamTypes;
+    
+    public ConversationCommandHandler(String name, int paramsCount, String... paramDescriptions) {
+        this(name, paramsCount, true, paramDescriptions);
+    }
+    
+    public ConversationCommandHandler(String name, int paramsCount, boolean checkParamTypes, String... paramDescriptions) {
+        this.name = name;
         this.paramsCount = paramsCount;
         this.paramDescriptions = Arrays.asList(paramDescriptions);
+        this.checkParamTypes = checkParamTypes;
     }
     
     public String format() {
-        String ret = answer;
+        String ret = name;
         for (String param : paramDescriptions) {
             ret += " <" + param + ">";
         }
@@ -54,7 +66,7 @@ public class ConversationAnswer {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.answer);
+        hash = 53 * hash + Objects.hashCode(this.name);
         hash = 53 * hash + this.paramsCount;
         return hash;
     }
@@ -70,14 +82,13 @@ public class ConversationAnswer {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ConversationAnswer other = (ConversationAnswer) obj;
+        final ConversationCommandHandler other = (ConversationCommandHandler) obj;
         if (this.paramsCount != other.paramsCount) {
             return false;
         }
-        if (!Objects.equals(this.answer, other.answer)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.name, other.name);
     }
+    
+    public abstract Prompt handle(ConversationContext cc, Animation animation, String animationName, String[] params) throws AnimationTypeException;
     
 }

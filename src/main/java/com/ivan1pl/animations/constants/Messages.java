@@ -38,7 +38,7 @@ public class Messages {
     
     public static final String MSG_EXPECTED_MORE_ARGS = "Expected at least {0} arguments for this command.";
     
-    public static final String MSG_CREATE_ANIMATION = "Creating {0}. Select area using {1} and confirm by typing ''y'' or exit with ''cancel'";
+    public static final String MSG_CREATE_ANIMATION = "Creating {0}. Select area using {1} and set type with ''type m'' (moving animation) or ''type s'' (default - stationary animation).\nConfirm by typing ''y'' or exit with ''cancel'";
     
     public static final String MSG_ANIMATION_CREATED = "Animation {0} created.";
     
@@ -67,6 +67,12 @@ public class Messages {
     public static final String MSG_DELETE_FAILED = "Failed to delete animation: {0}.";
     
     public static final String MSG_DISPLAYING_PAGE = "Displaying page {0}/{1}.";
+    
+    public static final String MSG_DISPLAYING_FRAME = "Displaying frame {0}.";
+    
+    public static final String MSG_PLAYING_PREVIEW = "Playing animation preview.";
+    
+    public static final String MSG_TYPE_SET = "Animation type set to {0}.";
     
     public static final String MSG_ITEM = " - {0}";
     
