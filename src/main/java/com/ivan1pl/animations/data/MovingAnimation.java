@@ -51,15 +51,7 @@ public class MovingAnimation extends Animation implements Serializable {
     
     @Getter
     @Setter
-    private int maxDistanceX;
-    
-    @Getter
-    @Setter
-    private int maxDistanceY;
-    
-    @Getter
-    @Setter
-    private int maxDistanceZ;
+    private int maxDistance;
     
     public MovingAnimation(Selection selection) throws InvalidSelectionException {
         if (!Selection.isValid(selection)) {
@@ -88,25 +80,7 @@ public class MovingAnimation extends Animation implements Serializable {
 
     @Override
     public int getFrameCount() {
-        int count = 0;
-        if (stepX > 0 && maxDistanceX > 0) {
-            count = maxDistanceX/stepX;
-        }
-        if (stepY > 0 && maxDistanceY > 0) {
-            if (count == 0) {
-                count = maxDistanceY/stepY;
-            } else {
-                count = Math.min(maxDistanceY/stepY, count);
-            }
-        }
-        if (stepZ > 0 && maxDistanceZ > 0) {
-            if (count == 0) {
-                count = maxDistanceZ/stepZ;
-            } else {
-                count = Math.min(maxDistanceZ/stepZ, count);
-            }
-        }
-        return count;
+        return maxDistance;
     }
     
 }

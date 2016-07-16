@@ -26,15 +26,18 @@ import com.ivan1pl.animations.conversations.handlers.AddframeCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.CancelCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.HelpCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.IntervalCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.MaxDistanceCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.PreviewCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.PreviewframeCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.RemoveframeCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.SaveCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.StepCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.SwapframesCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.TypeCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.YCommandHandler;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
+import com.ivan1pl.animations.data.MovingAnimation;
 import com.ivan1pl.animations.data.Selection;
 import com.ivan1pl.animations.data.StationaryAnimation;
 import com.ivan1pl.animations.exceptions.AnimationTypeException;
@@ -86,6 +89,14 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         STATIONARY_EDIT_COMMANDS.add(new HelpCommandHandler(this));
         STATIONARY_EDIT_COMMANDS.add(new CancelCommandHandler(END_OF_CONVERSATION));
         STATIONARY_EDIT_COMMANDS.add(new SaveCommandHandler(this));
+        
+        MOVING_EDIT_COMMANDS.add(new StepCommandHandler(this, this));
+        MOVING_EDIT_COMMANDS.add(new MaxDistanceCommandHandler(this, this));
+        MOVING_EDIT_COMMANDS.add(new PreviewCommandHandler(this));
+        MOVING_EDIT_COMMANDS.add(new IntervalCommandHandler(this));
+        MOVING_EDIT_COMMANDS.add(new HelpCommandHandler(this));
+        MOVING_EDIT_COMMANDS.add(new CancelCommandHandler(END_OF_CONVERSATION));
+        MOVING_EDIT_COMMANDS.add(new SaveCommandHandler(this));
     }
     
     public EditAnimationConversationPrompt(boolean isEdit) {
@@ -141,14 +152,23 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         String name = (String) cc.getSessionData("name");
         Animation animation = (Animation) cc.getSessionData("animation");
         StationaryAnimation sAnimation = animation instanceof StationaryAnimation ? (StationaryAnimation) animation : null;
+        MovingAnimation mAnimation = animation instanceof MovingAnimation ? (MovingAnimation) animation : null;
         if (isEdit && !simplePrompt) {
             if (sAnimation != null) {
-                return MessageUtil.formatPromptMessage(Messages.MSG_ANIMATION_EDIT_INFO, name, animation.getFrameCount(), animation.getInterval(), formatAnswers(STATIONARY_EDIT_COMMANDS));
+                return MessageUtil.formatPromptMessage(Messages.MSG_STATIONARY_ANIMATION_EDIT_INFO, name, animation.getFrameCount(), animation.getInterval(), formatAnswers(STATIONARY_EDIT_COMMANDS));
+            } else if (mAnimation != null) {
+                return MessageUtil.formatPromptMessage(Messages.MSG_MOVING_ANIMATION_EDIT_INFO, name, mAnimation.getStepX(), mAnimation.getStepY(), mAnimation.getStepZ(), mAnimation.getMaxDistance(), animation.getInterval(), formatAnswers(MOVING_EDIT_COMMANDS));
             } else {
-                return MessageUtil.formatPromptMessage(Messages.MSG_ANIMATION_EDIT_INFO, name, animation.getFrameCount(), animation.getInterval(), formatAnswers(MOVING_EDIT_COMMANDS));
+                return MessageUtil.formatErrorMessage(Messages.MSG_INVALID_ANIMATION_TYPE, name);
             }
         } else if (isEdit && simplePrompt) {
-            return MessageUtil.formatPromptMessage(Messages.MSG_ANIMATION_EDIT_INFO_SIMPLE, name, animation.getFrameCount(), animation.getInterval());
+            if (sAnimation != null) {
+                return MessageUtil.formatPromptMessage(Messages.MSG_STATIONARY_ANIMATION_EDIT_INFO_SIMPLE, name, animation.getFrameCount(), animation.getInterval());
+            } else if (mAnimation != null) {
+                return MessageUtil.formatPromptMessage(Messages.MSG_MOVING_ANIMATION_EDIT_INFO_SIMPLE, name, mAnimation.getStepX(), mAnimation.getStepY(), mAnimation.getStepZ(), mAnimation.getMaxDistance(), animation.getInterval());
+            } else {
+                return MessageUtil.formatErrorMessage(Messages.MSG_INVALID_ANIMATION_TYPE, name);
+            }
         } else {
             return MessageUtil.formatPromptMessage(Messages.MSG_CREATE_ANIMATION, name, Animations.getWandMaterial().toString());
         }

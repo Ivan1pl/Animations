@@ -30,9 +30,13 @@ public class Messages {
     
     public static final String MSG_ANIMATION_NOT_FOUND = "Could not find animation with name: {0}.";
     
-    public static final String MSG_ANIMATION_EDIT_INFO = "Editing {0}, {1} frames, interval = {2}. Available operations:\n{3}";
+    public static final String MSG_STATIONARY_ANIMATION_EDIT_INFO = "Editing {0}, {1} frames, interval = {2}. Available operations:\n{3}";
     
-    public static final String MSG_ANIMATION_EDIT_INFO_SIMPLE = "Editing {0}, {1} frames, interval = {2}. For list of available operations, type ''help''.";
+    public static final String MSG_MOVING_ANIMATION_EDIT_INFO = "Editing {0}, step: ({1}, {2}, {3}), maximum distance: {4}, interval = {5}. Available operations:\n{6}";
+    
+    public static final String MSG_STATIONARY_ANIMATION_EDIT_INFO_SIMPLE = "Editing {0}, {1} frames, interval = {2}. For list of available operations, type ''help''.";
+    
+    public static final String MSG_MOVING_ANIMATION_EDIT_INFO_SIMPLE = "Editing {0}, step: ({1}, {2}, {3}), maximum distance: {4}, interval = {5}. For list of available operations, type ''help''.";
     
     public static final String MSG_NOT_PERMITTED = "You don't have permission to run this command.";
     
@@ -73,6 +77,16 @@ public class Messages {
     public static final String MSG_PLAYING_PREVIEW = "Playing animation preview.";
     
     public static final String MSG_TYPE_SET = "Animation type set to {0}.";
+    
+    public static final String MSG_INVALID_STEP = "Failed to set step to ({0}, {1}, {2}) - step distance must not be 0.";
+    
+    public static final String MSG_STEP_SET = "Step set to ({0}, {1}, {2}).";
+    
+    public static final String MSG_INVALID_MAX_DISTANCE = "Failed to set maximum distance to {0} - maximum distance must not be 0.";
+    
+    public static final String MSG_MAX_DISTANCE_SET = "Maximum distance set to {0}.";
+    
+    public static final String MSG_INVALID_ANIMATION_TYPE = "Invalid animation type for animation: {0}";
     
     public static final String MSG_ITEM = " - {0}";
     
