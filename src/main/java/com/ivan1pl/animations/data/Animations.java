@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -65,6 +66,8 @@ public class Animations {
     
     private static final int PAGE_SIZE = 10;
     
+    private static boolean debugMode = false;
+    
     static {
         if (!PLUGIN_DIR.exists()) {
             PLUGIN_DIR.mkdirs();
@@ -74,6 +77,8 @@ public class Animations {
     private Animations() { }
     
     public static void reload() {
+        debugMode = AnimationsPlugin.getPluginInstance().getConfig().getBoolean("debug.enabled");
+        
         FilenameFilter aFilter = new FilenameFilter() {
 
             @Override
@@ -239,6 +244,16 @@ public class Animations {
             to = list.size();
         }
         return list.subList(from, to);
+    }
+    
+    public static void debug(String message) {
+        if (debugMode) {
+            Logger.getLogger("DEBUG").log(Level.INFO, "[DEBUG] " + message);
+        }
+    }
+    
+    public static void debug(String message, Object... parameters) {
+        debug(MessageFormat.format(message, parameters));
     }
     
 }

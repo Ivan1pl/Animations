@@ -102,4 +102,6 @@ public class Messages {
     
     public static final String INFO_INVALID_MATERIAL = "Invalid material name: {0}. Using default ({1}).";
     
+    public static final String DEBUG_COMMAND_EXECUTED = "''{0}'' is handling command executed by ''{1}''.";
+    
 }

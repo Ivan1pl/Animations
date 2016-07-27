@@ -19,6 +19,7 @@
 package com.ivan1pl.animations.commands;
 
 import com.ivan1pl.animations.constants.Messages;
+import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.utils.MessageUtil;
 import lombok.Getter;
 import org.bukkit.command.CommandSender;
@@ -48,6 +49,7 @@ public abstract class AnimationsCommand {
     }
     
     public final void handle(CommandSender cs, String... args) {
+        Animations.debug(Messages.DEBUG_COMMAND_EXECUTED, this.getClass().getName(), cs.getName());
         Player p = null;
         if(cs instanceof Player) {
             p = (Player) cs;

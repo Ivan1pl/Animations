@@ -4,3 +4,9 @@
 
 ## Wand material
 wand: BLAZE_POWDER
+
+## Debugging options
+debug:
+    # Set to true to enable debug mode (additional informations will appear in
+    # server log.
+    enabled: false
