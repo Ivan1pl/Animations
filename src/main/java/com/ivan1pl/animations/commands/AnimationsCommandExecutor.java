@@ -36,6 +36,7 @@ public class AnimationsCommandExecutor implements CommandExecutor {
         addCommandMapping("anim", new AnimCommand());
         addCommandMapping("aplay", new AplayCommand());
         addCommandMapping("alist", new AlistCommand());
+        addCommandMapping("adelete", new AdeleteCommand());
     }
 
     @Override
