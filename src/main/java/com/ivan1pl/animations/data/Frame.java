@@ -91,6 +91,12 @@ public class Frame implements Serializable {
         }
     }
     
+    public boolean isInside(Location location, int offsetX, int offsetY, int offsetZ) {
+        return (location.getBlockX() >= x + offsetX && location.getBlockX() < x + sizeX + offsetX &&
+                location.getBlockY() >= y + offsetY && location.getBlockY() <= y + sizeY + offsetY &&
+                location.getBlockZ() >= z + offsetZ && location.getBlockZ() < z + sizeZ + offsetZ);
+    }
+    
     public static Frame fromSelection(Selection s) {
         if (Selection.isValid(s)) {
             Frame f = new Frame();

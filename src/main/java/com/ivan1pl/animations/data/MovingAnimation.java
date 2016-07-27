@@ -18,11 +18,14 @@
  */
 package com.ivan1pl.animations.data;
 
+import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.exceptions.InvalidSelectionException;
 import java.io.Serializable;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.SerializationUtils;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -81,6 +84,17 @@ public class MovingAnimation extends Animation implements Serializable {
     @Override
     public int getFrameCount() {
         return maxDistance;
+    }
+    
+    public void movePlayers(int index) {
+        List<Player> allPlayers = selection.getPoint1().getWorld().getPlayers();
+        for (Player player : allPlayers) {
+            Animations.debug(Messages.DEBUG_MOVING_ANIMATION_CHECKING_PLAYER, this.getClass().getName(), player.getName());
+            if (frame.isInside(player.getLocation(), stepX * index, stepY * index, stepZ * index) && player.isOnGround()) {
+                Animations.debug(Messages.DEBUG_MOVING_PLAYER, this.getClass().getName(), player.getName());
+                player.teleport(player.getLocation().add(stepX, stepY, stepZ));
+            }
+        }
     }
     
 }

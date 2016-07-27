@@ -21,6 +21,7 @@ package com.ivan1pl.animations.tasks;
 import com.ivan1pl.animations.AnimationsPlugin;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
+import com.ivan1pl.animations.data.MovingAnimation;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -48,6 +49,9 @@ public class AnimationTask extends BukkitRunnable {
     public void run() {
         animation.showFrame(stage);
         stage++;
+        if (stage > 1 && animation instanceof MovingAnimation) {
+            ((MovingAnimation) animation).movePlayers(stage-1);
+        }
         if (stage >= animation.getFrameCount()) {
             Animations.deleteTask(this);
             this.cancel();

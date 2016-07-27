@@ -104,4 +104,8 @@ public class Messages {
     
     public static final String DEBUG_COMMAND_EXECUTED = "''{0}'' is handling command executed by ''{1}''.";
     
+    public static final String DEBUG_MOVING_ANIMATION_CHECKING_PLAYER = "''{0}'': checking player: ''{1}''.";
+    
+    public static final String DEBUG_MOVING_PLAYER = "''{0}'': found player to move: ''{1}''. Moving.";
+    
 }
