@@ -46,7 +46,7 @@ public class TypeCommandHandler extends ConversationCommandHandler {
 
     @Override
     public Prompt handle(ConversationContext cc, Animation animation, String animationName, String[] params) throws AnimationTypeException {
-        AnimationType type = AnimationType.fromString(params[0]);
+        AnimationType type = AnimationType.fromString(params[1]);
         affectedPrompt.setType(type);
         return new ConversationResponsePrompt(successPrompt, MessageUtil.formatInfoMessage(Messages.MSG_TYPE_SET, type.getName()));
     }
