@@ -84,6 +84,12 @@ public class Messages {
     
     public static final String MSG_INVALID_MAX_DISTANCE = "Failed to set maximum distance to {0} - maximum distance must not be 0.";
     
+    public static final String MSG_BACKGROUND_UPDATED = "Background updated.";
+    
+    public static final String MSG_INVALID_BACKGROUND_NEEDS_MAX_DISTANCE = "Failed to update background - maximum distance must not be 0.";
+    
+    public static final String MSG_INVALID_BACKGROUND_NEEDS_STEP = "Failed to update background - step distance must not be 0.";
+    
     public static final String MSG_MAX_DISTANCE_SET = "Maximum distance set to {0}.";
     
     public static final String MSG_INVALID_ANIMATION_TYPE = "Invalid animation type for animation: {0}";

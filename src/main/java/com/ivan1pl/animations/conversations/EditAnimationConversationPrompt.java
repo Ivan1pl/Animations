@@ -34,6 +34,7 @@ import com.ivan1pl.animations.conversations.handlers.SaveCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.StepCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.SwapframesCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.TypeCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.UpdateBackgroundCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.YCommandHandler;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
@@ -43,6 +44,7 @@ import com.ivan1pl.animations.data.StationaryAnimation;
 import com.ivan1pl.animations.exceptions.AnimationTypeException;
 import com.ivan1pl.animations.exceptions.InvalidSelectionException;
 import com.ivan1pl.animations.utils.MessageUtil;
+import com.ivan1pl.animations.utils.StringUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -94,6 +96,7 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         MOVING_EDIT_COMMANDS.add(new MaxDistanceCommandHandler(this, this));
         MOVING_EDIT_COMMANDS.add(new PreviewCommandHandler(this));
         MOVING_EDIT_COMMANDS.add(new IntervalCommandHandler(this));
+        MOVING_EDIT_COMMANDS.add(new UpdateBackgroundCommandHandler(this, this));
         MOVING_EDIT_COMMANDS.add(new HelpCommandHandler(this));
         MOVING_EDIT_COMMANDS.add(new CancelCommandHandler(END_OF_CONVERSATION));
         MOVING_EDIT_COMMANDS.add(new SaveCommandHandler(this));
@@ -192,7 +195,7 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
             if (handler.getName().equalsIgnoreCase(realInput[0]) && handler.getParamsCount() == realInput.length-1) {
                 if (handler.isCheckParamTypes()) {
                     for (int i = 1; i < realInput.length; ++i) {
-                        if (!isNumeric(realInput[i])) {
+                        if (!StringUtil.isInteger(realInput[i])) {
                             return false;
                         }
                     }
@@ -212,19 +215,6 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
             ret += MessageUtil.formatPromptMessage(Messages.MSG_ITEM, answer.format());
         }
         return ret;
-    }
-    
-    private static boolean isNumeric(String str) {
-        if (str == null) {
-            return false;
-        }
-        int sz = str.length();
-        for (int i = 0; i < sz; i++) {
-            if (Character.isDigit(str.charAt(i)) == false) {
-                return false;
-            }
-        }
-        return true;
     }
     
 }
