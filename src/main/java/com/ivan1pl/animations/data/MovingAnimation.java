@@ -96,5 +96,17 @@ public class MovingAnimation extends Animation implements Serializable {
             }
         }
     }
+
+    @Override
+    public boolean isPlayerInRange(Player player) {
+        //TODO implement this
+        return false;
+    }
+
+    @Override
+    public boolean isAnyPlayerInRange() {
+        //TODO implement this
+        return false;
+    }
     
 }

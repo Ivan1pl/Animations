@@ -224,6 +224,7 @@ public class Animations {
     }
     
     public static void deleteTask(AnimationTask task) {
+        //TODO notify animation trigger that animation stopped playing.
         runningTasks.remove(task);
     }
     

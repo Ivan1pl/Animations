@@ -37,8 +37,16 @@ public class AnimationTask extends BukkitRunnable {
     
     private int stage = 0;
     
+    @Getter
+    private final boolean reverse;
+    
     public AnimationTask(Animation animation) {
+        this(animation, false);
+    }
+    
+    public AnimationTask(Animation animation, boolean reverse) {
         this.animation = animation;
+        this.reverse = reverse;
     }
     
     public void start() {
@@ -47,14 +55,26 @@ public class AnimationTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        animation.showFrame(stage);
-        stage++;
-        if (stage > 1 && animation instanceof MovingAnimation) {
-            ((MovingAnimation) animation).movePlayers(stage-1);
-        }
-        if (stage >= animation.getFrameCount()) {
-            Animations.deleteTask(this);
-            this.cancel();
+        if (reverse) {
+            animation.showFrame(animation.getFrameCount()-stage-1);
+            stage++;
+            if (stage > 1 && animation instanceof MovingAnimation) {
+                ((MovingAnimation) animation).movePlayers(animation.getFrameCount()-stage);
+            }
+            if (stage >= animation.getFrameCount()) {
+                Animations.deleteTask(this);
+                this.cancel();
+            }
+        } else {
+            animation.showFrame(stage);
+            stage++;
+            if (stage > 1 && animation instanceof MovingAnimation) {
+                ((MovingAnimation) animation).movePlayers(stage-1);
+            }
+            if (stage >= animation.getFrameCount()) {
+                Animations.deleteTask(this);
+                this.cancel();
+            }
         }
     }
     

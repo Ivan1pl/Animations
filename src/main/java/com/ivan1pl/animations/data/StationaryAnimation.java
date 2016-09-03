@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import org.bukkit.entity.Player;
 
 /**
  *
@@ -83,6 +84,18 @@ public class StationaryAnimation extends Animation implements Serializable {
         frames.set(i1, f2);
         frames.set(i2, f1);
         return true;
+    }
+    
+    @Override
+    public boolean isPlayerInRange(Player player) {
+        //TODO implement this
+        return false;
+    }
+
+    @Override
+    public boolean isAnyPlayerInRange() {
+        //TODO implement this
+        return false;
     }
     
 }

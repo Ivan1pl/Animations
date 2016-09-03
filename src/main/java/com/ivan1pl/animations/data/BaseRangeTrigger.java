@@ -18,8 +18,6 @@
  */
 package com.ivan1pl.animations.data;
 
-import com.ivan1pl.animations.tasks.AnimationTask;
-import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
@@ -28,38 +26,26 @@ import org.bukkit.entity.Player;
  *
  * @author Ivan1pl
  */
-public abstract class Animation implements Serializable {
+public abstract class BaseRangeTrigger implements Trigger {
     
     @Getter
     @Setter
-    private int interval = 1;
+    private int range;
     
-    public abstract boolean showFrame(int index);
+    @Getter
+    @Setter
+    private boolean started;
     
-    public void play() {
-        AnimationTask task = new AnimationTask(this);
-        Animations.registerTask(task);
-        task.start();
+    @Getter
+    @Setter
+    private boolean finished;
+    
+    protected final boolean isPlayerInRange(Player player, Animation animation) {
+        return animation.isPlayerInRange(player);
     }
     
-    public void playReverse() {
-        AnimationTask task = new AnimationTask(this, true);
-        Animations.registerTask(task);
-        task.start();
+    protected final  boolean isAnyPlayerInRange(Animation animation) {
+        return animation.isAnyPlayerInRange();
     }
-    
-    public abstract int getFrameCount();
-    
-    public void stop() {
-        AnimationTask task = Animations.retrieveTask(this);
-        if (task != null) {
-            task.stop();
-            Animations.deleteTask(task);
-        }
-    }
-    
-    public abstract boolean isPlayerInRange(Player player);
-    
-    public abstract boolean isAnyPlayerInRange();
     
 }
