@@ -19,6 +19,7 @@
 package com.ivan1pl.animations.data;
 
 import com.ivan1pl.animations.tasks.AnimationTask;
+import com.ivan1pl.animations.triggers.TriggerBuilderData;
 import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +35,10 @@ public abstract class Animation implements Serializable {
     @Getter
     @Setter
     private int interval = 1;
+    
+    @Getter
+    @Setter
+    private TriggerBuilderData triggerBuilderData;
     
     public abstract boolean showFrame(int index);
     
