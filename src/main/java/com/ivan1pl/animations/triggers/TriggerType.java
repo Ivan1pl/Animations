@@ -24,5 +24,13 @@ package com.ivan1pl.animations.triggers;
  */
 public enum TriggerType {
     RANGE,
-    LOOP
+    LOOP;
+    
+    public TriggerType fromString(String type) {
+        if ("l".equalsIgnoreCase(type) || "loop".equalsIgnoreCase(type)) {
+            return LOOP;
+        } else {
+            return RANGE;
+        }
+    }
 }

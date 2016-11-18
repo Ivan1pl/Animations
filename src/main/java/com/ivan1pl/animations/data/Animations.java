@@ -22,6 +22,8 @@ import com.ivan1pl.animations.AnimationsPlugin;
 import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.constants.OperationResult;
 import com.ivan1pl.animations.tasks.AnimationTask;
+import com.ivan1pl.animations.triggers.Trigger;
+import com.ivan1pl.animations.triggers.TriggerBuilder;
 import com.ivan1pl.animations.utils.MessageUtil;
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,6 +55,8 @@ import org.bukkit.entity.Player;
 public class Animations {
     
     private static final Map<String, Animation> animations = new HashMap<>();
+    
+    private static final Map<Animation, Trigger> triggers = new HashMap<>();
     
     private static final Map<UUID, Selection> selections = new HashMap<>();
     
@@ -97,6 +101,10 @@ public class Animations {
         }
         
         animations.clear();
+        for (Trigger t : triggers.values()) {
+            t.unregister();
+        }
+        triggers.clear();
         
         for (File f : PLUGIN_DIR.listFiles(aFilter)) {
             String name = f.getName();
@@ -161,6 +169,14 @@ public class Animations {
         File f = new File(PLUGIN_DIR, name + ".anim");
         boolean retval = f.delete();
         if (retval) {
+            Animation animation = animations.get(name);
+            if (animation != null) {
+                Trigger t = triggers.get(animation);
+                if (t != null) {
+                    t.unregister();
+                }
+                triggers.remove(animation);
+            }
             animations.remove(name);
         }
         return retval;
@@ -191,7 +207,23 @@ public class Animations {
 
             Animation animation = (Animation) ostream.readObject();
             if (animation != null) {
+                Animation oldAnimation = animations.get(name);
+                if (oldAnimation != null) {
+                    Trigger t = triggers.get(oldAnimation);
+                    if (t != null) {
+                        t.unregister();
+                    }
+                    triggers.remove(oldAnimation);
+                }
                 animations.put(name, animation);
+                if (animation.getTriggerBuilderData() != null) {
+                    Trigger t = new TriggerBuilder(animation)
+                                    .setTriggerType(animation.getTriggerBuilderData().getType())
+                                    .setRange(animation.getTriggerBuilderData().getRange())
+                                    .create();
+                    t.register();
+                    triggers.put(animation, t);
+                }
                 AnimationsPlugin.getPluginInstance().getLogger().info(Messages.INFO_ANIMATION_LOADED + name);
             }
         } catch (IOException | ClassNotFoundException ex) {
@@ -224,7 +256,6 @@ public class Animations {
     }
     
     public static void deleteTask(AnimationTask task) {
-        //TODO notify animation trigger that animation stopped playing.
         runningTasks.remove(task);
     }
     
