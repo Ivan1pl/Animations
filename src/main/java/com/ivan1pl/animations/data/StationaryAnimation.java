@@ -87,15 +87,9 @@ public class StationaryAnimation extends Animation implements Serializable {
     }
     
     @Override
-    public boolean isPlayerInRange(Player player) {
-        //TODO implement this
-        return false;
-    }
-
-    @Override
-    public boolean isAnyPlayerInRange() {
-        //TODO implement this
-        return false;
+    public boolean isPlayerInRange(Player player, int range) {
+        return player.getWorld().equals(selection.getPoint1().getWorld()) ?
+                selection.getDistance(player.getLocation()) <= range : false;
     }
     
 }

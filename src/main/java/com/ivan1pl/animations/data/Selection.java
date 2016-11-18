@@ -106,4 +106,18 @@ public class Selection implements Serializable {
         }
     }
     
+    public double getDistance(Location l) {
+        double maxX = Math.max(point1.getX(), point2.getX());
+        double minX = Math.min(point1.getX(), point2.getX());
+        double maxY = Math.max(point1.getY(), point2.getY());
+        double minY = Math.min(point1.getY(), point2.getY());
+        double maxZ = Math.max(point1.getZ(), point2.getZ());
+        double minZ = Math.min(point1.getZ(), point2.getZ());
+        double dx = Math.max(Math.max(minX - l.getX(), l.getX() - maxX), 0);
+        double dy = Math.max(Math.max(minY - l.getY(), l.getY() - maxY), 0);
+        double dz = Math.max(Math.max(minZ - l.getZ(), l.getZ() - maxZ), 0);
+        double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        return dist;
+    }
+    
 }

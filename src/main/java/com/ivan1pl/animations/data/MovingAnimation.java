@@ -98,15 +98,10 @@ public class MovingAnimation extends Animation implements Serializable {
     }
 
     @Override
-    public boolean isPlayerInRange(Player player) {
-        //TODO implement this
-        return false;
-    }
-
-    @Override
-    public boolean isAnyPlayerInRange() {
-        //TODO implement this
-        return false;
+    public boolean isPlayerInRange(Player player, int range) {
+        Selection s = background.toSelection();
+        return player.getWorld().equals(s.getPoint1().getWorld()) ?
+                s.getDistance(player.getLocation()) <= range : false;
     }
     
 }

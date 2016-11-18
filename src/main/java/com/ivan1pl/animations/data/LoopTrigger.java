@@ -18,17 +18,36 @@
  */
 package com.ivan1pl.animations.data;
 
+import com.ivan1pl.animations.events.Event;
+import com.ivan1pl.animations.events.EventListener;
+
 /**
  *
  * @author Ivan1pl
  */
 public class LoopTrigger extends BaseRangeTrigger {
+    
+    public LoopTrigger(Animation animation) {
+        super(animation);
+    }
 
     @Override
-    public void execute(Animation animation) {
-        if (isAnyPlayerInRange(animation) && !isStarted()) {
-            animation.play();
+    public void execute() {
+        if (isAnyPlayerInRange() && !isStarted()) {
+            setStarted(true);
+            getAnimation().play().attachListener(new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    setStarted(false);
+                    execute();
+                }
+            });
         }
+    }
+
+    @Override
+    protected void onPlayerEntered() {
+        execute();
     }
     
 }

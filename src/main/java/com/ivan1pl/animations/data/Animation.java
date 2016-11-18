@@ -22,6 +22,7 @@ import com.ivan1pl.animations.tasks.AnimationTask;
 import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -36,16 +37,18 @@ public abstract class Animation implements Serializable {
     
     public abstract boolean showFrame(int index);
     
-    public void play() {
+    public AnimationTask play() {
         AnimationTask task = new AnimationTask(this);
         Animations.registerTask(task);
         task.start();
+        return task;
     }
     
-    public void playReverse() {
+    public AnimationTask playReverse() {
         AnimationTask task = new AnimationTask(this, true);
         Animations.registerTask(task);
         task.start();
+        return task;
     }
     
     public abstract int getFrameCount();
@@ -58,8 +61,15 @@ public abstract class Animation implements Serializable {
         }
     }
     
-    public abstract boolean isPlayerInRange(Player player);
+    public abstract boolean isPlayerInRange(Player player, int range);
     
-    public abstract boolean isAnyPlayerInRange();
+    public boolean isAnyPlayerInRange(int range) {
+        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+            if (isPlayerInRange(p, range)) {
+                return true;
+            }
+        }
+        return false;
+    }
     
 }

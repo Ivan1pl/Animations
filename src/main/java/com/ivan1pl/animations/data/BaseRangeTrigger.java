@@ -18,15 +18,25 @@
  */
 package com.ivan1pl.animations.data;
 
+import com.ivan1pl.animations.AnimationsPlugin;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
  *
  * @author Ivan1pl
  */
-public abstract class BaseRangeTrigger implements Trigger {
+public abstract class BaseRangeTrigger implements Trigger, Listener {
     
     @Getter
     @Setter
@@ -40,12 +50,74 @@ public abstract class BaseRangeTrigger implements Trigger {
     @Setter
     private boolean finished;
     
-    protected final boolean isPlayerInRange(Player player, Animation animation) {
-        return animation.isPlayerInRange(player);
+    @Getter
+    private final Animation animation;
+    
+    private final Set<Player> playersInRange = new HashSet<>();
+    
+    public BaseRangeTrigger(Animation animation) {
+        this.animation = animation;
     }
     
-    protected final  boolean isAnyPlayerInRange(Animation animation) {
-        return animation.isAnyPlayerInRange();
+    protected final boolean isPlayerInRange(Player player) {
+        return animation.isPlayerInRange(player, range);
     }
+    
+    protected final boolean isAnyPlayerInRange() {
+        return !playersInRange.isEmpty();
+    }
+    
+    @Override
+    public void register() {
+        init();
+        Bukkit.getServer().getPluginManager().registerEvents(this, AnimationsPlugin.getPluginInstance());
+    }
+    
+    @Override
+    public void unregister() {
+        HandlerList.unregisterAll(this);
+        playersInRange.clear();
+    }
+    
+    protected final void init() {
+        playersInRange.clear();
+        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+            if (isPlayerInRange(p)) {
+                playersInRange.add(p);
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Player p = event.getPlayer();
+        handlePlayerMoved(p, isPlayerInRange(p));
+    }
+    
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player p = event.getPlayer();
+        handlePlayerMoved(p, isPlayerInRange(p));
+    }
+    
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player p = event.getPlayer();
+        handlePlayerMoved(p, false);
+    }
+    
+    private void handlePlayerMoved(Player player, boolean inRange) {
+        boolean empty = playersInRange.isEmpty();
+        if (inRange) {
+            playersInRange.add(player);
+            if (!playersInRange.isEmpty() && empty) {
+                onPlayerEntered();
+            }
+        } else {
+            playersInRange.remove(player);
+        }
+    }
+    
+    protected abstract void onPlayerEntered();
     
 }

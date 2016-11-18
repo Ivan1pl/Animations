@@ -22,6 +22,9 @@ import com.ivan1pl.animations.AnimationsPlugin;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.data.MovingAnimation;
+import com.ivan1pl.animations.events.Event;
+import com.ivan1pl.animations.events.EventDispatcher;
+import com.ivan1pl.animations.events.EventListener;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -39,6 +42,8 @@ public class AnimationTask extends BukkitRunnable {
     
     @Getter
     private final boolean reverse;
+    
+    private final EventDispatcher dispatcher = new EventDispatcher();
     
     public AnimationTask(Animation animation) {
         this(animation, false);
@@ -64,6 +69,7 @@ public class AnimationTask extends BukkitRunnable {
             if (stage >= animation.getFrameCount()) {
                 Animations.deleteTask(this);
                 this.cancel();
+                dispatcher.dispatchEvent(new Event(Event.ANIMATION_FINISHED));
             }
         } else {
             animation.showFrame(stage);
@@ -74,6 +80,7 @@ public class AnimationTask extends BukkitRunnable {
             if (stage >= animation.getFrameCount()) {
                 Animations.deleteTask(this);
                 this.cancel();
+                dispatcher.dispatchEvent(new Event(Event.ANIMATION_FINISHED));
             }
         }
     }
@@ -85,6 +92,14 @@ public class AnimationTask extends BukkitRunnable {
         }
         stage = animation.getFrameCount() + 1;
         animation.showFrame(0);
+    }
+    
+    public void attachListener(EventListener listener) {
+        dispatcher.addEventListener(Event.ANIMATION_FINISHED, listener);
+    }
+    
+    public void detachListener(EventListener listener) {
+        dispatcher.removeEventListener(Event.ANIMATION_FINISHED, listener);
     }
     
 }

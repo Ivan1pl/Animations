@@ -18,19 +18,45 @@
  */
 package com.ivan1pl.animations.data;
 
+import com.ivan1pl.animations.events.Event;
+import com.ivan1pl.animations.events.EventListener;
+
 /**
  *
  * @author Ivan1pl
  */
 public class RangeTrigger extends BaseRangeTrigger {
+    
+    public RangeTrigger(Animation animation) {
+        super(animation);
+    }
 
     @Override
-    public void execute(Animation animation) {
-        if (isAnyPlayerInRange(animation) && !isStarted() && !isFinished()) {
-            animation.play();
-        } else if (!isAnyPlayerInRange(animation) && !isStarted() && isFinished()) {
-            animation.playReverse();
+    public void execute() {
+        if (isAnyPlayerInRange() && !isStarted() && !isFinished()) {
+            setStarted(true);
+            getAnimation().play().attachListener(new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    setStarted(false);
+                    setFinished(true);
+                }
+            });
+        } else if (!isAnyPlayerInRange() && !isStarted() && isFinished()) {
+            setStarted(true);
+            getAnimation().playReverse().attachListener(new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    setStarted(false);
+                    setFinished(false);
+                }
+            });
         }
+    }
+
+    @Override
+    protected void onPlayerEntered() {
+        execute();
     }
     
 }

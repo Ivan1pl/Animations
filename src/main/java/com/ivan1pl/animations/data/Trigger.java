@@ -24,6 +24,8 @@ package com.ivan1pl.animations.data;
  */
 public interface Trigger {
     
-    void execute(Animation animation);
+    void execute();
+    void register();
+    void unregister();
     
 }

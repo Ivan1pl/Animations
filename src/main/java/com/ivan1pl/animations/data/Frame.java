@@ -134,4 +134,11 @@ public class Frame implements Serializable {
         return null;
     }
     
+    public Selection toSelection() {
+        Selection s = new Selection();
+        s.setPoint1(new Location(Bukkit.getServer().getWorld(worldId), x, y, z));
+        s.setPoint2(new Location(Bukkit.getServer().getWorld(worldId), x + sizeX, y + sizeY, z + sizeZ));
+        return s;
+    }
+    
 }
