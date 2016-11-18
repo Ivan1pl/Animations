@@ -16,8 +16,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Animations.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.ivan1pl.animations.data;
+package com.ivan1pl.animations.triggers;
 
+import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.events.Event;
 import com.ivan1pl.animations.events.EventListener;
 
@@ -25,30 +26,21 @@ import com.ivan1pl.animations.events.EventListener;
  *
  * @author Ivan1pl
  */
-public class RangeTrigger extends BaseRangeTrigger {
+public class LoopTrigger extends BaseRangeTrigger {
     
-    public RangeTrigger(Animation animation) {
+    public LoopTrigger(Animation animation) {
         super(animation);
     }
 
     @Override
     public void execute() {
-        if (isAnyPlayerInRange() && !isStarted() && !isFinished()) {
+        if (isAnyPlayerInRange() && !isStarted()) {
             setStarted(true);
             getAnimation().play().attachListener(new EventListener() {
                 @Override
                 public void onEvent(Event event) {
                     setStarted(false);
-                    setFinished(true);
-                }
-            });
-        } else if (!isAnyPlayerInRange() && !isStarted() && isFinished()) {
-            setStarted(true);
-            getAnimation().playReverse().attachListener(new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    setStarted(false);
-                    setFinished(false);
+                    execute();
                 }
             });
         }

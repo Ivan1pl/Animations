@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Animations.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.ivan1pl.animations.data;
+package com.ivan1pl.animations.triggers;
 
 /**
  *

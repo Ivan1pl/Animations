@@ -16,9 +16,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Animations.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.ivan1pl.animations.data;
+package com.ivan1pl.animations.triggers;
 
 import com.ivan1pl.animations.AnimationsPlugin;
+import com.ivan1pl.animations.data.Animation;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
