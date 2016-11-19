@@ -26,7 +26,7 @@ public enum TriggerType {
     RANGE,
     LOOP;
     
-    public TriggerType fromString(String type) {
+    public static TriggerType fromString(String type) {
         if ("l".equalsIgnoreCase(type) || "loop".equalsIgnoreCase(type)) {
             return LOOP;
         } else {

@@ -96,6 +96,14 @@ public class Messages {
     
     public static final String MSG_ITEM = " - {0}";
     
+    public static final String MSG_TRIGGER_CHANGED = "Trigger changed.";
+    
+    public static final String MSG_TRIGGER_DELETED = "Trigger deleted.";
+    
+    public static final String TRIGGER_INFO = "Trigger: type: {0}, range: {1}.";
+    
+    public static final String NOTRIGGER_INFO = "Trigger: none";
+    
     public static final String INFO_ANIMATION_LOADED = "Animation loaded: ";
     
     public static final String INFO_ENABLED = "Enabled!";

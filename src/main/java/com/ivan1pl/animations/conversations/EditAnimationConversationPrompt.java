@@ -21,9 +21,9 @@ package com.ivan1pl.animations.conversations;
 import com.ivan1pl.animations.constants.AnimationType;
 import com.ivan1pl.animations.conversations.handlers.ConversationCommandHandler;
 import com.ivan1pl.animations.constants.Messages;
-import com.ivan1pl.animations.constants.OperationResult;
 import com.ivan1pl.animations.conversations.handlers.AddframeCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.CancelCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.DeletetriggerCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.HelpCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.IntervalCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.MaxDistanceCommandHandler;
@@ -33,16 +33,15 @@ import com.ivan1pl.animations.conversations.handlers.RemoveframeCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.SaveCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.StepCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.SwapframesCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.TriggerCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.TypeCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.UpdateBackgroundCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.YCommandHandler;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.data.MovingAnimation;
-import com.ivan1pl.animations.data.Selection;
 import com.ivan1pl.animations.data.StationaryAnimation;
 import com.ivan1pl.animations.exceptions.AnimationTypeException;
-import com.ivan1pl.animations.exceptions.InvalidSelectionException;
 import com.ivan1pl.animations.utils.MessageUtil;
 import com.ivan1pl.animations.utils.StringUtil;
 import java.util.ArrayList;
@@ -91,6 +90,8 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         STATIONARY_EDIT_COMMANDS.add(new HelpCommandHandler(this));
         STATIONARY_EDIT_COMMANDS.add(new CancelCommandHandler(END_OF_CONVERSATION));
         STATIONARY_EDIT_COMMANDS.add(new SaveCommandHandler(this));
+        STATIONARY_EDIT_COMMANDS.add(new TriggerCommandHandler(this));
+        STATIONARY_EDIT_COMMANDS.add(new DeletetriggerCommandHandler(this));
         
         MOVING_EDIT_COMMANDS.add(new StepCommandHandler(this, this));
         MOVING_EDIT_COMMANDS.add(new MaxDistanceCommandHandler(this, this));
@@ -100,6 +101,8 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         MOVING_EDIT_COMMANDS.add(new HelpCommandHandler(this));
         MOVING_EDIT_COMMANDS.add(new CancelCommandHandler(END_OF_CONVERSATION));
         MOVING_EDIT_COMMANDS.add(new SaveCommandHandler(this));
+        MOVING_EDIT_COMMANDS.add(new TriggerCommandHandler(this));
+        MOVING_EDIT_COMMANDS.add(new DeletetriggerCommandHandler(this));
     }
     
     public EditAnimationConversationPrompt(boolean isEdit) {
@@ -156,25 +159,33 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         Animation animation = (Animation) cc.getSessionData("animation");
         StationaryAnimation sAnimation = animation instanceof StationaryAnimation ? (StationaryAnimation) animation : null;
         MovingAnimation mAnimation = animation instanceof MovingAnimation ? (MovingAnimation) animation : null;
+        String message;
         if (isEdit && !simplePrompt) {
             if (sAnimation != null) {
-                return MessageUtil.formatPromptMessage(Messages.MSG_STATIONARY_ANIMATION_EDIT_INFO, name, animation.getFrameCount(), animation.getInterval(), formatAnswers(STATIONARY_EDIT_COMMANDS));
+                message = MessageUtil.formatPromptMessage(Messages.MSG_STATIONARY_ANIMATION_EDIT_INFO, name, animation.getFrameCount(), animation.getInterval(), formatAnswers(STATIONARY_EDIT_COMMANDS));
             } else if (mAnimation != null) {
-                return MessageUtil.formatPromptMessage(Messages.MSG_MOVING_ANIMATION_EDIT_INFO, name, mAnimation.getStepX(), mAnimation.getStepY(), mAnimation.getStepZ(), mAnimation.getMaxDistance(), animation.getInterval(), formatAnswers(MOVING_EDIT_COMMANDS));
+                message = MessageUtil.formatPromptMessage(Messages.MSG_MOVING_ANIMATION_EDIT_INFO, name, mAnimation.getStepX(), mAnimation.getStepY(), mAnimation.getStepZ(), mAnimation.getMaxDistance(), animation.getInterval(), formatAnswers(MOVING_EDIT_COMMANDS));
             } else {
                 return MessageUtil.formatErrorMessage(Messages.MSG_INVALID_ANIMATION_TYPE, name);
             }
         } else if (isEdit && simplePrompt) {
             if (sAnimation != null) {
-                return MessageUtil.formatPromptMessage(Messages.MSG_STATIONARY_ANIMATION_EDIT_INFO_SIMPLE, name, animation.getFrameCount(), animation.getInterval());
+                message = MessageUtil.formatPromptMessage(Messages.MSG_STATIONARY_ANIMATION_EDIT_INFO_SIMPLE, name, animation.getFrameCount(), animation.getInterval());
             } else if (mAnimation != null) {
-                return MessageUtil.formatPromptMessage(Messages.MSG_MOVING_ANIMATION_EDIT_INFO_SIMPLE, name, mAnimation.getStepX(), mAnimation.getStepY(), mAnimation.getStepZ(), mAnimation.getMaxDistance(), animation.getInterval());
+                message = MessageUtil.formatPromptMessage(Messages.MSG_MOVING_ANIMATION_EDIT_INFO_SIMPLE, name, mAnimation.getStepX(), mAnimation.getStepY(), mAnimation.getStepZ(), mAnimation.getMaxDistance(), animation.getInterval());
             } else {
                 return MessageUtil.formatErrorMessage(Messages.MSG_INVALID_ANIMATION_TYPE, name);
             }
         } else {
             return MessageUtil.formatPromptMessage(Messages.MSG_CREATE_ANIMATION, name, Animations.getWandMaterial().toString());
         }
+        message += "\n";
+        if (animation.getTriggerBuilderData() != null) {
+            message += MessageUtil.formatPromptMessage(Messages.TRIGGER_INFO, animation.getTriggerBuilderData().getType().toString().toLowerCase(), animation.getTriggerBuilderData().getRange());
+        } else {
+            message += MessageUtil.formatPromptMessage(Messages.NOTRIGGER_INFO);
+        }
+        return message;
     }
 
     @Override
@@ -199,6 +210,8 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
                             return false;
                         }
                     }
+                } else if (!handler.customCheckParamTypes(realInput)) {
+                    return false;
                 }
                 return true;
             }

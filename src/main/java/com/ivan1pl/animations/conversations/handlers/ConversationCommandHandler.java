@@ -91,4 +91,8 @@ public abstract class ConversationCommandHandler {
     
     public abstract Prompt handle(ConversationContext cc, Animation animation, String animationName, String[] params) throws AnimationTypeException;
     
+    public boolean customCheckParamTypes(String[] params) {
+        return true;
+    }
+    
 }

@@ -29,15 +29,27 @@ public class StringUtil {
     }
 
     public static boolean isInteger(String s, int radix) {
+        return isInteger(s, radix, false);
+    }
+    
+    private static boolean isInteger(String s, int radix, boolean unsigned) {
         if(isEmpty(s)) return false;
         for(int i = 0; i < s.length(); i++) {
-            if(i == 0 && s.charAt(i) == '-') {
+            if(i == 0 && s.charAt(i) == '-' && !unsigned) {
                 if(s.length() == 1) return false;
                 else continue;
             }
             if(Character.digit(s.charAt(i),radix) < 0) return false;
         }
         return true;
+    }
+    
+    public static boolean isUnsignedInteger(String s, int radix) {
+        return isInteger(s, radix, true);
+    }
+    
+    public static boolean isUnsignedInteger(String s) {
+        return isUnsignedInteger(s, 10);
     }
     
     public static boolean isEmpty(String s) {
