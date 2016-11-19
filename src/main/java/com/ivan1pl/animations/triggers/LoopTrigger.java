@@ -47,7 +47,7 @@ public class LoopTrigger extends BaseRangeTrigger {
     }
 
     @Override
-    protected void onPlayerEntered() {
+    protected void onPlayerMoved() {
         execute();
     }
     

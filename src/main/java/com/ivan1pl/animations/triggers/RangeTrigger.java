@@ -56,7 +56,7 @@ public class RangeTrigger extends BaseRangeTrigger {
     }
 
     @Override
-    protected void onPlayerEntered() {
+    protected void onPlayerMoved() {
         execute();
     }
     

@@ -61,23 +61,27 @@ public class AnimationTask extends BukkitRunnable {
     @Override
     public void run() {
         if (reverse) {
-            animation.showFrame(animation.getFrameCount()-stage-1);
+            if (stage < animation.getFrameCount()) {
+                animation.showFrame(animation.getFrameCount()-stage-1);
+            }
             stage++;
-            if (stage > 1 && animation instanceof MovingAnimation) {
+            if (stage > 1 && animation instanceof MovingAnimation && stage <= animation.getFrameCount()) {
                 ((MovingAnimation) animation).movePlayers(animation.getFrameCount()-stage);
             }
-            if (stage >= animation.getFrameCount()) {
+            if (stage > animation.getFrameCount()) {
                 Animations.deleteTask(this);
                 this.cancel();
                 dispatcher.dispatchEvent(new Event(Event.ANIMATION_FINISHED));
             }
         } else {
-            animation.showFrame(stage);
+            if (stage < animation.getFrameCount()) {
+                animation.showFrame(stage);
+            }
             stage++;
-            if (stage > 1 && animation instanceof MovingAnimation) {
+            if (stage > 1 && animation instanceof MovingAnimation && stage <= animation.getFrameCount()) {
                 ((MovingAnimation) animation).movePlayers(stage-1);
             }
-            if (stage >= animation.getFrameCount()) {
+            if (stage > animation.getFrameCount()) {
                 Animations.deleteTask(this);
                 this.cancel();
                 dispatcher.dispatchEvent(new Event(Event.ANIMATION_FINISHED));

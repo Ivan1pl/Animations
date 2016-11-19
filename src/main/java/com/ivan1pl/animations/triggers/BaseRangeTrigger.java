@@ -111,14 +111,12 @@ public abstract class BaseRangeTrigger implements Trigger, Listener {
         boolean empty = playersInRange.isEmpty();
         if (inRange) {
             playersInRange.add(player);
-            if (!playersInRange.isEmpty() && empty) {
-                onPlayerEntered();
-            }
         } else {
             playersInRange.remove(player);
         }
+        onPlayerMoved();
     }
     
-    protected abstract void onPlayerEntered();
+    protected abstract void onPlayerMoved();
     
 }
