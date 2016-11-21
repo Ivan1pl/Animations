@@ -24,11 +24,14 @@ package com.ivan1pl.animations.triggers;
  */
 public enum TriggerType {
     RANGE,
-    LOOP;
+    LOOP,
+    PASSWORD;
     
     public static TriggerType fromString(String type) {
         if ("l".equalsIgnoreCase(type) || "loop".equalsIgnoreCase(type)) {
             return LOOP;
+        } else if ("p".equalsIgnoreCase(type) || "password".equalsIgnoreCase(type)) {
+            return PASSWORD;
         } else {
             return RANGE;
         }

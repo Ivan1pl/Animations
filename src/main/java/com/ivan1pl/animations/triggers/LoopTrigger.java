@@ -45,10 +45,5 @@ public class LoopTrigger extends BaseRangeTrigger {
             });
         }
     }
-
-    @Override
-    protected void onPlayerMoved() {
-        execute();
-    }
     
 }

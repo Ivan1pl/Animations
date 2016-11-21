@@ -108,7 +108,6 @@ public abstract class BaseRangeTrigger implements Trigger, Listener {
     }
     
     private void handlePlayerMoved(Player player, boolean inRange) {
-        boolean empty = playersInRange.isEmpty();
         if (inRange) {
             playersInRange.add(player);
         } else {
@@ -117,6 +116,8 @@ public abstract class BaseRangeTrigger implements Trigger, Listener {
         onPlayerMoved();
     }
     
-    protected abstract void onPlayerMoved();
+    protected void onPlayerMoved() {
+        execute();
+    }
     
 }

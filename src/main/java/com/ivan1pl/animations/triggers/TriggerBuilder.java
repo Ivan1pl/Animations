@@ -19,6 +19,7 @@
 package com.ivan1pl.animations.triggers;
 
 import com.ivan1pl.animations.data.Animation;
+import com.ivan1pl.animations.data.AnimationsLocation;
 
 /**
  *
@@ -31,6 +32,10 @@ public class TriggerBuilder {
     private int range;
     
     private TriggerType triggerType = TriggerType.RANGE;
+    
+    private String password;
+    
+    private AnimationsLocation triggerBlock;
     
     public TriggerBuilder(Animation animation) {
         this.animation = animation;
@@ -46,11 +51,25 @@ public class TriggerBuilder {
         return this;
     }
     
+    public TriggerBuilder setPassword(String password) {
+        this.password = password;
+        return this;
+    }
+    
+    public TriggerBuilder setTriggerBlock(AnimationsLocation triggerBlock) {
+        this.triggerBlock = triggerBlock;
+        return this;
+    }
+    
     public Trigger create() {
         Trigger t;
         switch (triggerType) {
             case LOOP:
                 t = new LoopTrigger(animation);
+                ((BaseRangeTrigger) t).setRange(range);
+                break;
+            case PASSWORD:
+                t = new PasswordTrigger(animation, password);
                 ((BaseRangeTrigger) t).setRange(range);
                 break;
             case RANGE:

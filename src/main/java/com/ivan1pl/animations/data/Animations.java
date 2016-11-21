@@ -220,6 +220,8 @@ public class Animations {
                     Trigger t = new TriggerBuilder(animation)
                                     .setTriggerType(animation.getTriggerBuilderData().getType())
                                     .setRange(animation.getTriggerBuilderData().getRange())
+                                    .setPassword(animation.getTriggerBuilderData().getPassword())
+                                    .setTriggerBlock(animation.getTriggerBuilderData().getTriggerBlock())
                                     .create();
                     t.register();
                     triggers.put(animation, t);

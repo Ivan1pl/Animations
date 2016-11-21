@@ -21,15 +21,34 @@ package com.ivan1pl.animations.triggers;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.events.Event;
 import com.ivan1pl.animations.events.EventListener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 /**
  *
  * @author Ivan1pl
  */
-public class RangeTrigger extends BaseRangeTrigger {
+public class PasswordTrigger extends BaseRangeTrigger {
     
-    public RangeTrigger(Animation animation) {
+    private final String password;
+    
+    public PasswordTrigger(Animation animation, String password) {
         super(animation);
+        this.password = password;
+    }
+
+    @Override
+    protected void onPlayerMoved() {
+        if (!isAnyPlayerInRange() && !isStarted() && isFinished()) {
+            setStarted(true);
+            getAnimation().playReverse().attachListener(new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    setStarted(false);
+                    setFinished(false);
+                }
+            });
+        }
     }
 
     @Override
@@ -43,15 +62,13 @@ public class RangeTrigger extends BaseRangeTrigger {
                     setFinished(true);
                 }
             });
-        } else if (!isAnyPlayerInRange() && !isStarted() && isFinished()) {
-            setStarted(true);
-            getAnimation().playReverse().attachListener(new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    setStarted(false);
-                    setFinished(false);
-                }
-            });
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+        if (event.getMessage().equalsIgnoreCase(password) && isPlayerInRange(event.getPlayer())) {
+            execute();
         }
     }
     
