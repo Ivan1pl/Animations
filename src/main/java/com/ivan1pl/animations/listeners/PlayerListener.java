@@ -28,6 +28,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 /**
  *
@@ -38,8 +39,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (event.isCancelled() || !player.hasPermission(Permissions.PERMISSION_ADMIN)
-                || !player.getItemInHand().getType().equals(Animations.getWandMaterial())) {
+        if (event.isCancelled() || !player.hasPermission(Permissions.PERMISSION_ADMIN) || event.getHand() != EquipmentSlot.HAND
+                || !player.getInventory().getItemInMainHand().getType().equals(Animations.getWandMaterial())) {
             return;
         }
         
