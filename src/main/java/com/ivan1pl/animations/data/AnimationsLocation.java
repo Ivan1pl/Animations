@@ -83,4 +83,13 @@ public class AnimationsLocation implements Serializable {
         this.z += z;
     }
     
+    public static boolean isSameBlock(AnimationsLocation l1, AnimationsLocation l2) {
+        if (l1 == null || l2 == null) {
+            return false;
+        }
+        
+        return l1.worldId.equals(l2.worldId) && l1.getBlockX() == l2.getBlockX()
+                && l1.getBlockY() == l2.getBlockY() && l1.getBlockZ() == l2.getBlockZ();
+    }
+    
 }

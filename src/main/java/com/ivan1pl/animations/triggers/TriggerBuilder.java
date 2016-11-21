@@ -72,6 +72,10 @@ public class TriggerBuilder {
                 t = new PasswordTrigger(animation, password);
                 ((BaseRangeTrigger) t).setRange(range);
                 break;
+            case BLOCK:
+                t = new BlockTrigger(animation, triggerBlock);
+                ((BaseRangeTrigger) t).setRange(range);
+                break;
             case RANGE:
             default:
                 t = new RangeTrigger(animation);
