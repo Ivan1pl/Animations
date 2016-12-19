@@ -42,7 +42,7 @@ public class Messages {
     
     public static final String MSG_EXPECTED_MORE_ARGS = "Expected at least {0} arguments for this command.";
     
-    public static final String MSG_CREATE_ANIMATION = "Creating {0}. Select area using {1} and set type with ''type m'' (moving animation) or ''type s'' (default - stationary animation).\nConfirm by typing ''y'' or exit with ''cancel'";
+    public static final String MSG_CREATE_ANIMATION = "Creating {0}. Select area using {1} and set type with ''type m'' (moving animation) or ''type s'' (default - stationary animation).\nConfirm by typing ''y'' or exit with ''cancel''";
     
     public static final String MSG_ANIMATION_CREATED = "Animation {0} created.";
     
@@ -51,6 +51,8 @@ public class Messages {
     public static final String MSG_POINT1_SET = "First point set{0}.";
     
     public static final String MSG_POINT2_SET = "Secont point set{0}.";
+    
+    public static final String MSG_BLOCK_SELECTION_SET = "Block selection set.";
     
     public static final String MSG_FRAME_ADDED = "Frame added.";
     
@@ -99,6 +101,14 @@ public class Messages {
     public static final String MSG_TRIGGER_CHANGED = "Trigger changed.";
     
     public static final String MSG_TRIGGER_DELETED = "Trigger deleted.";
+    
+    public static final String MSG_EDIT_BLOCK_TRIGGER = "Select a block with {0} and type ''y'' to confirm or exit with ''c'',";
+    
+    public static final String MSG_EDIT_TRIGGER_CANCELLED = "Cancelled.";
+    
+    public static final String MSG_EDIT_BLOCK_TRIGGER_NOBLOCK = "You have to select a block before you confirm.";
+    
+    public static final String MSG_ENTER_PASSWORD_FOR_TRIGGER = "Enter the text which will trigger the animation:";
     
     public static final String TRIGGER_INFO = "Trigger: type: {0}, range: {1}.";
     

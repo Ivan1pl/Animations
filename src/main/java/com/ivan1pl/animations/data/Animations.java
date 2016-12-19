@@ -45,6 +45,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -60,11 +61,16 @@ public class Animations {
     
     private static final Map<UUID, Selection> selections = new HashMap<>();
     
+    private static final Map<UUID, Location> blockSelections = new HashMap<>();
+    
     private static final File PLUGIN_DIR = new File(AnimationsPlugin.getPluginInstance().getDataFolder()
             + File.separator + "animations");
     
     @Getter
     private static Material wandMaterial = null;
+    
+    @Getter
+    private static Material blockSelectorMaterial = null;
     
     private static final Set<AnimationTask> runningTasks = new HashSet<>();
     
@@ -95,9 +101,17 @@ public class Animations {
         String wand = AnimationsPlugin.getPluginInstance().getConfig().getString("wand");
         wandMaterial = Material.valueOf(wand);
         
+        String blockSelectorWand = AnimationsPlugin.getPluginInstance().getConfig().getString("blockSelectorWand");
+        blockSelectorMaterial = Material.valueOf(blockSelectorWand);
+        
         if (wandMaterial == null) {
             wandMaterial = Material.BLAZE_POWDER;
             AnimationsPlugin.getPluginInstance().getLogger().info(MessageUtil.formatMessage(Messages.INFO_INVALID_MATERIAL, wand, Material.BLAZE_POWDER.toString()));
+        }
+        
+        if (blockSelectorMaterial == null) {
+            blockSelectorMaterial = Material.BLAZE_ROD;
+            AnimationsPlugin.getPluginInstance().getLogger().info(MessageUtil.formatMessage(Messages.INFO_INVALID_MATERIAL, blockSelectorWand, Material.BLAZE_ROD.toString()));
         }
         
         animations.clear();
@@ -194,6 +208,19 @@ public class Animations {
         }
         
         return s;
+    }
+    
+    public static Location getBlockSelection(Player p) {
+        if (p == null) {
+            return null;
+        }
+        
+        Location l = blockSelections.get(p.getUniqueId());
+        return l;
+    }
+    
+    public static void setBlockSelection(Player p, Location selection) {
+        blockSelections.put(p.getUniqueId(), selection);
     }
     
     public static void reloadAnimation(String name) {

@@ -85,4 +85,8 @@ public class TriggerBuilder {
         return t;
     }
     
+    public TriggerBuilderData createBuilderData() {
+        return new TriggerBuilderData(triggerType, range, password, triggerBlock);
+    }
+    
 }

@@ -77,11 +77,13 @@ public class BlockTrigger extends BaseRangeTrigger {
         if (event.isCancelled() || event.getHand() != EquipmentSlot.HAND
                 || !isPlayerInRange(player) || event.getAction() != Action.RIGHT_CLICK_BLOCK ||
                 (player.hasPermission(Permissions.PERMISSION_ADMIN)
-                && player.getInventory().getItemInMainHand().getType().equals(Animations.getWandMaterial()))) {
+                && (player.getInventory().getItemInMainHand().getType().equals(Animations.getWandMaterial()) ||
+                    player.getInventory().getItemInMainHand().getType().equals(Animations.getBlockSelectorMaterial())))) {
             return;
         }
         
         if (AnimationsLocation.isSameBlock(triggerBlock, AnimationsLocation.fromLocation(event.getClickedBlock().getLocation()))) {
+            event.setCancelled(true);
             execute();
         }
     }

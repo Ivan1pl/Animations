@@ -5,6 +5,9 @@
 ## Wand material
 wand: BLAZE_POWDER
 
+## Block selector wand material (for block trigger)
+blockSelectorWand: BLAZE_ROD
+
 ## Debugging options
 debug:
     # Set to true to enable debug mode (additional informations will appear in

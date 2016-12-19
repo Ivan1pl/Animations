@@ -42,7 +42,7 @@ public class TriggerBuilderData implements Serializable {
     @Getter
     private final AnimationsLocation triggerBlock;
     
-    private TriggerBuilderData(TriggerType type, int range, String password, AnimationsLocation triggerBlock) {
+    public TriggerBuilderData(TriggerType type, int range, String password, AnimationsLocation triggerBlock) {
         this.type = type;
         this.range = range;
         this.password = password;

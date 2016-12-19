@@ -37,32 +37,39 @@ import org.bukkit.inventory.EquipmentSlot;
 public class PlayerListener implements Listener {
     
     @EventHandler
-    public void playerInteract(PlayerInteractEvent event) {
+    public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (event.isCancelled() || !player.hasPermission(Permissions.PERMISSION_ADMIN) || event.getHand() != EquipmentSlot.HAND
-                || !player.getInventory().getItemInMainHand().getType().equals(Animations.getWandMaterial())) {
+        if (event.isCancelled() || !player.hasPermission(Permissions.PERMISSION_ADMIN) || event.getHand() != EquipmentSlot.HAND) {
             return;
         }
         
-        Selection selection = Animations.getSelection(player);
-        
-        if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-            event.setCancelled(true);
-            selection.setPoint1(event.getClickedBlock().getLocation());
-            int volume = selection.getVolume();
-            if (volume == 0) {
-                MessageUtil.sendInfoMessage(player, Messages.MSG_POINT1_SET, "");
-            } else {
-                MessageUtil.sendInfoMessage(player, Messages.MSG_POINT1_SET, " (" + new Long(volume) + ")");
+        if (player.getInventory().getItemInMainHand().getType().equals(Animations.getWandMaterial())) {
+            Selection selection = Animations.getSelection(player);
+
+            if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                event.setCancelled(true);
+                selection.setPoint1(event.getClickedBlock().getLocation());
+                int volume = selection.getVolume();
+                if (volume == 0) {
+                    MessageUtil.sendInfoMessage(player, Messages.MSG_POINT1_SET, "");
+                } else {
+                    MessageUtil.sendInfoMessage(player, Messages.MSG_POINT1_SET, " (" + new Long(volume) + ")");
+                }
+            } else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                selection.setPoint2(event.getClickedBlock().getLocation());
+                event.setCancelled(true);
+                int volume = selection.getVolume();
+                if (volume == 0) {
+                    MessageUtil.sendInfoMessage(player, Messages.MSG_POINT2_SET, "");
+                } else {
+                    MessageUtil.sendInfoMessage(player, Messages.MSG_POINT2_SET, " (" + new Long(volume) + ")");
+                }
             }
-        } else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            selection.setPoint2(event.getClickedBlock().getLocation());
-            event.setCancelled(true);
-            int volume = selection.getVolume();
-            if (volume == 0) {
-                MessageUtil.sendInfoMessage(player, Messages.MSG_POINT2_SET, "");
-            } else {
-                MessageUtil.sendInfoMessage(player, Messages.MSG_POINT2_SET, " (" + new Long(volume) + ")");
+        } else if (player.getInventory().getItemInMainHand().getType().equals(Animations.getBlockSelectorMaterial())) {
+            if (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                event.setCancelled(true);
+                Animations.setBlockSelection(player, event.getClickedBlock().getLocation());
+                MessageUtil.sendInfoMessage(player, Messages.MSG_BLOCK_SELECTION_SET);
             }
         }
     }
