@@ -78,6 +78,14 @@ public class Animations {
     
     private static boolean debugMode = false;
     
+    private static int maxFrameSize = 0;
+    
+    private static int maxRunningAnimations = 0;
+    
+    private static int maxProcessedBlocks = 0;
+    
+    private static int currentSize = 0;
+    
     static {
         if (!PLUGIN_DIR.exists()) {
             PLUGIN_DIR.mkdirs();
@@ -103,6 +111,10 @@ public class Animations {
         
         String blockSelectorWand = AnimationsPlugin.getPluginInstance().getConfig().getString("blockSelectorWand");
         blockSelectorMaterial = Material.valueOf(blockSelectorWand);
+        
+        maxFrameSize = AnimationsPlugin.getPluginInstance().getConfig().getInt("limits.maxFrameSize");
+        maxRunningAnimations = AnimationsPlugin.getPluginInstance().getConfig().getInt("limits.maxRunningAnimations");
+        maxProcessedBlocks = AnimationsPlugin.getPluginInstance().getConfig().getInt("limits.maxProcessedBlocks");
         
         if (wandMaterial == null) {
             wandMaterial = Material.BLAZE_POWDER;
@@ -271,8 +283,14 @@ public class Animations {
         }
     }
     
-    public static void registerTask(AnimationTask task) {
-        runningTasks.add(task);
+    public static boolean registerTask(AnimationTask task) {
+        if (runningTasks.size() < maxRunningAnimations &&
+                task.getAnimation().getSizeInBlocks() + currentSize <= maxProcessedBlocks) {
+            currentSize += task.getAnimation().getSizeInBlocks();
+            runningTasks.add(task);
+            return true;
+        }
+        return false;
     }
     
     public static AnimationTask retrieveTask(Animation animation) {
@@ -285,6 +303,7 @@ public class Animations {
     }
     
     public static void deleteTask(AnimationTask task) {
+        currentSize -= task.getAnimation().getSizeInBlocks();
         runningTasks.remove(task);
     }
     

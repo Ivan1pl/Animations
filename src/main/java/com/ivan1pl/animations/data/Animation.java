@@ -44,16 +44,20 @@ public abstract class Animation implements Serializable {
     
     public AnimationTask play() {
         AnimationTask task = new AnimationTask(this);
-        Animations.registerTask(task);
-        task.start();
-        return task;
+        if (Animations.registerTask(task)) {
+            task.start();
+            return task;
+        }
+        return null;
     }
     
     public AnimationTask playReverse() {
         AnimationTask task = new AnimationTask(this, true);
-        Animations.registerTask(task);
-        task.start();
-        return task;
+        if (Animations.registerTask(task)) {
+            task.start();
+            return task;
+        }
+        return null;
     }
     
     public abstract int getFrameCount();
@@ -76,5 +80,7 @@ public abstract class Animation implements Serializable {
         }
         return false;
     }
+    
+    public abstract int getSizeInBlocks();
     
 }

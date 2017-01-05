@@ -103,5 +103,11 @@ public class MovingAnimation extends Animation implements Serializable {
         return player.getWorld().equals(s.getPoint1().getWorld()) ?
                 s.getDistance(player.getLocation()) <= range : false;
     }
+
+    @Override
+    public int getSizeInBlocks() {
+        return frame.getSizeX() * frame.getSizeY() * frame.getSizeZ() +
+                background.getSizeX() * background.getSizeY() * background.getSizeZ();
+    }
     
 }

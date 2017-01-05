@@ -91,5 +91,10 @@ public class StationaryAnimation extends Animation implements Serializable {
         return player.getWorld().equals(selection.getPoint1().getWorld()) ?
                 selection.getDistance(player.getLocation()) <= range : false;
     }
+
+    @Override
+    public int getSizeInBlocks() {
+        return selection.getVolume();
+    }
     
 }

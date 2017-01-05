@@ -8,6 +8,16 @@ wand: BLAZE_POWDER
 ## Block selector wand material (for block trigger)
 blockSelectorWand: BLAZE_ROD
 
+## Limits like maximum frame size, animations playing at once etc.
+## You can turn any of them off by setting it to -1.
+limits:
+    # Maximum volume of a single frame in animation
+    maxFrameSize: 50000
+    # Maximum number of animations playing at the same time
+    maxRunningAnimations: 50
+    # Maximum number of blocks being processed at the same time
+    maxProcessedBlocks: 100000
+
 ## Debugging options
 debug:
     # Set to true to enable debug mode (additional informations will appear in
