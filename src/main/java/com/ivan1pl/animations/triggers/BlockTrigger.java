@@ -18,6 +18,7 @@
  */
 package com.ivan1pl.animations.triggers;
 
+import com.ivan1pl.animations.constants.MouseButton;
 import com.ivan1pl.animations.constants.Permissions;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
@@ -36,9 +37,12 @@ public class BlockTrigger extends BaseRangeTrigger {
     
     private final AnimationsLocation triggerBlock;
     
-    public BlockTrigger(Animation animation, AnimationsLocation triggerBlock) {
+    private final MouseButton triggerButton;
+    
+    public BlockTrigger(Animation animation, AnimationsLocation triggerBlock, MouseButton triggerButton) {
         super(animation);
         this.triggerBlock = triggerBlock;
+        this.triggerButton = triggerButton;
     }
 
     @Override
@@ -55,11 +59,23 @@ public class BlockTrigger extends BaseRangeTrigger {
         }
     }
     
+    private boolean checkAction(Action action) {
+        if (null != triggerButton) switch (triggerButton) {
+            case BOTH:
+                return action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK;
+            case LEFT:
+                return action == Action.LEFT_CLICK_BLOCK;
+            case RIGHT:
+                return action == Action.RIGHT_CLICK_BLOCK;
+        }
+        return false;
+    }
+    
     @EventHandler
     public void onPlayerInteractBlock(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (event.isCancelled() || event.getHand() != EquipmentSlot.HAND
-                || !isPlayerInRange(player) || event.getAction() != Action.RIGHT_CLICK_BLOCK ||
+                || !isPlayerInRange(player) || !checkAction(event.getAction()) ||
                 (player.hasPermission(Permissions.PERMISSION_ADMIN)
                 && (player.getInventory().getItemInMainHand().getType().equals(Animations.getWandMaterial()) ||
                     player.getInventory().getItemInMainHand().getType().equals(Animations.getBlockSelectorMaterial())))) {

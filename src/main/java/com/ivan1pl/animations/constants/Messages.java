@@ -102,7 +102,7 @@ public class Messages {
     
     public static final String MSG_TRIGGER_DELETED = "Trigger deleted.";
     
-    public static final String MSG_EDIT_BLOCK_TRIGGER = "Select a block with {0} and type ''y'' to confirm or exit with ''c'',";
+    public static final String MSG_EDIT_BLOCK_TRIGGER = "Select a block with {0} and type:\n''l'' if the block should be clicked with left mouse button, ''r'' if the block should be clicked with right mouse button, ''b'' if both mouse buttons should be accepted or exit with ''c'',";
     
     public static final String MSG_EDIT_TRIGGER_CANCELLED = "Cancelled.";
     

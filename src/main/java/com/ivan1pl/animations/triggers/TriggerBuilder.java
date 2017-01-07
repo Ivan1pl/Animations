@@ -18,6 +18,7 @@
  */
 package com.ivan1pl.animations.triggers;
 
+import com.ivan1pl.animations.constants.MouseButton;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.AnimationsLocation;
 
@@ -35,7 +36,9 @@ public class TriggerBuilder {
     
     private String password;
     
-    private AnimationsLocation triggerBlock;
+    private AnimationsLocation triggerBlock1;
+    
+    private MouseButton triggerButton1 = MouseButton.BOTH;
     
     public TriggerBuilder(Animation animation) {
         this.animation = animation;
@@ -56,8 +59,13 @@ public class TriggerBuilder {
         return this;
     }
     
-    public TriggerBuilder setTriggerBlock(AnimationsLocation triggerBlock) {
-        this.triggerBlock = triggerBlock;
+    public TriggerBuilder setTriggerBlock1(AnimationsLocation triggerBlock1) {
+        this.triggerBlock1 = triggerBlock1;
+        return this;
+    }
+    
+    public TriggerBuilder setTriggerButton1(MouseButton triggerButton1) {
+        this.triggerButton1 = triggerButton1;
         return this;
     }
     
@@ -73,7 +81,7 @@ public class TriggerBuilder {
                 ((BaseRangeTrigger) t).setRange(range);
                 break;
             case BLOCK:
-                t = new BlockTrigger(animation, triggerBlock);
+                t = new BlockTrigger(animation, triggerBlock1, triggerButton1);
                 ((BaseRangeTrigger) t).setRange(range);
                 break;
             case RANGE:
@@ -86,7 +94,7 @@ public class TriggerBuilder {
     }
     
     public TriggerBuilderData createBuilderData() {
-        return new TriggerBuilderData(triggerType, range, password, triggerBlock);
+        return new TriggerBuilderData(triggerType, range, password, triggerBlock1, triggerButton1);
     }
     
 }

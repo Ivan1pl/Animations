@@ -19,6 +19,7 @@
 package com.ivan1pl.animations.conversations;
 
 import com.ivan1pl.animations.constants.Messages;
+import com.ivan1pl.animations.constants.MouseButton;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.data.AnimationsLocation;
@@ -43,7 +44,7 @@ public class EditBlockTriggerConversationPrompt extends FixedSetPrompt {
     private final TriggerBuilder triggerBuilder;
     
     public EditBlockTriggerConversationPrompt(Prompt retPrompt, Animation animation, TriggerBuilder triggerBuilder) {
-        super("y", "c");
+        super("l", "r", "b", "c");
         this.retPrompt = retPrompt;
         this.animation = animation;
         this.triggerBuilder = triggerBuilder;
@@ -53,12 +54,13 @@ public class EditBlockTriggerConversationPrompt extends FixedSetPrompt {
     protected Prompt acceptValidatedInput(ConversationContext cc, String string) {
         if ("c".equalsIgnoreCase(string)) {
             return new ConversationResponsePrompt(retPrompt, MessageUtil.formatInfoMessage(Messages.MSG_EDIT_TRIGGER_CANCELLED));
-        } else if ("y".equalsIgnoreCase(string)) {
+        } else if ("l".equalsIgnoreCase(string) || "r".equalsIgnoreCase(string) || "b".equalsIgnoreCase(string)) {
+            MouseButton button = MouseButton.fromString(string);
             Location l = Animations.getBlockSelection((Player) cc.getForWhom());
             if (l == null) {
                 return new ConversationResponsePrompt(this, MessageUtil.formatErrorMessage(Messages.MSG_EDIT_BLOCK_TRIGGER_NOBLOCK));
             } else {
-                triggerBuilder.setTriggerBlock(AnimationsLocation.fromLocation(l));
+                triggerBuilder.setTriggerBlock1(AnimationsLocation.fromLocation(l)).setTriggerButton1(button);
                 animation.setTriggerBuilderData(triggerBuilder.createBuilderData());
                 return new ConversationResponsePrompt(retPrompt, MessageUtil.formatInfoMessage(Messages.MSG_TRIGGER_CHANGED));
             }

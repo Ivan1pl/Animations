@@ -18,6 +18,7 @@
  */
 package com.ivan1pl.animations.triggers;
 
+import com.ivan1pl.animations.constants.MouseButton;
 import com.ivan1pl.animations.data.AnimationsLocation;
 import java.io.Serializable;
 import lombok.Getter;
@@ -40,25 +41,29 @@ public class TriggerBuilderData implements Serializable {
     private final String password;
     
     @Getter
-    private final AnimationsLocation triggerBlock;
+    private final AnimationsLocation triggerBlock1;
     
-    public TriggerBuilderData(TriggerType type, int range, String password, AnimationsLocation triggerBlock) {
+    @Getter
+    private final MouseButton triggerButton1;
+    
+    public TriggerBuilderData(TriggerType type, int range, String password, AnimationsLocation triggerBlock1, MouseButton triggerButton1) {
         this.type = type;
         this.range = range;
         this.password = password;
-        this.triggerBlock = triggerBlock;
+        this.triggerBlock1 = triggerBlock1;
+        this.triggerButton1 = triggerButton1;
     }
     
     public TriggerBuilderData(TriggerType type, int range, String password) {
-        this (type, range, password, null);
+        this (type, range, password, null, null);
     }
     
-    public TriggerBuilderData(TriggerType type, int range, AnimationsLocation triggerBlock) {
-        this (type, range, null, triggerBlock);
+    public TriggerBuilderData(TriggerType type, int range, AnimationsLocation triggerBlock1, MouseButton triggerButton1) {
+        this (type, range, null, triggerBlock1, triggerButton1);
     }
     
     public TriggerBuilderData(TriggerType type, int range) {
-        this (type, range, null, null);
+        this (type, range, null, null, null);
     }
     
 }
