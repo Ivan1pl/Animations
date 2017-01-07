@@ -284,8 +284,8 @@ public class Animations {
     }
     
     public static boolean registerTask(AnimationTask task) {
-        if (runningTasks.size() < maxRunningAnimations &&
-                task.getAnimation().getSizeInBlocks() + currentSize <= maxProcessedBlocks) {
+        if ((runningTasks.size() < maxRunningAnimations || maxRunningAnimations == -1) &&
+                (task.getAnimation().getSizeInBlocks() + currentSize <= maxProcessedBlocks || maxProcessedBlocks == -1)) {
             currentSize += task.getAnimation().getSizeInBlocks();
             runningTasks.add(task);
             return true;
