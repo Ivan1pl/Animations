@@ -35,7 +35,7 @@ import org.bukkit.entity.Player;
  *
  * @author Ivan1pl
  */
-public class EditBlockTriggerConversationPrompt extends FixedSetPrompt {
+public class EditMultiBlockTriggerConversationPrompt extends FixedSetPrompt {
     
     private final Prompt retPrompt;
     
@@ -43,11 +43,17 @@ public class EditBlockTriggerConversationPrompt extends FixedSetPrompt {
     
     private final TriggerBuilder triggerBuilder;
     
-    public EditBlockTriggerConversationPrompt(Prompt retPrompt, Animation animation, TriggerBuilder triggerBuilder) {
+    private int currentBlock;
+    
+    private final int blocks;
+    
+    public EditMultiBlockTriggerConversationPrompt(Prompt retPrompt, Animation animation, TriggerBuilder triggerBuilder, int currentBlock, int blocks) {
         super("l", "r", "b", "c");
         this.retPrompt = retPrompt;
         this.animation = animation;
         this.triggerBuilder = triggerBuilder;
+        this.currentBlock = currentBlock;
+        this.blocks = blocks;
     }
 
     @Override
@@ -60,9 +66,14 @@ public class EditBlockTriggerConversationPrompt extends FixedSetPrompt {
             if (l == null) {
                 return new ConversationResponsePrompt(this, MessageUtil.formatErrorMessage(Messages.MSG_EDIT_BLOCK_TRIGGER_NOBLOCK));
             } else {
-                triggerBuilder.setTriggerBlock(AnimationsLocation.fromLocation(l)).setTriggerButton(button);
-                animation.setTriggerBuilderData(triggerBuilder.createBuilderData());
-                return new ConversationResponsePrompt(retPrompt, MessageUtil.formatInfoMessage(Messages.MSG_TRIGGER_CHANGED));
+                triggerBuilder.addTriggerBlock(AnimationsLocation.fromLocation(l), button);
+                if (currentBlock == blocks) {
+                    animation.setTriggerBuilderData(triggerBuilder.createBuilderData());
+                    return new ConversationResponsePrompt(retPrompt, MessageUtil.formatInfoMessage(Messages.MSG_TRIGGER_CHANGED));
+                } else {
+                    currentBlock++;
+                    return new ConversationResponsePrompt(this, MessageUtil.formatInfoMessage(Messages.MSG_BLOCK_ADDED));
+                }
             }
         } else {
             return this;
@@ -71,7 +82,7 @@ public class EditBlockTriggerConversationPrompt extends FixedSetPrompt {
 
     @Override
     public String getPromptText(ConversationContext cc) {
-        return MessageUtil.formatPromptMessage(Messages.MSG_EDIT_BLOCK_TRIGGER, Animations.getBlockSelectorMaterial().toString());
+        return MessageUtil.formatPromptMessage(Messages.MSG_EDIT_MULTI_BLOCK_TRIGGER, Animations.getBlockSelectorMaterial().toString(), currentBlock);
     }
     
 }

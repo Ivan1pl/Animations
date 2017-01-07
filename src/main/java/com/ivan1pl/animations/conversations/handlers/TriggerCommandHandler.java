@@ -21,6 +21,7 @@ package com.ivan1pl.animations.conversations.handlers;
 import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.conversations.ConversationResponsePrompt;
 import com.ivan1pl.animations.conversations.EditBlockTriggerConversationPrompt;
+import com.ivan1pl.animations.conversations.EditMultiBlockTriggerConversationPrompt;
 import com.ivan1pl.animations.conversations.EditPasswordTriggerConversationPrompt;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.exceptions.AnimationTypeException;
@@ -40,23 +41,35 @@ public class TriggerCommandHandler extends ConversationCommandHandler {
     
     private final Prompt successPrompt;
     
-    public TriggerCommandHandler(Prompt successPrompt) {
-        super("trigger", 2, false, "r(ange)|l(oop)|b(lock)|p(assword)", "max_range");
+    private final Prompt failPrompt;
+    
+    public TriggerCommandHandler(Prompt successPrompt, Prompt failPrompt) {
+        super("trigger", 1, 1, false, "r(ange)|l(oop)|b(lock)|p(assword)|t(woblock)", "max_range");
         this.successPrompt = successPrompt;
+        this.failPrompt = failPrompt;
     }
 
     @Override
     public Prompt handle(ConversationContext cc, Animation animation, String animationName, String[] params) throws AnimationTypeException {
         TriggerType type = TriggerType.fromString(params[1]);
-        int i = Integer.parseUnsignedInt(params[2]);
+        int i = -1;
+        if (params.length > 2) {
+            i = Integer.parseUnsignedInt(params[2]);
+        }
         Prompt retPrompt = new ConversationResponsePrompt(successPrompt, MessageUtil.formatInfoMessage(Messages.MSG_TRIGGER_CHANGED));
         TriggerBuilder builder = new TriggerBuilder(animation).setTriggerType(type).setRange(i);
+        if (i < 0 && (type == TriggerType.BLOCK || type == TriggerType.LOOP || type == TriggerType.PASSWORD || type == TriggerType.RANGE)) {
+            return new ConversationResponsePrompt(failPrompt, MessageUtil.formatErrorMessage(Messages.MSG_RANGE_NEEDED, type.toString()));
+        }
         if (null != type) switch (type) {
             case BLOCK:
                 retPrompt = new EditBlockTriggerConversationPrompt(successPrompt, animation, builder);
                 break;
             case PASSWORD:
                 retPrompt = new EditPasswordTriggerConversationPrompt(successPrompt, animation, builder);
+                break;
+            case TWO_BLOCK:
+                retPrompt = new EditMultiBlockTriggerConversationPrompt(successPrompt, animation, builder, 1, 2);
                 break;
             default:
                 animation.setTriggerBuilderData(new TriggerBuilderData(type, i));
@@ -67,7 +80,7 @@ public class TriggerCommandHandler extends ConversationCommandHandler {
     
     @Override
     public boolean customCheckParamTypes(String[] params) {
-        return StringUtil.isUnsignedInteger(params[2]);
+        return params.length < 3 || StringUtil.isUnsignedInteger(params[2]);
     }
     
 }

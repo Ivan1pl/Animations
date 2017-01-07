@@ -112,7 +112,15 @@ public class Messages {
     
     public static final String MSG_SELECTION_TOO_BIG = "Selected area is too big. Maximum volume is {0}.";
     
+    public static final String MSG_BLOCK_ADDED = "Block added.";
+    
+    public static final String MSG_EDIT_MULTI_BLOCK_TRIGGER = "Editing block #{1}.\n" + MSG_EDIT_BLOCK_TRIGGER;
+    
+    public static final String MSG_RANGE_NEEDED = "Range is required for trigger type: {0}.";
+    
     public static final String TRIGGER_INFO = "Trigger: type: {0}, range: {1}.";
+    
+    public static final String TRIGGER_NORANGE_INFO = "Trigger: type: {0}.";
     
     public static final String NOTRIGGER_INFO = "Trigger: none";
     

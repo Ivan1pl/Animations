@@ -44,31 +44,33 @@ public abstract class ConversationCommandHandler {
     @Getter
     private final boolean checkParamTypes;
     
+    @Getter
+    private final int optionalParamsCount;
+    
     public ConversationCommandHandler(String name, int paramsCount, String... paramDescriptions) {
-        this(name, paramsCount, true, paramDescriptions);
+        this(name, paramsCount, 0, true, paramDescriptions);
     }
     
-    public ConversationCommandHandler(String name, int paramsCount, boolean checkParamTypes, String... paramDescriptions) {
+    public ConversationCommandHandler(String name, int paramsCount, int optionalParamsCount, boolean checkParamTypes, String... paramDescriptions) {
         this.name = name;
         this.paramsCount = paramsCount;
         this.paramDescriptions = Arrays.asList(paramDescriptions);
         this.checkParamTypes = checkParamTypes;
+        this.optionalParamsCount = optionalParamsCount;
     }
     
     public String format() {
         String ret = name;
+        int count = 1;
         for (String param : paramDescriptions) {
-            ret += " <" + param + ">";
+            if (count > paramsCount) {
+                ret += " [" + param + "]";
+            } else {
+                ret += " <" + param + ">";
+            }
+            count++;
         }
         return ret;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.name);
-        hash = 53 * hash + this.paramsCount;
-        return hash;
     }
 
     @Override
@@ -83,10 +85,19 @@ public abstract class ConversationCommandHandler {
             return false;
         }
         final ConversationCommandHandler other = (ConversationCommandHandler) obj;
-        if (this.paramsCount != other.paramsCount) {
+        if (this.paramsCount != other.paramsCount || this.optionalParamsCount != other.optionalParamsCount) {
             return false;
         }
         return Objects.equals(this.name, other.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + Objects.hashCode(this.name);
+        hash = 59 * hash + this.paramsCount;
+        hash = 59 * hash + this.optionalParamsCount;
+        return hash;
     }
     
     public abstract Prompt handle(ConversationContext cc, Animation animation, String animationName, String[] params) throws AnimationTypeException;

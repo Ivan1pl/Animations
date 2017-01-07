@@ -39,7 +39,7 @@ public class TypeCommandHandler extends ConversationCommandHandler {
     private final EditAnimationConversationPrompt affectedPrompt;
     
     public TypeCommandHandler(Prompt successPrompt, EditAnimationConversationPrompt affectedPrompt) {
-        super("type", 1, false, "m(oving)|s(tationary)");
+        super("type", 1, 0, false, "m(oving)|s(tationary)");
         this.successPrompt = successPrompt;
         this.affectedPrompt = affectedPrompt;
     }

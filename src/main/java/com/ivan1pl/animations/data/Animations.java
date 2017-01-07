@@ -261,8 +261,8 @@ public class Animations {
                                     .setTriggerType(animation.getTriggerBuilderData().getType())
                                     .setRange(animation.getTriggerBuilderData().getRange())
                                     .setPassword(animation.getTriggerBuilderData().getPassword())
-                                    .setTriggerBlock1(animation.getTriggerBuilderData().getTriggerBlock1())
-                                    .setTriggerButton1(animation.getTriggerBuilderData().getTriggerButton1())
+                                    .setTriggerBlocks(animation.getTriggerBuilderData().getTriggerBlocks())
+                                    .setTriggerButtons(animation.getTriggerBuilderData().getTriggerButtons())
                                     .create();
                     t.register();
                     triggers.put(animation, t);

@@ -42,6 +42,7 @@ import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.data.MovingAnimation;
 import com.ivan1pl.animations.data.StationaryAnimation;
 import com.ivan1pl.animations.exceptions.AnimationTypeException;
+import com.ivan1pl.animations.triggers.TriggerType;
 import com.ivan1pl.animations.utils.MessageUtil;
 import com.ivan1pl.animations.utils.StringUtil;
 import java.util.ArrayList;
@@ -90,7 +91,7 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         STATIONARY_EDIT_COMMANDS.add(new HelpCommandHandler(this));
         STATIONARY_EDIT_COMMANDS.add(new CancelCommandHandler(END_OF_CONVERSATION));
         STATIONARY_EDIT_COMMANDS.add(new SaveCommandHandler(this));
-        STATIONARY_EDIT_COMMANDS.add(new TriggerCommandHandler(this));
+        STATIONARY_EDIT_COMMANDS.add(new TriggerCommandHandler(this, this));
         STATIONARY_EDIT_COMMANDS.add(new DeletetriggerCommandHandler(this));
         
         MOVING_EDIT_COMMANDS.add(new StepCommandHandler(this, this));
@@ -101,7 +102,7 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         MOVING_EDIT_COMMANDS.add(new HelpCommandHandler(this));
         MOVING_EDIT_COMMANDS.add(new CancelCommandHandler(END_OF_CONVERSATION));
         MOVING_EDIT_COMMANDS.add(new SaveCommandHandler(this));
-        MOVING_EDIT_COMMANDS.add(new TriggerCommandHandler(this));
+        MOVING_EDIT_COMMANDS.add(new TriggerCommandHandler(this, this));
         MOVING_EDIT_COMMANDS.add(new DeletetriggerCommandHandler(this));
     }
     
@@ -181,7 +182,11 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         }
         message += "\n";
         if (animation.getTriggerBuilderData() != null) {
-            message += MessageUtil.formatPromptMessage(Messages.TRIGGER_INFO, animation.getTriggerBuilderData().getType().toString().toLowerCase(), animation.getTriggerBuilderData().getRange());
+            if (animation.getTriggerBuilderData().getType() == TriggerType.TWO_BLOCK) {
+                message += MessageUtil.formatPromptMessage(Messages.TRIGGER_NORANGE_INFO, animation.getTriggerBuilderData().getType().toString().toLowerCase());
+            } else {
+                message += MessageUtil.formatPromptMessage(Messages.TRIGGER_INFO, animation.getTriggerBuilderData().getType().toString().toLowerCase(), animation.getTriggerBuilderData().getRange());
+            }
         } else {
             message += MessageUtil.formatPromptMessage(Messages.NOTRIGGER_INFO);
         }
@@ -203,7 +208,8 @@ public class EditAnimationConversationPrompt extends ValidatingPrompt {
         }
         
         for (ConversationCommandHandler handler : cmpList) {
-            if (handler.getName().equalsIgnoreCase(realInput[0]) && handler.getParamsCount() == realInput.length-1) {
+            if (handler.getName().equalsIgnoreCase(realInput[0]) && handler.getParamsCount() <= realInput.length-1
+                    && handler.getParamsCount() + handler.getOptionalParamsCount() >= realInput.length-1) {
                 if (handler.isCheckParamTypes()) {
                     for (int i = 1; i < realInput.length; ++i) {
                         if (!StringUtil.isInteger(realInput[i])) {

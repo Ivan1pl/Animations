@@ -21,6 +21,9 @@ package com.ivan1pl.animations.triggers;
 import com.ivan1pl.animations.constants.MouseButton;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.AnimationsLocation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -36,9 +39,9 @@ public class TriggerBuilder {
     
     private String password;
     
-    private AnimationsLocation triggerBlock1;
+    private List<AnimationsLocation> triggerBlocks;
     
-    private MouseButton triggerButton1 = MouseButton.BOTH;
+    private List<MouseButton> triggerButtons;
     
     public TriggerBuilder(Animation animation) {
         this.animation = animation;
@@ -59,13 +62,35 @@ public class TriggerBuilder {
         return this;
     }
     
-    public TriggerBuilder setTriggerBlock1(AnimationsLocation triggerBlock1) {
-        this.triggerBlock1 = triggerBlock1;
+    public TriggerBuilder setTriggerBlock(AnimationsLocation triggerBlock) {
+        this.triggerBlocks = Arrays.asList(triggerBlock);
         return this;
     }
     
-    public TriggerBuilder setTriggerButton1(MouseButton triggerButton1) {
-        this.triggerButton1 = triggerButton1;
+    public TriggerBuilder setTriggerButton(MouseButton triggerButton) {
+        this.triggerButtons = Arrays.asList(triggerButton);
+        return this;
+    }
+    
+    public TriggerBuilder addTriggerBlock(AnimationsLocation triggerBlock, MouseButton triggerButton) {
+        if (triggerBlocks == null) {
+            triggerBlocks = new ArrayList<>();
+        }
+        if (triggerButtons == null) {
+            triggerButtons = new ArrayList<>();
+        }
+        triggerBlocks.add(triggerBlock);
+        triggerButtons.add(triggerButton);
+        return this;
+    }
+    
+    public TriggerBuilder setTriggerBlocks(List<AnimationsLocation> triggerBlocks) {
+        this.triggerBlocks = triggerBlocks;
+        return this;
+    }
+    
+    public TriggerBuilder setTriggerButtons(List<MouseButton> triggerButtons) {
+        this.triggerButtons = triggerButtons;
         return this;
     }
     
@@ -81,8 +106,11 @@ public class TriggerBuilder {
                 ((BaseRangeTrigger) t).setRange(range);
                 break;
             case BLOCK:
-                t = new BlockTrigger(animation, triggerBlock1, triggerButton1);
+                t = new BlockTrigger(animation, triggerBlocks.get(0), triggerButtons.get(0));
                 ((BaseRangeTrigger) t).setRange(range);
+                break;
+            case TWO_BLOCK:
+                t = new TwoBlockTrigger(animation, triggerBlocks.get(0), triggerButtons.get(0), triggerBlocks.get(1), triggerButtons.get(1));
                 break;
             case RANGE:
             default:
@@ -94,7 +122,7 @@ public class TriggerBuilder {
     }
     
     public TriggerBuilderData createBuilderData() {
-        return new TriggerBuilderData(triggerType, range, password, triggerBlock1, triggerButton1);
+        return new TriggerBuilderData(triggerType, range, password, triggerBlocks, triggerButtons);
     }
     
 }
