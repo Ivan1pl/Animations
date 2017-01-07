@@ -22,9 +22,6 @@ import com.ivan1pl.animations.constants.Permissions;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.data.AnimationsLocation;
-import com.ivan1pl.animations.events.Event;
-import com.ivan1pl.animations.events.EventListener;
-import com.ivan1pl.animations.tasks.AnimationTask;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -47,42 +44,14 @@ public class BlockTrigger extends BaseRangeTrigger {
     @Override
     protected void onPlayerMoved() {
         if (!isAnyPlayerInRange() && !isStarted() && isFinished()) {
-            AnimationTask task = getAnimation().playReverse();
-            if (task != null) {
-                setStarted(true);
-                task.attachListener(new EventListener() {
-                    @Override
-                    public void onEvent(Event event) {
-                        setStarted(false);
-                        setFinished(false);
-                    }
-                });
-            } else {
-                getAnimation().showFrame(0);
-                setStarted(false);
-                setFinished(false);
-            }
+            startReverseAnimation();
         }
     }
     
     @Override
     public void execute() {
         if (isAnyPlayerInRange() && !isStarted() && !isFinished()) {
-            AnimationTask task = getAnimation().play();
-            if (task != null) {
-                setStarted(true);
-                task.attachListener(new EventListener() {
-                    @Override
-                    public void onEvent(Event event) {
-                        setStarted(false);
-                        setFinished(true);
-                    }
-                });
-            } else {
-                getAnimation().showFrame(0);
-                setStarted(false);
-                setFinished(false);
-            }
+            startAnimation();
         }
     }
     

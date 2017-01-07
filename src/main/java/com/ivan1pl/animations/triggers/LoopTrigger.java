@@ -19,9 +19,6 @@
 package com.ivan1pl.animations.triggers;
 
 import com.ivan1pl.animations.data.Animation;
-import com.ivan1pl.animations.events.Event;
-import com.ivan1pl.animations.events.EventListener;
-import com.ivan1pl.animations.tasks.AnimationTask;
 
 /**
  *
@@ -36,21 +33,7 @@ public class LoopTrigger extends BaseRangeTrigger {
     @Override
     public void execute() {
         if (isAnyPlayerInRange() && !isStarted()) {
-            AnimationTask task = getAnimation().play();
-            if (task != null) {
-                setStarted(true);
-                task.attachListener(new EventListener() {
-                    @Override
-                    public void onEvent(Event event) {
-                        setStarted(false);
-                        execute();
-                    }
-                });
-            } else {
-                getAnimation().showFrame(0);
-                setStarted(false);
-                setFinished(false);
-            }
+            startLoopAnimation();
         }
     }
     

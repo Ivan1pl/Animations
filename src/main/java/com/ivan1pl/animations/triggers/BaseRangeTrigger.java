@@ -18,7 +18,6 @@
  */
 package com.ivan1pl.animations.triggers;
 
-import com.ivan1pl.animations.AnimationsPlugin;
 import com.ivan1pl.animations.data.Animation;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,8 +26,6 @@ import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -37,31 +34,20 @@ import org.bukkit.event.player.PlayerQuitEvent;
  *
  * @author Ivan1pl
  */
-public abstract class BaseRangeTrigger implements Trigger, Listener {
+public abstract class BaseRangeTrigger extends BaseTrigger {
     
     @Getter
     @Setter
     private int range;
     
-    @Getter
-    @Setter
-    private boolean started;
-    
-    @Getter
-    @Setter
-    private boolean finished;
-    
-    @Getter
-    private final Animation animation;
-    
     private final Set<Player> playersInRange = new HashSet<>();
     
     public BaseRangeTrigger(Animation animation) {
-        this.animation = animation;
+        super(animation);
     }
     
     protected final boolean isPlayerInRange(Player player) {
-        return animation.isPlayerInRange(player, range);
+        return getAnimation().isPlayerInRange(player, range);
     }
     
     protected final boolean isAnyPlayerInRange() {
@@ -71,12 +57,12 @@ public abstract class BaseRangeTrigger implements Trigger, Listener {
     @Override
     public void register() {
         init();
-        Bukkit.getServer().getPluginManager().registerEvents(this, AnimationsPlugin.getPluginInstance());
+        super.register();
     }
     
     @Override
     public void unregister() {
-        HandlerList.unregisterAll(this);
+        super.unregister();
         playersInRange.clear();
     }
     
