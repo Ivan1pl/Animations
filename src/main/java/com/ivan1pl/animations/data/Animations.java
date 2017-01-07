@@ -78,6 +78,7 @@ public class Animations {
     
     private static boolean debugMode = false;
     
+    @Getter
     private static int maxFrameSize = 0;
     
     private static int maxRunningAnimations = 0;
@@ -334,6 +335,10 @@ public class Animations {
     
     public static void debug(String message, Object... parameters) {
         debug(MessageFormat.format(message, parameters));
+    }
+    
+    public static boolean validateSelectionSize(Selection s) {
+        return s.getVolume() <= maxFrameSize || maxFrameSize == -1;
     }
     
 }

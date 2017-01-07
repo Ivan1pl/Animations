@@ -110,6 +110,8 @@ public class Messages {
     
     public static final String MSG_ENTER_PASSWORD_FOR_TRIGGER = "Enter the text which will trigger the animation:";
     
+    public static final String MSG_SELECTION_TOO_BIG = "Selected area is too big. Maximum volume is {0}.";
+    
     public static final String TRIGGER_INFO = "Trigger: type: {0}, range: {1}.";
     
     public static final String NOTRIGGER_INFO = "Trigger: none";

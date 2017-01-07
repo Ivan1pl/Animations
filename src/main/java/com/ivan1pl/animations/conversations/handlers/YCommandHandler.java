@@ -56,6 +56,9 @@ public class YCommandHandler extends ConversationCommandHandler {
     @Override
     public Prompt handle(ConversationContext cc, Animation animation, String animationName, String[] params) throws AnimationTypeException {
         Selection sel = Animations.getSelection((Player) cc.getForWhom());
+        if (!Animations.validateSelectionSize(sel)) {
+            return new ConversationResponsePrompt(failPrompt, MessageUtil.formatErrorMessage(Messages.MSG_SELECTION_TOO_BIG, Animations.getMaxFrameSize()));
+        }
         try {
             Animation anim;
             switch (affectedPrompt.getType()) {
