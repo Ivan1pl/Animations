@@ -47,25 +47,37 @@ public class TriggerBuilderData implements Serializable {
     
     @Getter
     private final List<MouseButton> triggerButtons;
+
+    @Getter
+    private final String animationName;
+
+    @Getter
+    private final int frame;
     
-    public TriggerBuilderData(TriggerType type, int range, String password, List<AnimationsLocation> triggerBlocks, List<MouseButton> triggerButtons) {
+    public TriggerBuilderData(TriggerType type, int range, String password, List<AnimationsLocation> triggerBlocks, List<MouseButton> triggerButtons, String animationName, int frame) {
         this.type = type;
         this.range = range;
         this.password = password;
         this.triggerBlocks = triggerBlocks;
         this.triggerButtons = triggerButtons;
+        this.animationName = animationName;
+        this.frame = frame;
     }
     
     public TriggerBuilderData(TriggerType type, int range, String password) {
-        this (type, range, password, null, null);
+        this (type, range, password, null, null, null, -1);
     }
     
     public TriggerBuilderData(TriggerType type, int range, AnimationsLocation triggerBlock1, MouseButton triggerButton1) {
-        this (type, range, null, Arrays.asList(triggerBlock1), Arrays.asList(triggerButton1));
+        this (type, range, null, Arrays.asList(triggerBlock1), Arrays.asList(triggerButton1), null, -1);
     }
     
     public TriggerBuilderData(TriggerType type, int range) {
-        this (type, range, null, null, null);
+        this (type, range, null, null, null, null, -1);
+    }
+
+    public TriggerBuilderData(TriggerType type, int range, String animationName, int frame) {
+        this (type, range, null, null, null, animationName, frame);
     }
     
 }

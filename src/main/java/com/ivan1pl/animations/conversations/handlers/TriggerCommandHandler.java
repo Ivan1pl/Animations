@@ -23,6 +23,7 @@ import com.ivan1pl.animations.conversations.ConversationResponsePrompt;
 import com.ivan1pl.animations.conversations.EditBlockTriggerConversationPrompt;
 import com.ivan1pl.animations.conversations.EditMultiBlockTriggerConversationPrompt;
 import com.ivan1pl.animations.conversations.EditPasswordTriggerConversationPrompt;
+import com.ivan1pl.animations.conversations.SelectAnimationConversationPrompt;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.exceptions.AnimationTypeException;
 import com.ivan1pl.animations.triggers.TriggerBuilder;
@@ -44,7 +45,7 @@ public class TriggerCommandHandler extends ConversationCommandHandler {
     private final Prompt failPrompt;
     
     public TriggerCommandHandler(Prompt successPrompt, Prompt failPrompt) {
-        super("trigger", 1, 1, false, "r(ange)|l(oop)|b(lock)|p(assword)|t(woblock)", "max_range");
+        super("trigger", 1, 1, false, "r(ange)|l(oop)|b(lock)|p(assword)|t(woblock)|c(hain)", "max_range");
         this.successPrompt = successPrompt;
         this.failPrompt = failPrompt;
     }
@@ -58,7 +59,7 @@ public class TriggerCommandHandler extends ConversationCommandHandler {
         }
         Prompt retPrompt = new ConversationResponsePrompt(successPrompt, MessageUtil.formatInfoMessage(Messages.MSG_TRIGGER_CHANGED));
         TriggerBuilder builder = new TriggerBuilder(animation).setTriggerType(type).setRange(i);
-        if (i < 0 && (type == TriggerType.BLOCK || type == TriggerType.LOOP || type == TriggerType.PASSWORD || type == TriggerType.RANGE)) {
+        if (i < 0 && (type == TriggerType.BLOCK || type == TriggerType.LOOP || type == TriggerType.PASSWORD || type == TriggerType.RANGE || type == TriggerType.CHAIN)) {
             return new ConversationResponsePrompt(failPrompt, MessageUtil.formatErrorMessage(Messages.MSG_RANGE_NEEDED, type.toString()));
         }
         if (null != type) switch (type) {
@@ -70,6 +71,9 @@ public class TriggerCommandHandler extends ConversationCommandHandler {
                 break;
             case TWO_BLOCK:
                 retPrompt = new EditMultiBlockTriggerConversationPrompt(successPrompt, animation, builder, 1, 2);
+                break;
+            case CHAIN:
+                retPrompt = new SelectAnimationConversationPrompt(successPrompt, animation, builder);
                 break;
             default:
                 animation.setTriggerBuilderData(new TriggerBuilderData(type, i));

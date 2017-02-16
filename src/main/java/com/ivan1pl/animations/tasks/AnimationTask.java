@@ -22,6 +22,7 @@ import com.ivan1pl.animations.AnimationsPlugin;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.data.MovingAnimation;
+import com.ivan1pl.animations.events.AnimationFrameDisplayedEvent;
 import com.ivan1pl.animations.events.Event;
 import com.ivan1pl.animations.events.EventDispatcher;
 import com.ivan1pl.animations.events.EventListener;
@@ -63,6 +64,7 @@ public class AnimationTask extends BukkitRunnable {
         if (reverse) {
             if (stage < animation.getFrameCount()) {
                 animation.showFrame(animation.getFrameCount()-stage-1);
+                Animations.callEvent(new AnimationFrameDisplayedEvent(animation, animation.getFrameCount()-stage-1, true));
             }
             stage++;
             if (stage > 1 && animation instanceof MovingAnimation && stage <= animation.getFrameCount()) {
@@ -76,6 +78,7 @@ public class AnimationTask extends BukkitRunnable {
         } else {
             if (stage < animation.getFrameCount()) {
                 animation.showFrame(stage);
+                Animations.callEvent(new AnimationFrameDisplayedEvent(animation, stage, false));
             }
             stage++;
             if (stage > 1 && animation instanceof MovingAnimation && stage <= animation.getFrameCount()) {

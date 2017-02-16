@@ -27,7 +27,8 @@ public enum TriggerType {
     LOOP,
     PASSWORD,
     BLOCK,
-    TWO_BLOCK;
+    TWO_BLOCK,
+    CHAIN;
     
     public static TriggerType fromString(String type) {
         if ("l".equalsIgnoreCase(type) || "loop".equalsIgnoreCase(type)) {
@@ -38,6 +39,8 @@ public enum TriggerType {
             return BLOCK;
         } else if ("t".equalsIgnoreCase(type) || "twoblock".equalsIgnoreCase(type)) {
             return TWO_BLOCK;
+        } else if ("c".equalsIgnoreCase(type) || "chain".equalsIgnoreCase(type)) {
+            return CHAIN;
         } else {
             return RANGE;
         }

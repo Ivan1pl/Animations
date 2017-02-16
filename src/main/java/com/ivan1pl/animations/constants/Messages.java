@@ -117,6 +117,12 @@ public class Messages {
     public static final String MSG_EDIT_MULTI_BLOCK_TRIGGER = "Editing block #{1}.\n" + MSG_EDIT_BLOCK_TRIGGER;
     
     public static final String MSG_RANGE_NEEDED = "Range is required for trigger type: {0}.";
+
+    public static final String MSG_SELECT_ANIMATION = "Select animation (type animation name or exit with ''c''). Existing animations:\n{0}";
+
+    public static final String MSG_ANIMATION_SELECTED = "Animation selected.";
+
+    public static final String MSG_SELECT_FRAME = "Select frame after which this animation will be triggered or exit with ''c''.";
     
     public static final String TRIGGER_INFO = "Trigger: type: {0}, range: {1}.";
     

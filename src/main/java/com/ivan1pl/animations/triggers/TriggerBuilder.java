@@ -42,6 +42,10 @@ public class TriggerBuilder {
     private List<AnimationsLocation> triggerBlocks;
     
     private List<MouseButton> triggerButtons;
+
+    private String animationName;
+
+    private int frame;
     
     public TriggerBuilder(Animation animation) {
         this.animation = animation;
@@ -93,6 +97,16 @@ public class TriggerBuilder {
         this.triggerButtons = triggerButtons;
         return this;
     }
+
+    public TriggerBuilder setAnimationName(String animationName) {
+        this.animationName = animationName;
+        return this;
+    }
+
+    public TriggerBuilder setFrame(int frame) {
+        this.frame = frame;
+        return this;
+    }
     
     public Trigger create() {
         Trigger t;
@@ -112,6 +126,10 @@ public class TriggerBuilder {
             case TWO_BLOCK:
                 t = new TwoBlockTrigger(animation, triggerBlocks.get(0), triggerButtons.get(0), triggerBlocks.get(1), triggerButtons.get(1));
                 break;
+            case CHAIN:
+                t = new ChainTrigger(animation, animationName, frame);
+                ((BaseRangeTrigger) t).setRange(range);
+                break;
             case RANGE:
             default:
                 t = new RangeTrigger(animation);
@@ -122,7 +140,7 @@ public class TriggerBuilder {
     }
     
     public TriggerBuilderData createBuilderData() {
-        return new TriggerBuilderData(triggerType, range, password, triggerBlocks, triggerButtons);
+        return new TriggerBuilderData(triggerType, range, password, triggerBlocks, triggerButtons, animationName, frame);
     }
     
 }

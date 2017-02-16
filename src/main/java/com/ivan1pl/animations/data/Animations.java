@@ -45,9 +45,11 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 
 /**
  *
@@ -263,6 +265,8 @@ public class Animations {
                                     .setPassword(animation.getTriggerBuilderData().getPassword())
                                     .setTriggerBlocks(animation.getTriggerBuilderData().getTriggerBlocks())
                                     .setTriggerButtons(animation.getTriggerBuilderData().getTriggerButtons())
+                                    .setAnimationName(animation.getTriggerBuilderData().getAnimationName())
+                                    .setFrame(animation.getTriggerBuilderData().getFrame())
                                     .create();
                     t.register();
                     triggers.put(animation, t);
@@ -340,6 +344,15 @@ public class Animations {
     
     public static boolean validateSelectionSize(Selection s) {
         return s.getVolume() <= maxFrameSize || maxFrameSize == -1;
+    }
+    
+    public static void callEvent(Event event) {
+        Bukkit.getServer().getPluginManager().callEvent(event);
+    }
+
+    public static String[] getAnimationNames() {
+        Set<String> names = animations.keySet();
+        return names.toArray(new String[names.size()]);
     }
     
 }
