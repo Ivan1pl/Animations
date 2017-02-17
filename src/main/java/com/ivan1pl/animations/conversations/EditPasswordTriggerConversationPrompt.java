@@ -24,13 +24,12 @@ import com.ivan1pl.animations.triggers.TriggerBuilder;
 import com.ivan1pl.animations.utils.MessageUtil;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.StringPrompt;
 
 /**
  *
  * @author Ivan1pl
  */
-public class EditPasswordTriggerConversationPrompt extends StringPrompt {
+public class EditPasswordTriggerConversationPrompt extends BaseEditorStringPrompt {
 
     private final Prompt retPrompt;
     
@@ -50,7 +49,7 @@ public class EditPasswordTriggerConversationPrompt extends StringPrompt {
     }
 
     @Override
-    public Prompt acceptInput(ConversationContext cc, String string) {
+    protected Prompt accept(ConversationContext cc, String string) {
         animation.setTriggerBuilderData(triggerBuilder.setPassword(string).createBuilderData());
         return new ConversationResponsePrompt(retPrompt, MessageUtil.formatInfoMessage(Messages.MSG_TRIGGER_CHANGED));
     }

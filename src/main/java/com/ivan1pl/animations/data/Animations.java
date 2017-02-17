@@ -79,6 +79,12 @@ public class Animations {
     private static final int PAGE_SIZE = 10;
     
     private static boolean debugMode = false;
+
+    @Getter
+    private static int editorTimeout;
+
+    @Getter
+    private static String editorEscapeString;
     
     @Getter
     private static int maxFrameSize = 0;
@@ -114,6 +120,9 @@ public class Animations {
         
         String blockSelectorWand = AnimationsPlugin.getPluginInstance().getConfig().getString("blockSelectorWand");
         blockSelectorMaterial = Material.valueOf(blockSelectorWand);
+
+        editorTimeout = AnimationsPlugin.getPluginInstance().getConfig().getInt("editor.timeout");
+        editorEscapeString = AnimationsPlugin.getPluginInstance().getConfig().getString("editor.escapeString");
         
         maxFrameSize = AnimationsPlugin.getPluginInstance().getConfig().getInt("limits.maxFrameSize");
         maxRunningAnimations = AnimationsPlugin.getPluginInstance().getConfig().getInt("limits.maxRunningAnimations");

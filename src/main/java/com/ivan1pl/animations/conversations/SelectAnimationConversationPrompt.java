@@ -25,14 +25,13 @@ import com.ivan1pl.animations.triggers.TriggerBuilder;
 import com.ivan1pl.animations.utils.MessageUtil;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.FixedSetPrompt;
 import org.bukkit.conversations.Prompt;
 
 /**
  *
  * @author Ivan1pl
  */
-public class SelectAnimationConversationPrompt extends FixedSetPrompt {
+public class SelectAnimationConversationPrompt extends BaseEditorFixedSetPrompt {
 
     private final Prompt retPrompt;
 

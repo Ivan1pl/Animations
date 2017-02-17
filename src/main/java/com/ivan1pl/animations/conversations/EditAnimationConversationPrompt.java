@@ -53,13 +53,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.ValidatingPrompt;
 
 /**
  *
  * @author Ivan1pl
  */
-public class EditAnimationConversationPrompt extends ValidatingPrompt {
+public class EditAnimationConversationPrompt extends BaseEditorValidatingPrompt {
     
     private final List<ConversationCommandHandler> CREATE_COMMANDS = new ArrayList<>();
     

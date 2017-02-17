@@ -25,13 +25,12 @@ import com.ivan1pl.animations.utils.MessageUtil;
 import com.ivan1pl.animations.utils.StringUtil;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.ValidatingPrompt;
 
 /**
  *
  * @author Ivan1pl
  */
-public class SelectFrameConversationPrompt extends ValidatingPrompt {
+public class SelectFrameConversationPrompt extends BaseEditorValidatingPrompt {
 
     private final Prompt retPrompt;
 

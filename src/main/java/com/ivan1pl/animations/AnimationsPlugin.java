@@ -38,7 +38,7 @@ public class AnimationsPlugin extends JavaPlugin {
     private final AnimationsCommandExecutor executor = new AnimationsCommandExecutor();
     
     @Getter
-    private final EditAnimationConversationFactory conversationFactory = new EditAnimationConversationFactory(this);
+    private EditAnimationConversationFactory conversationFactory;
     
     @Override
     public void onEnable() {
@@ -53,6 +53,7 @@ public class AnimationsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         
         Animations.reload();
+        conversationFactory = new EditAnimationConversationFactory(this);
         
         getLogger().info(Messages.INFO_ENABLED);
     }

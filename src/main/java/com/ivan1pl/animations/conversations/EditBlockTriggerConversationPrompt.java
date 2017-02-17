@@ -27,7 +27,6 @@ import com.ivan1pl.animations.triggers.TriggerBuilder;
 import com.ivan1pl.animations.utils.MessageUtil;
 import org.bukkit.Location;
 import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.FixedSetPrompt;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.entity.Player;
 
@@ -35,7 +34,7 @@ import org.bukkit.entity.Player;
  *
  * @author Ivan1pl
  */
-public class EditBlockTriggerConversationPrompt extends FixedSetPrompt {
+public class EditBlockTriggerConversationPrompt extends BaseEditorFixedSetPrompt {
     
     private final Prompt retPrompt;
     

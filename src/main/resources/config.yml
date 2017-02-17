@@ -18,6 +18,15 @@ limits:
     # Maximum number of blocks being processed at the same time
     maxProcessedBlocks: 100000
 
+## Editor options
+editor:
+    # Timeout (in seconds) for conversation-based editor
+    timeout: 600
+    # Escape string - messages starting with this string will not be passed to
+    # the conversation. They will appear in public chat instead. Set to empty
+    # string to disable escaping.
+    escapeString: '!'
+
 ## Debugging options
 debug:
     # Set to true to enable debug mode (additional informations will appear in

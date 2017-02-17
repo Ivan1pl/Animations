@@ -39,7 +39,7 @@ public class EditAnimationConversationFactory implements ConversationAbandonedLi
     public EditAnimationConversationFactory(Plugin plugin) {
         factory = new ConversationFactory(plugin)
                 .withModality(false)
-                .withTimeout(600)
+                .withTimeout(Animations.getEditorTimeout())
                 .withLocalEcho(true)
                 .addConversationAbandonedListener(this);
     }
