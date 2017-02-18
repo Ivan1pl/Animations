@@ -38,6 +38,7 @@ import com.ivan1pl.animations.conversations.handlers.SwapframesCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.TriggerCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.TypeCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.UpdateBackgroundCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.UpdateframeCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.YCommandHandler;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
@@ -85,6 +86,7 @@ public class EditAnimationConversationPrompt extends BaseEditorValidatingPrompt 
         
         STATIONARY_EDIT_COMMANDS.add(new AddframeCommandHandler(this));
         STATIONARY_EDIT_COMMANDS.add(new RemoveframeCommandHandler(this, this));
+        STATIONARY_EDIT_COMMANDS.add(new UpdateframeCommandHandler(this, this));
         STATIONARY_EDIT_COMMANDS.add(new PreviewframeCommandHandler(this, this));
         STATIONARY_EDIT_COMMANDS.add(new PreviewCommandHandler(this));
         STATIONARY_EDIT_COMMANDS.add(new SwapframesCommandHandler(this, this));

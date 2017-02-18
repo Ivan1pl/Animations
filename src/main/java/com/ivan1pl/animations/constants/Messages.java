@@ -57,6 +57,8 @@ public class Messages {
     public static final String MSG_FRAME_ADDED = "Frame added.";
     
     public static final String MSG_FRAME_REMOVED = "Frame removed.";
+
+    public static final String MSG_FRAME_UPDATED = "Frame updated.";
     
     public static final String MSG_FRAMES_SWAPPED = "Frames swapped.";
     

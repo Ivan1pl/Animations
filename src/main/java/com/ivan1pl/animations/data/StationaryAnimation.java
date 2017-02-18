@@ -102,5 +102,14 @@ public class StationaryAnimation extends Animation implements Serializable {
     protected Location getCenter() {
         return selection.getCenter();
     }
+
+    public boolean updateFrame(int index) {
+        if (index < 0 || index >= frames.size()) {
+            return false;
+        }
+
+        frames.set(index, Frame.fromSelection(selection));
+        return true;
+    }
     
 }
