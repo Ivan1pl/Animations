@@ -24,6 +24,8 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 /**
@@ -38,7 +40,11 @@ public abstract class Animation implements Serializable {
     
     @Getter
     @Setter
-    private TriggerBuilderData triggerBuilderData;
+    private TriggerBuilderData triggerBuilderData = null;
+
+    @Getter
+    @Setter
+    private SoundData soundData = null;
     
     public abstract boolean showFrame(int index);
     
@@ -82,5 +88,17 @@ public abstract class Animation implements Serializable {
     }
     
     public abstract int getSizeInBlocks();
+
+    public void playSound() {
+        if (soundData != null) {
+            for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+                if (isPlayerInRange(p, soundData.getRange())) {
+                    p.playSound(getCenter(), Sound.valueOf(soundData.getName()), soundData.getVolume()/100.f, soundData.getPitch()/100.f);
+                }
+            }
+        }
+    }
+
+    protected abstract Location getCenter();
     
 }

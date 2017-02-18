@@ -140,5 +140,9 @@ public class Frame implements Serializable {
         s.setPoint2(new Location(Bukkit.getServer().getWorld(worldId), x + sizeX, y + sizeY, z + sizeZ));
         return s;
     }
+
+    public Location getCenter() {
+        return new Location(Bukkit.getWorld(worldId), x + sizeX/2., y + sizeY/2., z + sizeZ/2.);
+    }
     
 }

@@ -25,6 +25,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.SerializationUtils;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
@@ -108,6 +109,11 @@ public class MovingAnimation extends Animation implements Serializable {
     public int getSizeInBlocks() {
         return frame.getSizeX() * frame.getSizeY() * frame.getSizeZ() +
                 background.getSizeX() * background.getSizeY() * background.getSizeZ();
+    }
+
+    @Override
+    protected Location getCenter() {
+        return background.getCenter();
     }
     
 }

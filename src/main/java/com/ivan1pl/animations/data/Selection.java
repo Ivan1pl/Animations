@@ -119,5 +119,12 @@ public class Selection implements Serializable {
         double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
         return dist;
     }
+
+    public Location getCenter() {
+        double cX = (point1.getX() + point2.getX())/2.;
+        double cY = (point1.getY() + point2.getY())/2.;
+        double cZ = (point1.getZ() + point2.getZ())/2.;
+        return new Location(point1.getWorld(), cX, cY, cZ);
+    }
     
 }

@@ -23,6 +23,7 @@ import com.ivan1pl.animations.conversations.handlers.ConversationCommandHandler;
 import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.conversations.handlers.AddframeCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.CancelCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.DeletesoundCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.DeletetriggerCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.HelpCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.IntervalCommandHandler;
@@ -31,6 +32,7 @@ import com.ivan1pl.animations.conversations.handlers.PreviewCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.PreviewframeCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.RemoveframeCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.SaveCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.SoundCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.StepCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.SwapframesCommandHandler;
 import com.ivan1pl.animations.conversations.handlers.TriggerCommandHandler;
@@ -88,10 +90,12 @@ public class EditAnimationConversationPrompt extends BaseEditorValidatingPrompt 
         STATIONARY_EDIT_COMMANDS.add(new SwapframesCommandHandler(this, this));
         STATIONARY_EDIT_COMMANDS.add(new IntervalCommandHandler(this));
         STATIONARY_EDIT_COMMANDS.add(new HelpCommandHandler(this));
-        STATIONARY_EDIT_COMMANDS.add(new CancelCommandHandler(END_OF_CONVERSATION));
-        STATIONARY_EDIT_COMMANDS.add(new SaveCommandHandler(this));
         STATIONARY_EDIT_COMMANDS.add(new TriggerCommandHandler(this, this));
         STATIONARY_EDIT_COMMANDS.add(new DeletetriggerCommandHandler(this));
+        STATIONARY_EDIT_COMMANDS.add(new SoundCommandHandler(this));
+        STATIONARY_EDIT_COMMANDS.add(new DeletesoundCommandHandler(this));
+        STATIONARY_EDIT_COMMANDS.add(new CancelCommandHandler(END_OF_CONVERSATION));
+        STATIONARY_EDIT_COMMANDS.add(new SaveCommandHandler(this));
         
         MOVING_EDIT_COMMANDS.add(new StepCommandHandler(this, this));
         MOVING_EDIT_COMMANDS.add(new MaxDistanceCommandHandler(this, this));
@@ -99,10 +103,12 @@ public class EditAnimationConversationPrompt extends BaseEditorValidatingPrompt 
         MOVING_EDIT_COMMANDS.add(new IntervalCommandHandler(this));
         MOVING_EDIT_COMMANDS.add(new UpdateBackgroundCommandHandler(this, this));
         MOVING_EDIT_COMMANDS.add(new HelpCommandHandler(this));
-        MOVING_EDIT_COMMANDS.add(new CancelCommandHandler(END_OF_CONVERSATION));
-        MOVING_EDIT_COMMANDS.add(new SaveCommandHandler(this));
         MOVING_EDIT_COMMANDS.add(new TriggerCommandHandler(this, this));
         MOVING_EDIT_COMMANDS.add(new DeletetriggerCommandHandler(this));
+        MOVING_EDIT_COMMANDS.add(new SoundCommandHandler(this));
+        MOVING_EDIT_COMMANDS.add(new DeletesoundCommandHandler(this));
+        MOVING_EDIT_COMMANDS.add(new CancelCommandHandler(END_OF_CONVERSATION));
+        MOVING_EDIT_COMMANDS.add(new SaveCommandHandler(this));
     }
     
     public EditAnimationConversationPrompt(boolean isEdit) {
@@ -188,6 +194,13 @@ public class EditAnimationConversationPrompt extends BaseEditorValidatingPrompt 
             }
         } else {
             message += MessageUtil.formatPromptMessage(Messages.NOTRIGGER_INFO);
+        }
+        message += "\n";
+        if (animation.getSoundData() != null) {
+            message += MessageUtil.formatPromptMessage(Messages.SOUND_INFO, animation.getSoundData().getName(), animation.getSoundData().getPlayMode().toString(),
+                    animation.getSoundData().getRange(), animation.getSoundData().getPitch(), animation.getSoundData().getVolume());
+        } else {
+            message += MessageUtil.formatPromptMessage(Messages.NOSOUND_INFO);
         }
         return message;
     }

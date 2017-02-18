@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
@@ -95,6 +96,11 @@ public class StationaryAnimation extends Animation implements Serializable {
     @Override
     public int getSizeInBlocks() {
         return selection.getVolume();
+    }
+
+    @Override
+    protected Location getCenter() {
+        return selection.getCenter();
     }
     
 }

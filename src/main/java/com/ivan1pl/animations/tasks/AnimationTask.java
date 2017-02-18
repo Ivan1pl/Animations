@@ -19,6 +19,7 @@
 package com.ivan1pl.animations.tasks;
 
 import com.ivan1pl.animations.AnimationsPlugin;
+import com.ivan1pl.animations.constants.SoundPlayMode;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.data.MovingAnimation;
@@ -64,6 +65,7 @@ public class AnimationTask extends BukkitRunnable {
         if (reverse) {
             if (stage < animation.getFrameCount()) {
                 animation.showFrame(animation.getFrameCount()-stage-1);
+                playSoundIfNecessary();
                 Animations.callEvent(new AnimationFrameDisplayedEvent(animation, animation.getFrameCount()-stage-1, true));
             }
             stage++;
@@ -78,6 +80,7 @@ public class AnimationTask extends BukkitRunnable {
         } else {
             if (stage < animation.getFrameCount()) {
                 animation.showFrame(stage);
+                playSoundIfNecessary();
                 Animations.callEvent(new AnimationFrameDisplayedEvent(animation, stage, false));
             }
             stage++;
@@ -107,6 +110,17 @@ public class AnimationTask extends BukkitRunnable {
     
     public void detachListener(EventListener listener) {
         dispatcher.removeEventListener(Event.ANIMATION_FINISHED, listener);
+    }
+
+    private void playSoundIfNecessary() {
+        if (animation.getSoundData() == null) {
+            return;
+        }
+        if (animation.getSoundData().getPlayMode() == SoundPlayMode.ALL_FRAMES ||
+                (animation.getSoundData().getPlayMode() == SoundPlayMode.BEGIN && stage == 0) ||
+                (animation.getSoundData().getPlayMode() == SoundPlayMode.END && stage == animation.getFrameCount() - 1)) {
+            animation.playSound();
+        }
     }
     
 }

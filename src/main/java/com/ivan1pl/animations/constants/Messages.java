@@ -123,6 +123,28 @@ public class Messages {
     public static final String MSG_ANIMATION_SELECTED = "Animation selected.";
 
     public static final String MSG_SELECT_FRAME = "Select frame after which this animation will be triggered or exit with ''c''.";
+
+    public static final String MSG_SELECT_SOUND_CANCELLED = "Sound selection cancelled.";
+
+    public static final String MSG_SELECT_SOUND = "Select sound with ''select <sound_name>'' or exit with ''cancel''. For list of available sounds, type ''list <page>''";
+
+    public static final String MSG_SOUND_SELECTED = "Sound selected.";
+
+    public static final String MSG_INVALID_SOUND = "Invalid sound name: {0}.";
+
+    public static final String MSG_INVALID_PAGE = "Invalid page number: {0}. Expected number between 1 and {1}.";
+
+    public static final String MSG_SOUND_LIST = "Displaying sound list, page {0}/{1}:\n{2}";
+
+    public static final String MSG_SELECT_SOUND_PLAY_MODE = "When should the sound be played? (b - when animation begins, e - when animation ends, a - all frames, c - cancel)";
+
+    public static final String MSG_SOUND_UPDATED = "Sound updated.";
+
+    public static final String MSG_SOUND_DELETED = "Sound deleted.";
+
+    public static final String SOUND_INFO = "Sound: {0}; {1}; range = {2}; pitch = {3}; volume = {4}";
+
+    public static final String NOSOUND_INFO = "Sound: none";
     
     public static final String TRIGGER_INFO = "Trigger: type: {0}, range: {1}.";
     
