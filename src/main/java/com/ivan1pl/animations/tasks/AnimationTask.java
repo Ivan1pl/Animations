@@ -70,7 +70,7 @@ public class AnimationTask extends BukkitRunnable {
             }
             stage++;
             if (stage > 1 && animation instanceof MovingAnimation && stage <= animation.getFrameCount()) {
-                ((MovingAnimation) animation).movePlayers(animation.getFrameCount()-stage);
+                ((MovingAnimation) animation).movePlayers(animation.getFrameCount()-stage,true);
             }
             if (stage > animation.getFrameCount()) {
                 Animations.deleteTask(this);
@@ -85,7 +85,7 @@ public class AnimationTask extends BukkitRunnable {
             }
             stage++;
             if (stage > 1 && animation instanceof MovingAnimation && stage <= animation.getFrameCount()) {
-                ((MovingAnimation) animation).movePlayers(stage-1);
+                ((MovingAnimation) animation).movePlayers(stage-1,false);
             }
             if (stage > animation.getFrameCount()) {
                 Animations.deleteTask(this);

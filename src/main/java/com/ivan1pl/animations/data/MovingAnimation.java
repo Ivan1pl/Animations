@@ -87,13 +87,17 @@ public class MovingAnimation extends Animation implements Serializable {
         return maxDistance;
     }
     
-    public void movePlayers(int index) {
+    public void movePlayers(int index, boolean reverse) {
         List<Player> allPlayers = selection.getPoint1().getWorld().getPlayers();
         for (Player player : allPlayers) {
             Animations.debug(Messages.DEBUG_MOVING_ANIMATION_CHECKING_PLAYER, this.getClass().getName(), player.getName());
             if (frame.isInside(player.getLocation(), stepX * index, stepY * index, stepZ * index) && player.isOnGround()) {
                 Animations.debug(Messages.DEBUG_MOVING_PLAYER, this.getClass().getName(), player.getName());
-                player.teleport(player.getLocation().add(stepX, stepY, stepZ));
+                if(reverse) { 
+                    player.teleport(player.getLocation().add(-stepX, -stepY, -stepZ));
+                } else {
+                    player.teleport(player.getLocation().add(stepX, stepY, stepZ));
+                }
             }
         }
     }
