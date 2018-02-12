@@ -34,6 +34,8 @@ import org.bukkit.entity.Player;
  */
 public class MovingAnimation extends Animation implements Serializable {
     
+    private static final long serialVersionUID = -3124628769457473325L;
+    
     private Frame frame;
     
     private Frame background;
