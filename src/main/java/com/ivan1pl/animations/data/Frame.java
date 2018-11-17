@@ -31,6 +31,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 
 /**
  *
@@ -79,8 +80,12 @@ public class Frame implements Serializable {
                     Block b = loc.getBlock();
                     Material mat = blockMaterials[i*(sizeY)*(sizeZ) + j*(sizeZ) + k];
                     Byte matData = blockData[i*(sizeY)*(sizeZ) + j*(sizeZ) + k];
-                    b.setTypeIdAndData(mat.getId(), matData, false);
-                    chunksToUpdate.add(b.getChunk());
+                    BlockState state = b.getState();
+                    state.setType(mat);
+                    state.setRawData(matData);
+                    state.update(true, false);
+                    //1.13 removed b.setTypeIdAndData(mat.getId(), matData, false);
+                    // causes players to become invis for others chunksToUpdate.add(b.getChunk());
                 }
             }
         }

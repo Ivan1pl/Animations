@@ -1,7 +1,8 @@
-name: Animations
+name: ${project.artifactId}
 main: com.ivan1pl.animations.AnimationsPlugin
-version: 1.0
+version: ${project.version}
 description: Animations plugin
+api-version: 1.13
 commands:
     anim:
         description: Create or edit animation.
