@@ -53,7 +53,7 @@ import org.bukkit.event.Event;
 
 /**
  *
- * @author Ivan1pl
+ * @author Ivan1pl, Eriol_Eandur
  */
 public class Animations {
     
@@ -110,7 +110,7 @@ public class Animations {
 
             @Override
             public boolean accept(File file, String string) {
-                return string.endsWith(".anim");
+                return string.endsWith(".anim") || new File(file,string).isDirectory();
             }
             
         };
@@ -177,13 +177,15 @@ public class Animations {
         ObjectOutputStream ostream = null;
         boolean result = true;
         try {
-            File f = new File(PLUGIN_DIR, name + ".anim");
+            File folder = new File(PLUGIN_DIR, name);
+            File f = new File(folder, "data.anim");
             Files.deleteIfExists(f.toPath());
             
             fstream = new FileOutputStream(f);
             ostream = new ObjectOutputStream(fstream);
             
-            ostream.writeObject(animation);
+            //ostream.writeObject(animation);
+            animation.saveTo(folder, ostream);
         } catch (IOException ex) {
             Logger.getLogger(Animations.class.getName()).log(Level.SEVERE, null, ex);
             result = false;
@@ -249,7 +251,9 @@ public class Animations {
     
     public static void reloadAnimation(String name) {
         File f = new File(PLUGIN_DIR, name + ".anim");
-        
+        if(!f.exists()) {
+            f = new File(new File(PLUGIN_DIR, name),"data.anim");
+        }
         FileInputStream fstream = null;
         ObjectInputStream ostream = null;
         try {
@@ -257,6 +261,9 @@ public class Animations {
             ostream = new ObjectInputStream(fstream);
 
             Animation animation = (Animation) ostream.readObject();
+            
+            animation.prepare(new File(PLUGIN_DIR, name));
+            
             if (animation != null) {
                 Animation oldAnimation = animations.get(name);
                 if (oldAnimation != null) {

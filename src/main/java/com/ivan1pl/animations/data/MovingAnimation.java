@@ -18,8 +18,14 @@
  */
 package com.ivan1pl.animations.data;
 
+import com.boydti.fawe.FaweAPI;
 import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.exceptions.InvalidSelectionException;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 import lombok.Getter;
@@ -30,15 +36,15 @@ import org.bukkit.entity.Player;
 
 /**
  *
- * @author Ivan1pl
+ * @author Ivan1pl, Eriol_Eandur
  */
 public class MovingAnimation extends Animation implements Serializable {
     
     private static final long serialVersionUID = -3124628769457473325L;
     
-    private Frame frame;
+    private IFrame frame;
     
-    private Frame background;
+    private IFrame background;
     
     @Getter
     private final Selection selection;
@@ -58,6 +64,8 @@ public class MovingAnimation extends Animation implements Serializable {
     @Getter
     @Setter
     private int maxDistance;
+    
+    transient private EditSession session;
     
     public MovingAnimation(Selection selection) throws InvalidSelectionException {
         if (!Selection.isValid(selection)) {
@@ -122,4 +130,48 @@ public class MovingAnimation extends Animation implements Serializable {
         return background.getCenter();
     }
     
+    @Override
+    public void saveTo(File folder, ObjectOutputStream out) throws IOException {
+        super.saveTo(folder, out);
+        if(background instanceof WorldEditFrame) {
+            if(!folder.exists()) {
+                folder.mkdir();
+            }
+            ((WorldEditFrame)background).saveSchematic(new File(folder,"background.schem"));
+        }
+        if(frame instanceof WorldEditFrame) {
+            if(!folder.exists()) {
+                folder.mkdir();
+            }
+            ((WorldEditFrame)frame).saveSchematic(new File(folder,"frame.schem"));
+        }
+    }
+    
+    @Override
+    public void prepare(File folder) {
+        com.sk89q.worldedit.world.World world = BukkitUtil.getLocalWorld(selection.getCenter().getWorld());
+        session = FaweAPI.getEditSessionBuilder(world).build();
+        if(!folder.exists()) {
+            folder.mkdir();
+        }
+        if(background instanceof WorldEditFrame) {
+            ((WorldEditFrame)background).loadSchematic(session, new File(folder,"background.schem"));
+        }
+        if(frame instanceof WorldEditFrame) {
+            ((WorldEditFrame)frame).loadSchematic(session, new File(folder,"frame.schem"));
+        }
+        if(background instanceof Frame) {
+            WorldEditFrame update = WorldEditFrame.fromSelection(background.toSelection(),session);
+            update.saveSchematic(new File(folder,"background.schem"));
+            update.setBlocks(((Frame)background).getBlockMaterials(),((Frame)background).getBlockData());
+            background = update;
+        }
+        if(frame instanceof Frame) {
+            WorldEditFrame update = WorldEditFrame.fromSelection(frame.toSelection(),session);
+            update.setBlocks(((Frame)frame).getBlockMaterials(),((Frame)frame).getBlockData());
+            update.saveSchematic(new File(folder,"frame.schem"));
+            frame = update;
+        }
+        
+    }
 }

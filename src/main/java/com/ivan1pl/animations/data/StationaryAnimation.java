@@ -18,7 +18,13 @@
  */
 package com.ivan1pl.animations.data;
 
+import com.boydti.fawe.FaweAPI;
 import com.ivan1pl.animations.exceptions.InvalidSelectionException;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +34,18 @@ import org.bukkit.entity.Player;
 
 /**
  *
- * @author Ivan1pl
+ * @author Ivan1pl, Eriol_Eandur
  */
 public class StationaryAnimation extends Animation implements Serializable {
     
-    private final List<Frame> frames = new ArrayList<>();
+    private static final long serialVersionUID = -3315164220067048965L;
+
+    private final List<IFrame> frames = new ArrayList<>();
     
     @Getter
     private final Selection selection;
+    
+    transient private EditSession session;
     
     public StationaryAnimation(Selection selection) throws InvalidSelectionException {
         if (!Selection.isValid(selection)) {
@@ -45,7 +55,7 @@ public class StationaryAnimation extends Animation implements Serializable {
     }
     
     public void addFrame() {
-        Frame f = Frame.fromSelection(selection);
+        IFrame f = Frame.fromSelection(selection);
         frames.add(f);
     }
     
@@ -79,8 +89,8 @@ public class StationaryAnimation extends Animation implements Serializable {
             return false;
         }
         
-        Frame f1 = frames.get(i1);
-        Frame f2 = frames.get(i2);
+        IFrame f1 = frames.get(i1);
+        IFrame f2 = frames.get(i2);
         
         frames.set(i1, f2);
         frames.set(i2, f1);
@@ -112,4 +122,40 @@ public class StationaryAnimation extends Animation implements Serializable {
         return true;
     }
     
+    @Override
+    public void saveTo(File folder, ObjectOutputStream out) throws IOException {
+        super.saveTo(folder, out);
+        if(frames.size()>0 && frames.get(0) instanceof WorldEditFrame) {
+            if(!folder.exists()) {
+                folder.mkdir();
+            }
+            for(int i = 0; i< frames.size(); i++) {
+                ((WorldEditFrame)frames.get(i)).saveSchematic(new File(folder,"frame_"+i+".schem"));
+            }
+        }
+    }
+   
+    @Override
+    public void prepare(File folder) {
+        com.sk89q.worldedit.world.World world = BukkitUtil.getLocalWorld(selection.getCenter().getWorld());
+        session = FaweAPI.getEditSessionBuilder(world).build();
+        if(!folder.exists()) {
+            folder.mkdir();
+        }
+        for(int i=0;i<frames.size();i++) {
+            IFrame frame = frames.get(i);
+            if(frame instanceof WorldEditFrame) {
+                ((WorldEditFrame)frame).loadSchematic(session, new File(folder,"frame_"+i+".schem"));
+            }
+        }
+        for(int i=0;i<frames.size();i++) {
+            IFrame frame = frames.get(i);
+            if(frame instanceof Frame) {
+                WorldEditFrame update = WorldEditFrame.fromSelection(frame.toSelection(),session);
+                update.saveSchematic(new File(folder,"frame_"+i+".schem"));
+                update.setBlocks(((Frame)frame).getBlockMaterials(),((Frame)frame).getBlockData());
+                frames.set(i, frame);
+            }
+        }
+    }
 }

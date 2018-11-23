@@ -35,10 +35,12 @@ import org.bukkit.block.BlockState;
 
 /**
  *
- * @author Ivan1pl
+ * @author Ivan1pl, Eriol_Eandur
  */
-public class Frame implements Serializable {
+public class Frame implements Serializable, IFrame {
     
+    private static final long serialVersionUID = 2764396372346413554L;
+
     @Getter
     private int sizeX;
     
@@ -60,16 +62,21 @@ public class Frame implements Serializable {
     @Getter
     private UUID worldId;
     
+    
+    @Getter
     private Material[] blockMaterials;
     
+    @Getter
     private Byte[] blockData;
     
     private Frame() { }
     
+    @Override
     public void show() {
         show(0,0,0);
     }
     
+    @Override
     public void show(int offsetX, int offsetY, int offsetZ) {
         World w = Bukkit.getWorld(worldId);
         Set<Chunk> chunksToUpdate = new HashSet<>();
@@ -96,6 +103,7 @@ public class Frame implements Serializable {
         }
     }
     
+    @Override
     public boolean isInside(Location location, int offsetX, int offsetY, int offsetZ) {
         return (location.getBlockX() >= x + offsetX && location.getBlockX() < x + sizeX + offsetX &&
                 location.getBlockY() >= y + offsetY && location.getBlockY() <= y + sizeY + offsetY &&
@@ -139,6 +147,7 @@ public class Frame implements Serializable {
         return null;
     }
     
+    @Override
     public Selection toSelection() {
         Selection s = new Selection();
         s.setPoint1(new Location(Bukkit.getServer().getWorld(worldId), x, y, z));
@@ -146,6 +155,7 @@ public class Frame implements Serializable {
         return s;
     }
 
+    @Override
     public Location getCenter() {
         return new Location(Bukkit.getWorld(worldId), x + sizeX/2., y + sizeY/2., z + sizeZ/2.);
     }

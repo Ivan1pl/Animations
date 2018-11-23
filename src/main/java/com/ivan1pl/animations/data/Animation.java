@@ -20,6 +20,9 @@ package com.ivan1pl.animations.data;
 
 import com.ivan1pl.animations.tasks.AnimationTask;
 import com.ivan1pl.animations.triggers.TriggerBuilderData;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,10 +33,12 @@ import org.bukkit.entity.Player;
 
 /**
  *
- * @author Ivan1pl
+ * @author Ivan1pl, Eriol_Eandur
  */
 public abstract class Animation implements Serializable {
     
+    private static final long serialVersionUID = -7839198751291994315L;
+
     @Getter
     @Setter
     private int interval = 1;
@@ -99,6 +104,12 @@ public abstract class Animation implements Serializable {
         }
     }
 
+    public void saveTo(File folder, ObjectOutputStream out) throws IOException {
+        out.writeObject(this);
+    }
+    
+    public abstract void prepare(File folder);
+    
     protected abstract Location getCenter();
     
 }
