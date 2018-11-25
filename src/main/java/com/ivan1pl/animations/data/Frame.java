@@ -151,7 +151,7 @@ public class Frame implements Serializable, IFrame {
     public Selection toSelection() {
         Selection s = new Selection();
         s.setPoint1(new Location(Bukkit.getServer().getWorld(worldId), x, y, z));
-        s.setPoint2(new Location(Bukkit.getServer().getWorld(worldId), x + sizeX, y + sizeY, z + sizeZ));
+        s.setPoint2(new Location(Bukkit.getServer().getWorld(worldId), x + sizeX - 1, y + sizeY - 1, z + sizeZ - 1));
         return s;
     }
 

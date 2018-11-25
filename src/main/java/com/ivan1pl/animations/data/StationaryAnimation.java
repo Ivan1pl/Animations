@@ -28,8 +28,11 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Getter;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 /**
@@ -52,10 +55,11 @@ public class StationaryAnimation extends Animation implements Serializable {
             throw new InvalidSelectionException();
         }
         this.selection = selection;
+        createSession();
     }
     
     public void addFrame() {
-        IFrame f = Frame.fromSelection(selection);
+        IFrame f = WorldEditFrame.fromSelection(selection,session);
         frames.add(f);
     }
     
@@ -118,7 +122,7 @@ public class StationaryAnimation extends Animation implements Serializable {
             return false;
         }
 
-        frames.set(index, Frame.fromSelection(selection));
+        frames.set(index, WorldEditFrame.fromSelection(selection,session));
         return true;
     }
     
@@ -136,9 +140,12 @@ public class StationaryAnimation extends Animation implements Serializable {
     }
    
     @Override
-    public void prepare(File folder) {
-        com.sk89q.worldedit.world.World world = BukkitUtil.getLocalWorld(selection.getCenter().getWorld());
-        session = FaweAPI.getEditSessionBuilder(world).build();
+    public boolean prepare(File folder) {
+        if(!createSession()) {
+            Logger.getLogger(MovingAnimation.class.getName()).log(Level.WARNING,
+                             "Error while loading Animation "+folder.getName()+": Missing World");
+            return false;
+        }
         if(!folder.exists()) {
             folder.mkdir();
         }
@@ -152,10 +159,23 @@ public class StationaryAnimation extends Animation implements Serializable {
             IFrame frame = frames.get(i);
             if(frame instanceof Frame) {
                 WorldEditFrame update = WorldEditFrame.fromSelection(frame.toSelection(),session);
-                update.saveSchematic(new File(folder,"frame_"+i+".schem"));
+                //update.saveSchematic(new File(folder,"frame_"+i+".schem"));
                 update.setBlocks(((Frame)frame).getBlockMaterials(),((Frame)frame).getBlockData());
-                frames.set(i, frame);
+                frames.set(i, update);
             }
         }
+        return true;
     }
+    
+    private boolean createSession() {
+        World bukkitWorld = selection.getCenter().getWorld();
+        if(bukkitWorld==null) {
+            return false;
+        }
+        com.sk89q.worldedit.world.World world = BukkitUtil.getLocalWorld(bukkitWorld);
+        session = FaweAPI.getEditSessionBuilder(world).build();
+        return true;
+    }
+
+    
 }

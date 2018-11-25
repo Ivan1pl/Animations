@@ -28,10 +28,13 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.SerializationUtils;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 /**
@@ -72,14 +75,19 @@ public class MovingAnimation extends Animation implements Serializable {
             throw new InvalidSelectionException();
         }
         this.selection = selection;
-        frame = Frame.fromSelection(selection);
-        background = Frame.fromSelection(selection);
+        createSession();
+        frame = WorldEditFrame.fromSelection(selection,session);
+        background = WorldEditFrame.fromSelection(selection,session);
     }
     
     public void updateBackground() {
+Logger.getGlobal().info("Update Background 1");
         Selection s = SerializationUtils.clone(selection);
+Logger.getGlobal().info("Update Background 2");
         s.expand(stepX*getFrameCount(), stepY*getFrameCount(), stepZ*getFrameCount());
-        background = Frame.fromSelection(s);
+Logger.getGlobal().info("Update Background 3");
+        background = WorldEditFrame.fromSelection(s,session);
+Logger.getGlobal().info("Update Background 4");
     }
 
     @Override
@@ -148,9 +156,13 @@ public class MovingAnimation extends Animation implements Serializable {
     }
     
     @Override
-    public void prepare(File folder) {
-        com.sk89q.worldedit.world.World world = BukkitUtil.getLocalWorld(selection.getCenter().getWorld());
-        session = FaweAPI.getEditSessionBuilder(world).build();
+    public boolean prepare(File folder) {
+        if(!createSession()) {
+            Logger.getLogger(MovingAnimation.class.getName()).log(Level.WARNING,
+                             "Error while loading Animation "+folder.getName()+": Missing World");
+            return false;
+        }
+        createSession();
         if(!folder.exists()) {
             folder.mkdir();
         }
@@ -162,16 +174,27 @@ public class MovingAnimation extends Animation implements Serializable {
         }
         if(background instanceof Frame) {
             WorldEditFrame update = WorldEditFrame.fromSelection(background.toSelection(),session);
-            update.saveSchematic(new File(folder,"background.schem"));
+            //update.saveSchematic(new File(folder,"background.schem"));
             update.setBlocks(((Frame)background).getBlockMaterials(),((Frame)background).getBlockData());
             background = update;
         }
         if(frame instanceof Frame) {
             WorldEditFrame update = WorldEditFrame.fromSelection(frame.toSelection(),session);
             update.setBlocks(((Frame)frame).getBlockMaterials(),((Frame)frame).getBlockData());
-            update.saveSchematic(new File(folder,"frame.schem"));
+            //update.saveSchematic(new File(folder,"frame.schem"));
             frame = update;
         }
-        
+        return true;
     }
+    
+    private boolean createSession() {
+        World bukkitWorld = selection.getCenter().getWorld();
+        if(bukkitWorld==null) {
+            return false;
+        }
+        com.sk89q.worldedit.world.World world = BukkitUtil.getLocalWorld(bukkitWorld);
+        session = FaweAPI.getEditSessionBuilder(world).build();
+        return true;
+    }
+
 }

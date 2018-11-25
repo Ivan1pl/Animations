@@ -18,8 +18,10 @@
  */
 package com.ivan1pl.animations.data;
 
+import com.boydti.fawe.FaweAPI;
 import com.ivan1pl.animations.tasks.AnimationTask;
 import com.ivan1pl.animations.triggers.TriggerBuilderData;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -29,6 +31,7 @@ import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 /**
@@ -108,8 +111,8 @@ public abstract class Animation implements Serializable {
         out.writeObject(this);
     }
     
-    public abstract void prepare(File folder);
+    public abstract boolean prepare(File folder);
     
     protected abstract Location getCenter();
-    
+ 
 }

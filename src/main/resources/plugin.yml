@@ -4,7 +4,6 @@ version: ${project.version}
 description: Animations plugin
 load: POSTWORLD
 depend: [FastAsyncWorldEdit, WorldEdit]
-api-version: 1.13
 commands:
     anim:
         description: Create or edit animation.

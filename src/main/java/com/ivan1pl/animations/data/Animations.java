@@ -110,7 +110,15 @@ public class Animations {
 
             @Override
             public boolean accept(File file, String string) {
-                return string.endsWith(".anim") || new File(file,string).isDirectory();
+                return string.endsWith(".anim");
+            }
+            
+        };
+        FilenameFilter weAnimFilter = new FilenameFilter() {
+
+            @Override
+            public boolean accept(File file, String string) {
+                return new File(file,string).isDirectory();
             }
             
         };
@@ -144,11 +152,17 @@ public class Animations {
         }
         triggers.clear();
         
+        for (File f : PLUGIN_DIR.listFiles(weAnimFilter)) {
+            String name = f.getName();
+            
+            reloadAnimation(name);
+        }
         for (File f : PLUGIN_DIR.listFiles(aFilter)) {
             String name = f.getName();
             name = name.substring(0, name.length()-5);
-            
-            reloadAnimation(name);
+            if(!animations.containsKey(name)) {
+                reloadAnimation(name);
+            }
         }
     }
     
@@ -178,6 +192,9 @@ public class Animations {
         boolean result = true;
         try {
             File folder = new File(PLUGIN_DIR, name);
+            if(!folder.exists()) {
+                folder.mkdir();
+            }
             File f = new File(folder, "data.anim");
             Files.deleteIfExists(f.toPath());
             
@@ -207,7 +224,12 @@ public class Animations {
     
     public static boolean deleteAnimation(String name) {
         File f = new File(PLUGIN_DIR, name + ".anim");
-        boolean retval = f.delete();
+        File folder = new File(PLUGIN_DIR, name);
+        boolean retval = f.delete() || new File(folder,"data.anim").delete();
+        for(File file: folder.listFiles()) {
+            retval = retval && file.delete();
+        }
+        retval = retval && folder.delete();
         if (retval) {
             Animation animation = animations.get(name);
             if (animation != null) {
@@ -250,9 +272,11 @@ public class Animations {
     }
     
     public static void reloadAnimation(String name) {
-        File f = new File(PLUGIN_DIR, name + ".anim");
+        File f = new File(new File(PLUGIN_DIR, name),"data.anim");
+        boolean conversion = false;
         if(!f.exists()) {
-            f = new File(new File(PLUGIN_DIR, name),"data.anim");
+            conversion = true;
+            f = new File(PLUGIN_DIR, name + ".anim");
         }
         FileInputStream fstream = null;
         ObjectInputStream ostream = null;
@@ -262,9 +286,17 @@ public class Animations {
 
             Animation animation = (Animation) ostream.readObject();
             
-            animation.prepare(new File(PLUGIN_DIR, name));
             
             if (animation != null) {
+                if(conversion) {
+                    Logger.getLogger(Animations.class.getName()).log(Level.INFO,"Converting old Animation: "+name);
+                } else {
+                    Logger.getLogger(Animations.class.getName()).log(Level.INFO,"Loading Animation: "+name);
+                }
+                if(!animation.prepare(new File(PLUGIN_DIR, name))) {
+                    Logger.getLogger(Animations.class.getName()).log(Level.WARNING,"Error while preparing Animation: "+name);
+                    return;
+                }
                 Animation oldAnimation = animations.get(name);
                 if (oldAnimation != null) {
                     Trigger t = triggers.get(oldAnimation);
@@ -286,6 +318,9 @@ public class Animations {
                                     .create();
                     t.register();
                     triggers.put(animation, t);
+                }
+                if(conversion) {
+                    saveAnimation(name, animation);
                 }
                 AnimationsPlugin.getPluginInstance().getLogger().info(Messages.INFO_ANIMATION_LOADED + name);
             }
