@@ -24,6 +24,7 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
@@ -81,7 +82,7 @@ public class WorldEditFrame implements Serializable, IFrame {
 //Logger.getGlobal().info("world: "+schematic.getClipboard().getRegion().getWorld().toString());
 //Logger.getGlobal().info("worlddata: "+schematic.getClipboard().getRegion().getWorld().getWorldData().toString());
             //show();
-            schematic.save(schemFile, ClipboardFormat.SCHEMATIC);
+            schematic.save(schemFile, ClipboardFormat.STRUCTURE);
         } catch (IOException ex) {
             Logger.getLogger(WorldEditFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -101,7 +102,7 @@ public class WorldEditFrame implements Serializable, IFrame {
             schematic = ClipboardFormat.SCHEMATIC.getReader(inputstream);
             Clipboard board = reader.read(worldData);*/
         try {
-            schematic = ClipboardFormat.SCHEMATIC.load(schemFile);
+            schematic = ClipboardFormat.STRUCTURE.load(schemFile);
             //Region region = schematic.getClipboard().getRegion();
             //region.setWorld(session.getWorld());
             //schematic = new Schematic(region);
@@ -144,8 +145,12 @@ public class WorldEditFrame implements Serializable, IFrame {
 //Logger.getGlobal().info("worlddata: "+schematic.getClipboard().getRegion().getWorld().getWorldData().toString());
 //Logger.getGlobal().info("session: "+session.toString());
 //Logger.getGlobal().info("maxpoint: "+session.getMaximumPoint().toString());
-        schematic.paste(session, new Vector(x+offsetX,y+offsetY,z+offsetZ), true);
-        session.flushQueue();
+        if(schematic!=null) {
+            schematic.paste(session, new Vector(x+offsetX,y+offsetY,z+offsetZ), true);
+            session.flushQueue();
+        } else {
+            Logger.getLogger(WorldEditFrame.class.getName()).log(Level.WARNING,"Missing schematic for animation.");
+        }
     }
     
     @Override
@@ -173,7 +178,8 @@ public class WorldEditFrame implements Serializable, IFrame {
             f.sizeZ = z2 - z1 + 1;
 
             f.session = session;
-            CuboidRegion region = new CuboidRegion(session.getWorld(),s.getPoint1().getVector(),
+            BukkitWorld world = new BukkitWorld(s.getCenter().getWorld());//session.getWorld().getName());
+            CuboidRegion region = new CuboidRegion(world, s.getPoint1().getVector(),
                                                          s.getPoint2().getVector());
 //Logger.getGlobal().info("fromSelection region world: "+region.getWorld().toString());
 

@@ -22,7 +22,7 @@ import com.boydti.fawe.FaweAPI;
 import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.exceptions.InvalidSelectionException;
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.bukkit.BukkitWorld;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -192,7 +192,7 @@ Logger.getGlobal().info("Update Background 4");
         if(bukkitWorld==null) {
             return false;
         }
-        com.sk89q.worldedit.world.World world = BukkitUtil.getLocalWorld(bukkitWorld);
+        com.sk89q.worldedit.world.World world = new BukkitWorld(bukkitWorld);
         session = FaweAPI.getEditSessionBuilder(world).build();
         return true;
     }
