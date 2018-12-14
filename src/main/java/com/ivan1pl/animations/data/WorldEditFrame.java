@@ -102,7 +102,11 @@ public class WorldEditFrame implements Serializable, IFrame {
             schematic = ClipboardFormat.SCHEMATIC.getReader(inputstream);
             Clipboard board = reader.read(worldData);*/
         try {
-            schematic = ClipboardFormat.STRUCTURE.load(schemFile);
+            if(ClipboardFormat.STRUCTURE.isFormat(schemFile)) {
+                schematic = ClipboardFormat.STRUCTURE.load(schemFile);
+            }  else {
+                Logger.getLogger(WorldEditFrame.class.getName()).log(Level.WARNING,"Invalid schem file format");
+            }
             //Region region = schematic.getClipboard().getRegion();
             //region.setWorld(session.getWorld());
             //schematic = new Schematic(region);
