@@ -21,6 +21,7 @@ package com.ivan1pl.animations.data;
 import com.boydti.fawe.FaweAPI;
 import com.ivan1pl.animations.exceptions.InvalidSelectionException;
 import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import java.io.File;
 import java.io.IOException;
@@ -75,10 +76,12 @@ public class StationaryAnimation extends Animation implements Serializable {
     
     @Override
     public boolean showFrame(int index) {
+Logger.getGlobal().info("showFrame a "+index);
         if (index < 0 || index >= frames.size()) {
             return false;
         }
         
+Logger.getGlobal().info("showFrame b "+index);
         frames.get(index).show();
         return true;
     }
@@ -173,7 +176,8 @@ public class StationaryAnimation extends Animation implements Serializable {
             return false;
         }
         com.sk89q.worldedit.world.World world = new BukkitWorld(bukkitWorld);
-        session = FaweAPI.getEditSessionBuilder(world).build();
+        //session = FaweAPI.getEditSessionBuilder(world).build();
+        session = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world, -1);
         return true;
     }
 
