@@ -18,30 +18,38 @@
  */
 package com.ivan1pl.animations.data;
 
-import com.boydti.fawe.object.clipboard.CPUOptimizedClipboard;
-import com.boydti.fawe.object.schematic.Schematic;
 import com.mcmiddleearth.pluginutil.plotStoring.IStoragePlot;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.blocks.BaseBlock;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
-import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.Region;
+import com.mcmiddleearth.pluginutil.plotStoring.InvalidRestoreDataException;
+import com.mcmiddleearth.pluginutil.plotStoring.MCMEPlotFormat;
+import com.mcmiddleearth.pluginutil.plotStoring.MCMEPlotFormat.StoragePlotSnapshot;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Fence;
+import org.bukkit.entity.Entity;
+import org.bukkit.util.Vector;
 
 
 /**
@@ -52,6 +60,8 @@ public class MCMEStoragePlotFrame implements Serializable, IFrame, IStoragePlot 
     
     private static final long serialVersionUID = 1L;
 
+    transient private byte[] frameNBTData;
+    
     @Getter
     private int sizeX;
     
@@ -71,9 +81,12 @@ public class MCMEStoragePlotFrame implements Serializable, IFrame, IStoragePlot 
     private int z;
     
     @Getter
-    private UUID worldId;
+    private String worldName;
     
-    private World world;
+    @Override
+    public boolean isOutdated() {
+        return false;
+    }
     
     @Override
     public void show() {
@@ -82,20 +95,16 @@ public class MCMEStoragePlotFrame implements Serializable, IFrame, IStoragePlot 
     
     @Override
     public void show(int offsetX, int offsetY, int offsetZ) {
-        showSync(offsetX, offsetY, offsetZ);
-    }
-    
-    private void showSync(int offsetX, int offsetY, int offsetZ) {
-        Clipboard clipboard = schematic.getClipboard();
-        Region region = clipboard.getRegion();
-
-        ForwardExtentCopy copy = new ForwardExtentCopy(clipboard, clipboard.getRegion(), session, new Vector(x+offsetX,y+offsetY,z+offsetZ));
-        try {
-            Operations.completeLegacy(copy);
-        } catch (MaxChangedBlocksException ex) {
+        try(DataInputStream in = new DataInputStream(new ByteArrayInputStream(frameNBTData))) {
+            new MCMEPlotFormat().load(this.getLowCorner().add(new Vector(offsetX, offsetY, offsetZ)),null, in);
+        }   catch (IOException | InvalidRestoreDataException ex) {
             Logger.getLogger(MCMEStoragePlotFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        session.flushQueue();    
+    }
+    
+    @Override 
+    public boolean isInside(Location location) {
+        return isInside(location, 0,0,0);
     }
     
     @Override
@@ -105,7 +114,7 @@ public class MCMEStoragePlotFrame implements Serializable, IFrame, IStoragePlot 
                 location.getBlockZ() >= z + offsetZ && location.getBlockZ() < z + sizeZ + offsetZ);
     }
     
-    public static MCMEStoragePlotFrame fromSelection(Selection s, EditSession session) {
+    public static MCMEStoragePlotFrame fromSelection(Selection s) {
         if (Selection.isValid(s)) {
             MCMEStoragePlotFrame f = new MCMEStoragePlotFrame();
             int x1 = Math.min(s.getPoint1().getBlockX(), s.getPoint2().getBlockX());
@@ -114,7 +123,7 @@ public class MCMEStoragePlotFrame implements Serializable, IFrame, IStoragePlot 
             int y2 = Math.max(s.getPoint1().getBlockY(), s.getPoint2().getBlockY());
             int z1 = Math.min(s.getPoint1().getBlockZ(), s.getPoint2().getBlockZ());
             int z2 = Math.max(s.getPoint1().getBlockZ(), s.getPoint2().getBlockZ());
-            f.worldId = s.getPoint1().getWorld().getUID();
+            f.worldName = s.getPoint1().getWorld().getName();
             f.x = x1;
             f.y = y1;
             f.z = z1;
@@ -122,15 +131,18 @@ public class MCMEStoragePlotFrame implements Serializable, IFrame, IStoragePlot 
             f.sizeY = y2 - y1 + 1;
             f.sizeZ = z2 - z1 + 1;
 
-            f.session = session;
-            BukkitWorld world = new BukkitWorld(s.getCenter().getWorld());//session.getWorld().getName());
-            CuboidRegion region = new CuboidRegion(world, s.getPoint1().getVector(),
-                                                         s.getPoint2().getVector());
-//Logger.getGlobal().info("fromSelection region world: "+region.getWorld().toString());
-
-            BlockArrayClipboard clipboard = session.lazyCopy(region);
-//Logger.getGlobal().info("fromSelection clipboard world: "+clipboard.getRegion().getWorld().toString());
-            f.schematic = new Schematic(region);
+            try(ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+                DataOutputStream out = new DataOutputStream(byteOut)) {
+                new MCMEPlotFormat().save(f, out);
+                out.flush();
+                out.close();
+                byteOut.flush();
+                byteOut.close();
+                f.frameNBTData=byteOut.toByteArray();
+            } catch (IOException ex) {
+                Logger.getLogger(MCMEStoragePlotFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
             return f;
         }
         return null;
@@ -139,54 +151,140 @@ public class MCMEStoragePlotFrame implements Serializable, IFrame, IStoragePlot 
     @Override
     public Selection toSelection() {
         Selection s = new Selection();
-        s.setPoint1(new Location(Bukkit.getServer().getWorld(worldId), x, y, z));
-        s.setPoint2(new Location(Bukkit.getServer().getWorld(worldId), x + sizeX - 1, y + sizeY - 1, z + sizeZ - 1));
+        s.setPoint1(new Location(Bukkit.getWorld(worldName), x, y, z));
+        s.setPoint2(new Location(Bukkit.getWorld(worldName), x + sizeX - 1, y + sizeY - 1, z + sizeZ - 1));
         return s;
     }
 
     @Override
     public Location getCenter() {
-        return new Location(Bukkit.getWorld(worldId), x + sizeX/2., y + sizeY/2., z + sizeZ/2.);
+        return new Location(Bukkit.getWorld(worldName), x + sizeX/2., y + sizeY/2., z + sizeZ/2.);
     }
     
-    public void setBlocks(Material[] blockMaterials, Byte[] blockData) {
-        Region region = new CuboidRegion(session.getWorld(),new Vector(x,y,z),new Vector(x+sizeX-1,y+sizeY-1,z+sizeZ-1));
-        Clipboard clipboard = new BlockArrayClipboard(region,new CPUOptimizedClipboard(sizeX, sizeY,sizeZ));
-        
-//Logger.getGlobal().info(sizeX+" "+sizeY + " "+sizeZ);
-//Logger.getGlobal().info("Materials length: " +blockMaterials.length);
-
-        for (int i = 0; i < sizeX; ++i) {
-            for (int j = 0; j < sizeY; ++j) {
-                for (int k = 0; k < sizeZ; ++k) {
-//if(i+1==sizeX) Logger.getGlobal().info(i+" "+j+" "+k+" - "+sizeX+" "+sizeY + " "+sizeZ);
-                    Material mat = blockMaterials[i*(sizeY)*(sizeZ) + j*(sizeZ) + k];
-                    Byte matData = blockData[i*(sizeY)*(sizeZ) + j*(sizeZ) + k];
-                    BaseBlock block = new BaseBlock(mat.getId(), matData);
-                    try {
-                        clipboard.setBlock(x+i, y+j, z+k, block);
-                    } catch (WorldEditException ex) {
-                        Logger.getLogger(MCMEStoragePlotFrame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+    public void setBlocks(BlockData[] blockData) {
+        if(Bukkit.getWorld(worldName) == null) {
+            return;
+        }
+        for(int i=0;i<blockData.length;i++) {
+            if(blockData[i] instanceof Fence) {
+//Logger.getGlobal().info("Fence: \n"+blockData[i].getAsString());
             }
         }
-        schematic = new Schematic(clipboard);
+        try(ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+            DataOutputStream out = new DataOutputStream(byteOut)) {
+            new MCMEPlotFormat().save(this, out, 
+                                      new StoragePlotSnapshotFaksimile(this, blockData));
+            out.flush();
+            out.close();
+            byteOut.flush();
+            byteOut.close();
+            frameNBTData=byteOut.toByteArray();
+        } catch (IOException ex) {
+            Logger.getLogger(MCMEStoragePlotFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void save(File file) {
+        try(BufferedOutputStream out = new BufferedOutputStream(
+                                   new GZIPOutputStream(
+                                   new FileOutputStream(file)))) {
+            out.write(frameNBTData);
+            out.flush();
+            out.close();
+        } catch (IOException ex) {
+            Logger.getLogger(MCMEStoragePlotFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void load(File file) {
+        try(BufferedInputStream in = new BufferedInputStream(
+                                 new GZIPInputStream(
+                                 new FileInputStream(file)));
+            ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int readBytes = 0;
+            do {
+                readBytes = in.read(buffer,0,buffer.length);
+                out.write(buffer, 0, readBytes);
+            } while(readBytes == buffer.length);
+            frameNBTData = out.toByteArray();
+        } catch (IOException ex) {
+            Logger.getLogger(MCMEStoragePlotFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
     public World getWorld() {
-        return world;
+        return Bukkit.getWorld(worldName);
     }
 
     @Override
     public Location getLowCorner() {
-        return new Location(world,x,y,z);
+        return new Location(Bukkit.getWorld(worldName),x,y,z);
     }
 
     @Override
     public Location getHighCorner() {
-        return new Location(world,x+sizeX-1,y+sizeY-1,z+sizeZ-1);
+        return new Location(Bukkit.getWorld(worldName),x+sizeX-1,y+sizeY-1,z+sizeZ-1);
+    }
+    
+    public static class StoragePlotSnapshotFaksimile extends StoragePlotSnapshot {
+        
+    //private final Material[] blockMaterials;
+    private final BlockData[] blockData;
+    
+    private final IStoragePlot plot;
+       
+        public StoragePlotSnapshotFaksimile(IStoragePlot plot,
+                                            BlockData[] blockData) {
+            super(plot);
+            this.plot = plot;
+            //this.blockMaterials = blockMaterials;
+            this.blockData = blockData;
+        }
+        
+        @Override
+        public BlockData getBlockData(int x, int y, int z) {
+            int xMin = plot.getLowCorner().getBlockX();
+            int yMin = plot.getLowCorner().getBlockY();
+            int zMin = plot.getLowCorner().getBlockZ();
+            int xSize = plot.getHighCorner().getBlockX()-plot.getLowCorner().getBlockX()+1;
+            int ySize = plot.getHighCorner().getBlockY()-plot.getLowCorner().getBlockY()+1;
+            int zSize = plot.getHighCorner().getBlockZ()-plot.getLowCorner().getBlockZ()+1;
+            //Material mat = blockMaterials[(x-xMin)*(ySize)*(zSize) + (y-yMin)*(zSize) + z-zMin];
+            return blockData[(x-xMin)*(ySize)*(zSize) + (y-yMin)*(zSize) + z-zMin];
+            //BlockState state = plot.getWorld().getBlockAt(0, 1, 0).getState();
+            //state.setType(mat);
+            //state.setRawData(matData);
+            //return state.getBlockData();
+        }
+        
+        @Override
+        public Biome getBiome(int x, int z) {
+///Logger.getGlobal().info("GetBiome at: "+x+" "+(x%16));
+            return Biome.PLAINS;
+        }
+        
+        @Override
+        public int getMaxY(int x, int z) {
+            return 255;
+        }
+        
+        @Override
+        public List<BlockState> getTileEntities() {
+            return new ArrayList<>();
+        }
+        
+        @Override
+        public List<Entity> getEntities() {
+            return new ArrayList<>();
+        }
+        
+        @Override
+        public ChunkSnapshot[][] getChunks() {
+            return new ChunkSnapshot[0][0];
+        }
+        
     }
     
 }

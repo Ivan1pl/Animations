@@ -87,5 +87,10 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.mcmiddleearth</groupId>
+            <artifactId>PluginUtils</artifactId>
+            <version>1.2-SNAPSHOT-native-005</version>
+        </dependency>
     </dependencies>
 </project>

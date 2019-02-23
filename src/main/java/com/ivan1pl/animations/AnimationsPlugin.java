@@ -60,9 +60,9 @@ public class AnimationsPlugin extends JavaPlugin {
         
         getLogger().info(Messages.INFO_ENABLED);
 
-for(ClipboardFormat format: ClipboardFormats.getAll()) {
+/*for(ClipboardFormat format: ClipboardFormats.getAll()) {
     Logger.getGlobal().info("Format: "+format.name());
-}
+}*/
     }
     
 }

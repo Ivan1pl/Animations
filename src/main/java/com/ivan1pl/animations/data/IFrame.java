@@ -22,5 +22,6 @@ public interface IFrame {
     public boolean isInside(Location location, int offsetX, int offsetY, int offsetZ);
     public Selection toSelection();
     public Location getCenter();
+    public boolean isOutdated();
 
 }

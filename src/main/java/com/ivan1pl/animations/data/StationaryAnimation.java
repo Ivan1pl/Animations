@@ -18,22 +18,15 @@
  */
 package com.ivan1pl.animations.data;
 
-import com.boydti.fawe.FaweAPI;
 import com.ivan1pl.animations.exceptions.InvalidSelectionException;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.Getter;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 /**
@@ -49,18 +42,18 @@ public class StationaryAnimation extends Animation implements Serializable {
     @Getter
     private final Selection selection;
     
-    transient private EditSession session;
+    //transient private EditSession session;
     
     public StationaryAnimation(Selection selection) throws InvalidSelectionException {
         if (!Selection.isValid(selection)) {
             throw new InvalidSelectionException();
         }
         this.selection = selection;
-        createSession();
+        //createSession();
     }
     
     public void addFrame() {
-        IFrame f = WorldEditFrame.fromSelection(selection,session);
+        IFrame f = MCMEStoragePlotFrame.fromSelection(selection);
         frames.add(f);
     }
     
@@ -76,12 +69,12 @@ public class StationaryAnimation extends Animation implements Serializable {
     
     @Override
     public boolean showFrame(int index) {
-Logger.getGlobal().info("showFrame a "+index);
+//Logger.getGlobal().info("showFrame a "+index);
         if (index < 0 || index >= frames.size()) {
             return false;
         }
         
-Logger.getGlobal().info("showFrame b "+index);
+//Logger.getGlobal().info("showFrame b "+index);
         frames.get(index).show();
         return true;
     }
@@ -125,52 +118,57 @@ Logger.getGlobal().info("showFrame b "+index);
             return false;
         }
 
-        frames.set(index, WorldEditFrame.fromSelection(selection,session));
+        frames.set(index, MCMEStoragePlotFrame.fromSelection(selection));
         return true;
     }
     
     @Override
     public void saveTo(File folder, ObjectOutputStream out) throws IOException {
         super.saveTo(folder, out);
-        if(frames.size()>0 && frames.get(0) instanceof WorldEditFrame) {
+        if(frames.size()>0 && frames.get(0) instanceof MCMEStoragePlotFrame) {
             if(!folder.exists()) {
                 folder.mkdir();
             }
             for(int i = 0; i< frames.size(); i++) {
-                ((WorldEditFrame)frames.get(i)).saveSchematic(new File(folder,"frame_"+i+".schem"));
+                ((MCMEStoragePlotFrame)frames.get(i)).save(new File(folder,"frame_"+i+".mcme"));
             }
         }
     }
    
     @Override
     public boolean prepare(File folder) {
-        if(!createSession()) {
+        /*if(!createSession()) {
             Logger.getLogger(MovingAnimation.class.getName()).log(Level.WARNING,
                              "Error while loading Animation "+folder.getName()+": Missing World");
             return false;
-        }
+        }*/
         if(!folder.exists()) {
             folder.mkdir();
         }
         for(int i=0;i<frames.size();i++) {
             IFrame frame = frames.get(i);
-            if(frame instanceof WorldEditFrame) {
-                ((WorldEditFrame)frame).loadSchematic(session, new File(folder,"frame_"+i+".schem"));
+//Logger.getGlobal().info("Init frame: "+i);
+            if(frame instanceof MCMEStoragePlotFrame) {
+                ((MCMEStoragePlotFrame)frame).load(new File(folder,"frame_"+i+".mcme"));
             }
-        }
+                if(frame instanceof BlockIdFrame) {
+//Logger.getGlobal().info("Init BlockIdFrame. ");
+                ((BlockIdFrame)frame).init();
+            }
+    }
         for(int i=0;i<frames.size();i++) {
             IFrame frame = frames.get(i);
-            if(frame instanceof Frame) {
-                WorldEditFrame update = WorldEditFrame.fromSelection(frame.toSelection(),session);
+            if(frame instanceof BlockIdFrame) {
+                MCMEStoragePlotFrame update = MCMEStoragePlotFrame.fromSelection(frame.toSelection());
                 //update.saveSchematic(new File(folder,"frame_"+i+".schem"));
-                update.setBlocks(((Frame)frame).getBlockMaterials(),((Frame)frame).getBlockData());
+                update.setBlocks(((BlockIdFrame)frame).getBlockMaterials());
                 frames.set(i, update);
             }
         }
         return true;
     }
     
-    private boolean createSession() {
+    /*private boolean createSession() {
         World bukkitWorld = selection.getCenter().getWorld();
         if(bukkitWorld==null) {
             return false;
@@ -179,7 +177,7 @@ Logger.getGlobal().info("showFrame b "+index);
         //session = FaweAPI.getEditSessionBuilder(world).build();
         session = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world, -1);
         return true;
-    }
+    }*/
 
     
 }

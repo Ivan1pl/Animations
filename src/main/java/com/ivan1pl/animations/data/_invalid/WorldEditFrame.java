@@ -16,10 +16,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Animations.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.ivan1pl.animations.data;
+package com.ivan1pl.animations.data._invalid;
 
 import com.boydti.fawe.object.clipboard.CPUOptimizedClipboard;
 import com.boydti.fawe.object.schematic.Schematic;
+import com.ivan1pl.animations.data.IFrame;
+import com.ivan1pl.animations.data.Selection;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
@@ -79,6 +81,11 @@ public class WorldEditFrame implements Serializable, IFrame {
     transient private Schematic schematic;
     transient private EditSession session;
     
+    
+    @Override
+    public boolean isOutdated() {
+        return true;
+    }
     
     public void saveSchematic(File schemFile) { 
         try {
