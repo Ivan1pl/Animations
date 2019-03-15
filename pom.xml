@@ -90,7 +90,7 @@
         <dependency>
             <groupId>com.mcmiddleearth</groupId>
             <artifactId>PluginUtils</artifactId>
-            <version>1.2-SNAPSHOT-native-005</version>
+            <version>1.2-SNAPSHOT-native-009</version>
         </dependency>
     </dependencies>
 </project>

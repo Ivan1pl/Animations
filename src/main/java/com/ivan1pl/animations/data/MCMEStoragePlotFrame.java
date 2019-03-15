@@ -21,7 +21,7 @@ package com.ivan1pl.animations.data;
 import com.mcmiddleearth.pluginutil.plotStoring.IStoragePlot;
 import com.mcmiddleearth.pluginutil.plotStoring.InvalidRestoreDataException;
 import com.mcmiddleearth.pluginutil.plotStoring.MCMEPlotFormat;
-import com.mcmiddleearth.pluginutil.plotStoring.MCMEPlotFormat.StoragePlotSnapshot;
+import com.mcmiddleearth.pluginutil.plotStoring.StoragePlotSnapshot;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
