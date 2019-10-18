@@ -20,8 +20,12 @@ package com.ivan1pl.animations.data;
 
 import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.exceptions.InvalidSelectionException;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.SerializationUtils;
@@ -30,15 +34,15 @@ import org.bukkit.entity.Player;
 
 /**
  *
- * @author Ivan1pl
+ * @author Ivan1pl, Eriol_Eandur
  */
 public class MovingAnimation extends Animation implements Serializable {
     
     private static final long serialVersionUID = -3124628769457473325L;
     
-    private Frame frame;
+    private IFrame frame;
     
-    private Frame background;
+    private IFrame background;
     
     @Getter
     private final Selection selection;
@@ -59,19 +63,26 @@ public class MovingAnimation extends Animation implements Serializable {
     @Setter
     private int maxDistance;
     
+    //transient private EditSession session;
+    
     public MovingAnimation(Selection selection) throws InvalidSelectionException {
         if (!Selection.isValid(selection)) {
             throw new InvalidSelectionException();
         }
         this.selection = selection;
-        frame = Frame.fromSelection(selection);
-        background = Frame.fromSelection(selection);
+        //createSession();
+        frame = MCMEStoragePlotFrame.fromSelection(selection);
+        background = MCMEStoragePlotFrame.fromSelection(selection);
     }
     
     public void updateBackground() {
+//Logger.getGlobal().info("Update Background 1");
         Selection s = SerializationUtils.clone(selection);
+//Logger.getGlobal().info("Update Background 2");
         s.expand(stepX*getFrameCount(), stepY*getFrameCount(), stepZ*getFrameCount());
-        background = Frame.fromSelection(s);
+//Logger.getGlobal().info("Update Background 3");
+        background = MCMEStoragePlotFrame.fromSelection(s);
+//Logger.getGlobal().info("Update Background 4");
     }
 
     @Override
@@ -122,4 +133,69 @@ public class MovingAnimation extends Animation implements Serializable {
         return background.getCenter();
     }
     
+    @Override
+    public void saveTo(File folder, ObjectOutputStream out) throws IOException {
+        super.saveTo(folder, out);
+        if(background instanceof MCMEStoragePlotFrame) {
+            if(!folder.exists()) {
+                folder.mkdir();
+            }
+            ((MCMEStoragePlotFrame)background).save(new File(folder,"background.mcme"));
+        }
+        if(frame instanceof MCMEStoragePlotFrame) {
+            if(!folder.exists()) {
+                folder.mkdir();
+            }
+            ((MCMEStoragePlotFrame)frame).save(new File(folder,"frame.mcme"));
+        }
+    }
+    
+    @Override
+    public boolean prepare(File folder) {
+        /*if(!createSession()) {
+            Logger.getLogger(MovingAnimation.class.getName()).log(Level.WARNING,
+                             "Error while loading Animation "+folder.getName()+": Missing World");
+            return false;
+        }
+        createSession();*/
+        if(!folder.exists()) {
+            folder.mkdir();
+        }
+        if(background instanceof MCMEStoragePlotFrame) {
+            ((MCMEStoragePlotFrame)background).load(new File(folder,"background.mcme"));
+        }
+        if(frame instanceof MCMEStoragePlotFrame) {
+            ((MCMEStoragePlotFrame)frame).load(new File(folder,"frame.mcme"));
+        }
+        if(background instanceof BlockIdFrame) {
+            ((BlockIdFrame)background).init();
+        }
+        if(frame instanceof BlockIdFrame) {
+            ((BlockIdFrame)frame).init();
+        }
+        if(background instanceof BlockIdFrame) {
+            MCMEStoragePlotFrame update = MCMEStoragePlotFrame.fromSelection(background.toSelection());
+            //update.saveSchematic(new File(folder,"background.schem"));
+            update.setBlocks(((BlockIdFrame)background).getBlockMaterials());
+            background = update;
+        }
+        if(frame instanceof BlockIdFrame) {
+            MCMEStoragePlotFrame update = MCMEStoragePlotFrame.fromSelection(frame.toSelection());
+            update.setBlocks(((BlockIdFrame)frame).getBlockMaterials());
+            //update.saveSchematic(new File(folder,"frame.schem"));
+            frame = update;
+        }
+        return true;
+    }
+    
+    /*private boolean createSession() {
+        World bukkitWorld = selection.getCenter().getWorld();
+        if(bukkitWorld==null) {
+            return false;
+        }
+        com.sk89q.worldedit.world.World world = new BukkitWorld(bukkitWorld);
+        session = FaweAPI.getEditSessionBuilder(world).build();
+        return true;
+    }*/
+
 }
