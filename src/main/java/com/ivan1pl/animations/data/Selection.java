@@ -18,7 +18,10 @@
  */
 package com.ivan1pl.animations.data;
 
+import com.ivan1pl.animations.AnimationsPlugin;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Getter;
 import org.bukkit.Location;
 

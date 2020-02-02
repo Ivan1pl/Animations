@@ -3,7 +3,7 @@ main: com.ivan1pl.animations.AnimationsPlugin
 version: ${project.version}
 description: Animations plugin
 load: POSTWORLD
-depend: [FastAsyncWorldEdit, WorldEdit]
+depend: [WorldEdit]
 api-version: 1.13
 commands:
     anim:
