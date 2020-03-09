@@ -20,15 +20,15 @@ package com.ivan1pl.animations.data;
 
 import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.exceptions.InvalidSelectionException;
+import com.ivan1pl.animations.utils.SerializationUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
-import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.SerializationUtils;
+//import org.apache.commons.lang3.SerializationUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
