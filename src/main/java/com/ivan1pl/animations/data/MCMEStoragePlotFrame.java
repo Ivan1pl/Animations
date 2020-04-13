@@ -22,24 +22,6 @@ import com.mcmiddleearth.pluginutil.plotStoring.IStoragePlot;
 import com.mcmiddleearth.pluginutil.plotStoring.InvalidRestoreDataException;
 import com.mcmiddleearth.pluginutil.plotStoring.MCMEPlotFormat;
 import com.mcmiddleearth.pluginutil.plotStoring.StoragePlotSnapshot;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
@@ -50,6 +32,14 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Fence;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 
 /**
@@ -62,25 +52,13 @@ public class MCMEStoragePlotFrame implements Serializable, IFrame, IStoragePlot 
 
     transient private byte[] frameNBTData;
     
-    @Getter
     private int sizeX;
-    
-    @Getter
     private int sizeY;
-    
-    @Getter
     private int sizeZ;
-    
-    @Getter
     private int x;
-    
-    @Getter
     private int y;
-    
-    @Getter
     private int z;
     
-    @Getter
     private String worldName;
     
     @Override
@@ -167,7 +145,6 @@ public class MCMEStoragePlotFrame implements Serializable, IFrame, IStoragePlot 
         }
         for(int i=0;i<blockData.length;i++) {
             if(blockData[i] instanceof Fence) {
-//Logger.getGlobal().info("Fence: \n"+blockData[i].getAsString());
             }
         }
         try(ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
@@ -230,7 +207,6 @@ public class MCMEStoragePlotFrame implements Serializable, IFrame, IStoragePlot 
     
     public static class StoragePlotSnapshotFaksimile extends StoragePlotSnapshot {
         
-    //private final Material[] blockMaterials;
     private final BlockData[] blockData;
     
     private final IStoragePlot plot;
@@ -239,7 +215,6 @@ public class MCMEStoragePlotFrame implements Serializable, IFrame, IStoragePlot 
                                             BlockData[] blockData) {
             super(plot);
             this.plot = plot;
-            //this.blockMaterials = blockMaterials;
             this.blockData = blockData;
         }
         
@@ -251,17 +226,11 @@ public class MCMEStoragePlotFrame implements Serializable, IFrame, IStoragePlot 
             int xSize = plot.getHighCorner().getBlockX()-plot.getLowCorner().getBlockX()+1;
             int ySize = plot.getHighCorner().getBlockY()-plot.getLowCorner().getBlockY()+1;
             int zSize = plot.getHighCorner().getBlockZ()-plot.getLowCorner().getBlockZ()+1;
-            //Material mat = blockMaterials[(x-xMin)*(ySize)*(zSize) + (y-yMin)*(zSize) + z-zMin];
             return blockData[(x-xMin)*(ySize)*(zSize) + (y-yMin)*(zSize) + z-zMin];
-            //BlockState state = plot.getWorld().getBlockAt(0, 1, 0).getState();
-            //state.setType(mat);
-            //state.setRawData(matData);
-            //return state.getBlockData();
         }
         
         @Override
         public Biome getBiome(int x, int z) {
-///Logger.getGlobal().info("GetBiome at: "+x+" "+(x%16));
             return Biome.PLAINS;
         }
         
@@ -286,5 +255,35 @@ public class MCMEStoragePlotFrame implements Serializable, IFrame, IStoragePlot 
         }
         
     }
-    
+
+    @Override
+    public int getSizeX() {
+        return sizeX;
+    }
+
+    @Override
+    public int getSizeY() {
+        return sizeY;
+    }
+
+    @Override
+    public int getSizeZ() {
+        return sizeZ;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getZ() {
+        return z;
+    }
+
+    public String getWorldName() {
+        return worldName;
+    }
 }

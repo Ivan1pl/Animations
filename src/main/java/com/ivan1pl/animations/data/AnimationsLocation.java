@@ -19,13 +19,12 @@
 package com.ivan1pl.animations.data;
 
 import com.sk89q.worldedit.Vector;
-import java.io.Serializable;
-import java.util.UUID;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+
+import java.io.Serializable;
+import java.util.UUID;
 
 /**
  *
@@ -35,16 +34,8 @@ public class AnimationsLocation implements Serializable {
     
     private static final long serialVersionUID = 5482328410797364959L;
 
-    @Getter
-    @Setter
     private double x;
-    
-    @Getter
-    @Setter
     private double y;
-    
-    @Getter
-    @Setter
     private double z;
     
     private UUID worldId;
@@ -98,5 +89,29 @@ public class AnimationsLocation implements Serializable {
     
     public Vector getVector() {
         return new Vector(x,y,z);
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public double getZ() {
+        return z;
+    }
+
+    public void setZ(double z) {
+        this.z = z;
     }
 }

@@ -19,15 +19,15 @@
 package com.ivan1pl.animations.data;
 
 import com.ivan1pl.animations.exceptions.InvalidSelectionException;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 /**
  *
@@ -39,17 +39,13 @@ public class StationaryAnimation extends Animation implements Serializable {
 
     private final List<IFrame> frames = new ArrayList<>();
     
-    @Getter
     private final Selection selection;
-    
-    //transient private EditSession session;
     
     public StationaryAnimation(Selection selection) throws InvalidSelectionException {
         if (!Selection.isValid(selection)) {
             throw new InvalidSelectionException();
         }
         this.selection = selection;
-        //createSession();
     }
     
     public void addFrame() {
@@ -69,12 +65,10 @@ public class StationaryAnimation extends Animation implements Serializable {
     
     @Override
     public boolean showFrame(int index) {
-//Logger.getGlobal().info("showFrame a "+index);
         if (index < 0 || index >= frames.size()) {
             return false;
         }
         
-//Logger.getGlobal().info("showFrame b "+index);
         frames.get(index).show();
         return true;
     }
@@ -137,22 +131,15 @@ public class StationaryAnimation extends Animation implements Serializable {
    
     @Override
     public boolean prepare(File folder) {
-        /*if(!createSession()) {
-            Logger.getLogger(MovingAnimation.class.getName()).log(Level.WARNING,
-                             "Error while loading Animation "+folder.getName()+": Missing World");
-            return false;
-        }*/
         if(!folder.exists()) {
             folder.mkdir();
         }
         for(int i=0;i<frames.size();i++) {
             IFrame frame = frames.get(i);
-//Logger.getGlobal().info("Init frame: "+i);
             if(frame instanceof MCMEStoragePlotFrame) {
                 ((MCMEStoragePlotFrame)frame).load(new File(folder,"frame_"+i+".mcme"));
             }
                 if(frame instanceof BlockIdFrame) {
-//Logger.getGlobal().info("Init BlockIdFrame. ");
                 ((BlockIdFrame)frame).init();
             }
     }
@@ -160,24 +147,14 @@ public class StationaryAnimation extends Animation implements Serializable {
             IFrame frame = frames.get(i);
             if(frame instanceof BlockIdFrame) {
                 MCMEStoragePlotFrame update = MCMEStoragePlotFrame.fromSelection(frame.toSelection());
-                //update.saveSchematic(new File(folder,"frame_"+i+".schem"));
                 update.setBlocks(((BlockIdFrame)frame).getBlockMaterials());
                 frames.set(i, update);
             }
         }
         return true;
     }
-    
-    /*private boolean createSession() {
-        World bukkitWorld = selection.getCenter().getWorld();
-        if(bukkitWorld==null) {
-            return false;
-        }
-        com.sk89q.worldedit.world.World world = new BukkitWorld(bukkitWorld);
-        //session = FaweAPI.getEditSessionBuilder(world).build();
-        session = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world, -1);
-        return true;
-    }*/
 
-    
+    public Selection getSelection() {
+        return selection;
+    }
 }

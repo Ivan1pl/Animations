@@ -20,16 +20,15 @@ package com.ivan1pl.animations.data;
 
 import com.ivan1pl.animations.tasks.AnimationTask;
 import com.ivan1pl.animations.triggers.TriggerBuilderData;
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  *
@@ -39,16 +38,8 @@ public abstract class Animation implements Serializable {
     
     private static final long serialVersionUID = -7839198751291994315L;
 
-    @Getter
-    @Setter
     private int interval = 1;
-    
-    @Getter
-    @Setter
     private TriggerBuilderData triggerBuilderData = null;
-
-    @Getter
-    @Setter
     private SoundData soundData = null;
     
     public abstract boolean showFrame(int index);
@@ -111,5 +102,28 @@ public abstract class Animation implements Serializable {
     public abstract boolean prepare(File folder);
     
     protected abstract Location getCenter();
- 
+
+    public int getInterval() {
+        return interval;
+    }
+
+    public void setInterval(int interval) {
+        this.interval = interval;
+    }
+
+    public TriggerBuilderData getTriggerBuilderData() {
+        return triggerBuilderData;
+    }
+
+    public void setTriggerBuilderData(TriggerBuilderData triggerBuilderData) {
+        this.triggerBuilderData = triggerBuilderData;
+    }
+
+    public SoundData getSoundData() {
+        return soundData;
+    }
+
+    public void setSoundData(SoundData soundData) {
+        this.soundData = soundData;
+    }
 }
