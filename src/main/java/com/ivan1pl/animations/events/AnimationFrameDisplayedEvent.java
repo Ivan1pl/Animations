@@ -19,7 +19,6 @@
 package com.ivan1pl.animations.events;
 
 import com.ivan1pl.animations.data.Animation;
-import lombok.Getter;
 
 /**
  *
@@ -27,10 +26,7 @@ import lombok.Getter;
  */
 public class AnimationFrameDisplayedEvent extends AnimationEvent {
     
-    @Getter
     private final int frame;
-
-    @Getter
     private final boolean reverse;
     
     public AnimationFrameDisplayedEvent(Animation animation, int frame, boolean reverse) {
@@ -38,5 +34,12 @@ public class AnimationFrameDisplayedEvent extends AnimationEvent {
         this.frame = frame;
         this.reverse = reverse;
     }
-    
+
+    public int getFrame() {
+        return frame;
+    }
+
+    public boolean isReverse() {
+        return reverse;
+    }
 }

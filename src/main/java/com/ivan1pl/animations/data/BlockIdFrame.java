@@ -19,9 +19,6 @@
 package com.ivan1pl.animations.data;
 
 import com.mcmiddleearth.pluginutil.LegacyMaterialUtil;
-import java.io.Serializable;
-import java.util.UUID;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,6 +26,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Fence;
 import org.bukkit.block.data.type.Stairs;
+
+import java.io.Serializable;
+import java.util.UUID;
 
 /**
  *
@@ -38,37 +38,19 @@ public class BlockIdFrame implements Serializable, IFrame {
     
     private static final long serialVersionUID = 2764396372346413554L;
 
-    @Getter
     private int sizeX;
-    
-    @Getter
     private int sizeY;
-    
-    @Getter
     private int sizeZ;
-    
-    @Getter
     private int x;
-    
-    @Getter
     private int y;
-    
-    @Getter
     private int z;
-    
-    @Getter
     transient private UUID worldId;
     
     private String worldName;
     
     
-    @Getter
     private transient BlockData[] blockMaterials;
-    
-    @Getter
     private Integer[] blockId;
-
-    @Getter
     private Byte[] blockData;
     
     private BlockIdFrame() { 
@@ -118,9 +100,7 @@ public class BlockIdFrame implements Serializable, IFrame {
 
     public void setBlocks(Material[] blockMaterials, Byte[] blockData) {
             throw new UnsupportedOperationException("Creating BlockIdFrames from is no longer supported in 1.13."); //To change body of generated methods, choose Tools | Templates.
-        //this.blockMaterials = blockMaterials.clone();
-        //this.blockData = blockData.clone();
-    }    
+    }
 
     public void init() {
         blockMaterials = new BlockData[blockId.length];
@@ -133,33 +113,22 @@ public class BlockIdFrame implements Serializable, IFrame {
     }
     
     private void initialize() {
-//Logger.getGlobal().info("Frame: "+x+" "+y+" "+z+" size: "+sizeX+" "+sizeY+" "+sizeZ);
         for (int i = 0; i < sizeX; ++i) {
             for (int j = 0; j < sizeY; ++j) {
                 for (int k = 0; k < sizeZ; ++k) {
-                    //Location loc = new Location(w, i+x+offsetX, j+y+offsetY, k+z+offsetZ);
-                    //Block b = loc.getBlock();
                     BlockData data = blockMaterials[i*(sizeY)*(sizeZ) + j*(sizeZ) + k];
-//Logger.getGlobal().log(Level.INFO,"Connecting block at: {0} {1} {2} {3}",new Object[]{x+i,y+j,z+k,data.getClass()});
                     if(data instanceof Stairs || data instanceof Fence) {
                         BlockData west = getNeighbour(i-1,j,k);
                         BlockData east = getNeighbour(i+1,j,k);
                         BlockData north = getNeighbour(i,j,k-1);
                         BlockData south = getNeighbour(i,j,k+1);
-                        /*int east = (i+1)*(sizeY)*(sizeZ) + j*(sizeZ) + k;
-                        int north = i*(sizeY)*(sizeZ) + j*(sizeZ) + (k-1);
-                        int south = i*(sizeY)*(sizeZ) + j*(sizeZ) + (k+1);*/
                         if(data instanceof Fence) {
-//Logger.getGlobal().log(Level.INFO,"Connecting fence at: {0} {1} {2}",new Object[]{x+i,y+j,z+k});
-//Logger.getGlobal().log(Level.INFO,"*");
                             connectFence(data,west,BlockFace.EAST);
-//Logger.getGlobal().log(Level.INFO,"**********");
                             connectFence(data,east,BlockFace.WEST);
                             connectFence(data,north,BlockFace.SOUTH);
                             connectFence(data,south,BlockFace.NORTH);
                         }
                         if(data instanceof Stairs) {
-//Logger.getGlobal().log(Level.INFO,"Connecting stair at: {0} {1} {2}",new Object[]{x+i,y+j,z+k});
                             Stairs stair =  (Stairs)data;
                             switch(stair.getFacing()) {
                                 case NORTH:
@@ -181,20 +150,9 @@ public class BlockIdFrame implements Serializable, IFrame {
                 }
             }
         }
-        /*blockMaterials = new Material[blockId.length];
-        for(int i=0; i<blockId.length;i++) {
-            blockMaterials[i] = LegacyMaterialUtil.getMaterial(blockId[i]);
-        }*/
     }
     
     private void connectFence(BlockData data, BlockData neighbour, BlockFace face) {
-//Logger.getGlobal().info("neighbour: "+neighbour.getAsString());
-//Logger.getGlobal().info("occluding: "+neighbour.getMaterial().isOccluding());
-        /*if(!exists(block)) {
-            Logger.getGlobal().info("doesn't exist");
-            return;
-        }*/
-//Logger.getGlobal().log(Level.INFO, "connect: {0} exists: {1} occulding: {2}", new Object[]{face.toString(), exists(block), blockMaterials[block].getMaterial().isOccluding()});
         if(neighbour.getMaterial().isOccluding()
                 || neighbour instanceof Fence
                 || (neighbour instanceof Stairs 
@@ -204,7 +162,6 @@ public class BlockIdFrame implements Serializable, IFrame {
                                  && isOneShapeOf(neighbour,Stairs.Shape.INNER_LEFT)
                            || rotate(((Stairs)neighbour).getFacing(),1).equals(face)
                                  && isOneShapeOf(neighbour,Stairs.Shape.INNER_RIGHT)))) {
-//Logger.getGlobal().log(Level.INFO, "connect!");
             ((Fence)data).setFace(rotate(face,2), true);
         }
     }
@@ -219,22 +176,17 @@ public class BlockIdFrame implements Serializable, IFrame {
     }
     
     private void connectStair(Stairs stair, BlockData neighbour, BlockData oppNeighbour, BlockFace blockFace) {
-//Logger.getGlobal().log(Level.INFO, "Connect Stair start.");
         if(neighbour instanceof Stairs) {
             if(((Stairs)neighbour).getFacing().equals(rotate(blockFace,3))) {
-//Logger.getGlobal().log(Level.INFO, "Connect Stair outer_left.");
                 stair.setShape(Stairs.Shape.OUTER_LEFT);
             } else if(((Stairs)neighbour).getFacing().equals(rotate(blockFace,1))) {
-//Logger.getGlobal().log(Level.INFO, "Connect Stair outer_right.");
                 stair.setShape(Stairs.Shape.OUTER_RIGHT);
             }
         }
         if(oppNeighbour instanceof Stairs) {
             if(((Stairs)oppNeighbour).getFacing().equals(rotate(blockFace,3))) {
-//Logger.getGlobal().log(Level.INFO, "Connect Stair inner_left.");
                 stair.setShape(Stairs.Shape.INNER_LEFT);
             } else if(((Stairs)oppNeighbour).getFacing().equals(rotate(blockFace,1))) {
-//Logger.getGlobal().log(Level.INFO, "Connect Stair inner_right.");
                 stair.setShape(Stairs.Shape.INNER_RIGHT);
             }
         }
@@ -265,16 +217,59 @@ public class BlockIdFrame implements Serializable, IFrame {
     private BlockData getNeighbour(int i, int j, int k) {
         if(i>=0 && i<sizeX && j>=0 && j<sizeY && k>=0 && k<sizeZ) {
             int index = i*(sizeY)*(sizeZ) + j*(sizeZ) + k;
-//Logger.getGlobal().info("Get internal: "+(i+x)+" "+(j+y)+" "+(k+z)+" ");
             BlockData result = blockMaterials[index];
-//Logger.getGlobal().info(result.getAsString());
             return result;
         } else {
-//Logger.getGlobal().info("Get external: "+(i+x)+" "+(j+y)+" "+(k+z)+" ");
             BlockData result =  Bukkit.getWorld(worldName).getBlockAt(x+i, y+j, z+k).getBlockData();
-//Logger.getGlobal().info(result.getAsString());
             return result;
             
         }
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    @Override
+    public int getSizeX() {
+        return sizeX;
+    }
+
+    @Override
+    public int getSizeY() {
+        return sizeY;
+    }
+
+    @Override
+    public int getSizeZ() {
+        return sizeZ;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getZ() {
+        return z;
+    }
+
+    public UUID getWorldId() {
+        return worldId;
+    }
+
+    public BlockData[] getBlockMaterials() {
+        return blockMaterials;
+    }
+
+    public Integer[] getBlockId() {
+        return blockId;
+    }
+
+    public Byte[] getBlockData() {
+        return blockData;
     }
 }

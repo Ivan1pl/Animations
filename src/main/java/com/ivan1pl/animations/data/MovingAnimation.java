@@ -21,16 +21,16 @@ package com.ivan1pl.animations.data;
 import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.exceptions.InvalidSelectionException;
 import com.ivan1pl.animations.utils.SerializationUtils;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
+
 //import org.apache.commons.lang3.SerializationUtils;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 /**
  *
@@ -44,45 +44,26 @@ public class MovingAnimation extends Animation implements Serializable {
     
     private IFrame background;
     
-    @Getter
     private final Selection selection;
     
-    @Getter
-    @Setter
     private int stepX;
-    
-    @Getter
-    @Setter
     private int stepY;
-    
-    @Getter
-    @Setter
     private int stepZ;
-    
-    @Getter
-    @Setter
     private int maxDistance;
-    
-    //transient private EditSession session;
     
     public MovingAnimation(Selection selection) throws InvalidSelectionException {
         if (!Selection.isValid(selection)) {
             throw new InvalidSelectionException();
         }
         this.selection = selection;
-        //createSession();
         frame = MCMEStoragePlotFrame.fromSelection(selection);
         background = MCMEStoragePlotFrame.fromSelection(selection);
     }
     
     public void updateBackground() {
-//Logger.getGlobal().info("Update Background 1");
         Selection s = SerializationUtils.clone(selection);
-//Logger.getGlobal().info("Update Background 2");
         s.expand(stepX*getFrameCount(), stepY*getFrameCount(), stepZ*getFrameCount());
-//Logger.getGlobal().info("Update Background 3");
         background = MCMEStoragePlotFrame.fromSelection(s);
-//Logger.getGlobal().info("Update Background 4");
     }
 
     @Override
@@ -152,12 +133,6 @@ public class MovingAnimation extends Animation implements Serializable {
     
     @Override
     public boolean prepare(File folder) {
-        /*if(!createSession()) {
-            Logger.getLogger(MovingAnimation.class.getName()).log(Level.WARNING,
-                             "Error while loading Animation "+folder.getName()+": Missing World");
-            return false;
-        }
-        createSession();*/
         if(!folder.exists()) {
             folder.mkdir();
         }
@@ -175,27 +150,50 @@ public class MovingAnimation extends Animation implements Serializable {
         }
         if(background instanceof BlockIdFrame) {
             MCMEStoragePlotFrame update = MCMEStoragePlotFrame.fromSelection(background.toSelection());
-            //update.saveSchematic(new File(folder,"background.schem"));
             update.setBlocks(((BlockIdFrame)background).getBlockMaterials());
             background = update;
         }
         if(frame instanceof BlockIdFrame) {
             MCMEStoragePlotFrame update = MCMEStoragePlotFrame.fromSelection(frame.toSelection());
             update.setBlocks(((BlockIdFrame)frame).getBlockMaterials());
-            //update.saveSchematic(new File(folder,"frame.schem"));
             frame = update;
         }
         return true;
     }
-    
-    /*private boolean createSession() {
-        World bukkitWorld = selection.getCenter().getWorld();
-        if(bukkitWorld==null) {
-            return false;
-        }
-        com.sk89q.worldedit.world.World world = new BukkitWorld(bukkitWorld);
-        session = FaweAPI.getEditSessionBuilder(world).build();
-        return true;
-    }*/
 
+    public Selection getSelection() {
+        return selection;
+    }
+
+    public int getStepX() {
+        return stepX;
+    }
+
+    public void setStepX(int stepX) {
+        this.stepX = stepX;
+    }
+
+    public int getStepY() {
+        return stepY;
+    }
+
+    public void setStepY(int stepY) {
+        this.stepY = stepY;
+    }
+
+    public int getStepZ() {
+        return stepZ;
+    }
+
+    public void setStepZ(int stepZ) {
+        this.stepZ = stepZ;
+    }
+
+    public int getMaxDistance() {
+        return maxDistance;
+    }
+
+    public void setMaxDistance(int maxDistance) {
+        this.maxDistance = maxDistance;
+    }
 }

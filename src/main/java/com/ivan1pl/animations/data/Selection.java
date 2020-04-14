@@ -18,12 +18,9 @@
  */
 package com.ivan1pl.animations.data;
 
-import com.ivan1pl.animations.AnimationsPlugin;
-import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import lombok.Getter;
 import org.bukkit.Location;
+
+import java.io.Serializable;
 
 /**
  *
@@ -31,10 +28,7 @@ import org.bukkit.Location;
  */
 public class Selection implements Serializable {
     
-    @Getter
     private AnimationsLocation point1;
-    
-    @Getter
     private AnimationsLocation point2;
     
     private boolean validate() {
@@ -129,5 +123,12 @@ public class Selection implements Serializable {
         double cZ = (point1.getZ() + point2.getZ())/2.;
         return new Location(point1.getWorld(), cX, cY, cZ);
     }
-    
+
+    public AnimationsLocation getPoint1() {
+        return point1;
+    }
+
+    public AnimationsLocation getPoint2() {
+        return point2;
+    }
 }

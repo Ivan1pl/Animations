@@ -18,8 +18,6 @@
  */
 package com.ivan1pl.animations.events;
 
-import lombok.Getter;
-
 /**
  *
  * @author Ivan1pl
@@ -28,11 +26,13 @@ public class Event {
     
     public static final String ANIMATION_FINISHED = "ANIMATION_FINISHED";
     
-    @Getter
     private final String type;
     
     public Event(String type) {
         this.type = type;
     }
-    
+
+    public String getType() {
+        return type;
+    }
 }

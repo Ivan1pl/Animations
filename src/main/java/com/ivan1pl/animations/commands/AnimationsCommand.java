@@ -21,7 +21,6 @@ package com.ivan1pl.animations.commands;
 import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.utils.MessageUtil;
-import lombok.Getter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -33,7 +32,6 @@ public abstract class AnimationsCommand {
     
     private final String requiredPermission;
     
-    @Getter
     private final int minArgs;
     
     private final boolean playerOnly;
@@ -84,5 +82,8 @@ public abstract class AnimationsCommand {
         }
         return true;
     }
-    
+
+    public int getMinArgs() {
+        return minArgs;
+    }
 }

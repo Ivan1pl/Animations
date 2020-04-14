@@ -27,7 +27,6 @@ import com.ivan1pl.animations.events.AnimationFrameDisplayedEvent;
 import com.ivan1pl.animations.events.Event;
 import com.ivan1pl.animations.events.EventDispatcher;
 import com.ivan1pl.animations.events.EventListener;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -37,12 +36,10 @@ import org.bukkit.scheduler.BukkitRunnable;
  */
 public class AnimationTask extends BukkitRunnable {
     
-    @Getter
     private final Animation animation;
     
     private int stage = 0;
     
-    @Getter
     private final boolean reverse;
     
     private final EventDispatcher dispatcher = new EventDispatcher();
@@ -122,5 +119,12 @@ public class AnimationTask extends BukkitRunnable {
             animation.playSound();
         }
     }
-    
+
+    public Animation getAnimation() {
+        return animation;
+    }
+
+    public boolean isReverse() {
+        return reverse;
+    }
 }
