@@ -22,8 +22,9 @@ import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.triggers.TriggerBuilder;
+import com.ivan1pl.animations.utils.ArrayUtils;
 import com.ivan1pl.animations.utils.MessageUtil;
-import org.apache.commons.lang3.ArrayUtils;
+//import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
 
