@@ -19,9 +19,8 @@
 package com.ivan1pl.animations.data;
 
 import com.ivan1pl.animations.constants.SoundPlayMode;
+
 import java.io.Serializable;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  *
@@ -29,24 +28,49 @@ import lombok.Setter;
  */
 public class SoundData implements Serializable {
 
-    @Getter
-    @Setter
     private String name = null;
-
-    @Getter
-    @Setter
     private SoundPlayMode playMode = null;
-
-    @Getter
-    @Setter
     private int range;
-
-    @Getter
-    @Setter
     private int pitch;
-
-    @Getter
-    @Setter
     private int volume;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public SoundPlayMode getPlayMode() {
+        return playMode;
+    }
+
+    public void setPlayMode(SoundPlayMode playMode) {
+        this.playMode = playMode;
+    }
+
+    public int getRange() {
+        return range;
+    }
+
+    public void setRange(int range) {
+        this.range = range;
+    }
+
+    public int getPitch() {
+        return pitch;
+    }
+
+    public void setPitch(int pitch) {
+        this.pitch = pitch;
+    }
+
+    public int getVolume() {
+        return volume;
+    }
+
+    public void setVolume(int volume) {
+        this.volume = volume;
+    }
 }

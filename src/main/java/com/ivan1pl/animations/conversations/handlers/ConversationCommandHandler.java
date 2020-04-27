@@ -20,12 +20,12 @@ package com.ivan1pl.animations.conversations.handlers;
 
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.exceptions.AnimationTypeException;
+import org.bukkit.conversations.ConversationContext;
+import org.bukkit.conversations.Prompt;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import lombok.Getter;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.Prompt;
 
 /**
  *
@@ -33,18 +33,12 @@ import org.bukkit.conversations.Prompt;
  */
 public abstract class ConversationCommandHandler {
     
-    @Getter
     private final String name;
-    
-    @Getter
     private final int paramsCount;
     
     private final List<String> paramDescriptions;
     
-    @Getter
     private final boolean checkParamTypes;
-    
-    @Getter
     private final int optionalParamsCount;
     
     public ConversationCommandHandler(String name, int paramsCount, String... paramDescriptions) {
@@ -105,5 +99,20 @@ public abstract class ConversationCommandHandler {
     public boolean customCheckParamTypes(String[] params) {
         return true;
     }
-    
+
+    public String getName() {
+        return name;
+    }
+
+    public int getParamsCount() {
+        return paramsCount;
+    }
+
+    public boolean isCheckParamTypes() {
+        return checkParamTypes;
+    }
+
+    public int getOptionalParamsCount() {
+        return optionalParamsCount;
+    }
 }

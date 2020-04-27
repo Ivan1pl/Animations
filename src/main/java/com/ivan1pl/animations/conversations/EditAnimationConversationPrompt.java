@@ -19,27 +19,8 @@
 package com.ivan1pl.animations.conversations;
 
 import com.ivan1pl.animations.constants.AnimationType;
-import com.ivan1pl.animations.conversations.handlers.ConversationCommandHandler;
 import com.ivan1pl.animations.constants.Messages;
-import com.ivan1pl.animations.conversations.handlers.AddframeCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.CancelCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.DeletesoundCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.DeletetriggerCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.HelpCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.IntervalCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.MaxDistanceCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.PreviewCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.PreviewframeCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.RemoveframeCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.SaveCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.SoundCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.StepCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.SwapframesCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.TriggerCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.TypeCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.UpdateBackgroundCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.UpdateframeCommandHandler;
-import com.ivan1pl.animations.conversations.handlers.YCommandHandler;
+import com.ivan1pl.animations.conversations.handlers.*;
 import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.data.MovingAnimation;
@@ -48,14 +29,13 @@ import com.ivan1pl.animations.exceptions.AnimationTypeException;
 import com.ivan1pl.animations.triggers.TriggerType;
 import com.ivan1pl.animations.utils.MessageUtil;
 import com.ivan1pl.animations.utils.StringUtil;
+import org.bukkit.conversations.ConversationContext;
+import org.bukkit.conversations.Prompt;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import lombok.Getter;
-import lombok.Setter;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.Prompt;
 
 /**
  *
@@ -64,19 +44,11 @@ import org.bukkit.conversations.Prompt;
 public class EditAnimationConversationPrompt extends BaseEditorValidatingPrompt {
     
     private final List<ConversationCommandHandler> CREATE_COMMANDS = new ArrayList<>();
-    
     private final List<ConversationCommandHandler> STATIONARY_EDIT_COMMANDS = new ArrayList<>();
-    
     private final List<ConversationCommandHandler> MOVING_EDIT_COMMANDS = new ArrayList<>();
     
-    @Setter
     private boolean isEdit;
-    
-    @Setter
     private boolean simplePrompt;
-    
-    @Getter
-    @Setter
     private AnimationType type;
     
     {
@@ -249,5 +221,20 @@ public class EditAnimationConversationPrompt extends BaseEditorValidatingPrompt 
         }
         return ret;
     }
-    
+
+    public void setEdit(boolean edit) {
+        isEdit = edit;
+    }
+
+    public void setSimplePrompt(boolean simplePrompt) {
+        this.simplePrompt = simplePrompt;
+    }
+
+    public AnimationType getType() {
+        return type;
+    }
+
+    public void setType(AnimationType type) {
+        this.type = type;
+    }
 }

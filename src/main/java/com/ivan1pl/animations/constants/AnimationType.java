@@ -18,8 +18,6 @@
  */
 package com.ivan1pl.animations.constants;
 
-import lombok.Getter;
-
 /**
  *
  * @author Ivan1pl
@@ -28,7 +26,6 @@ public enum AnimationType {
     TYPE_MOVING("moving"),
     TYPE_STATIONARY("stationary");
     
-    @Getter
     private final String name;
     
     AnimationType(String name) {
@@ -40,5 +37,10 @@ public enum AnimationType {
             return TYPE_MOVING;
         }
         return TYPE_STATIONARY;
+    }
+
+
+    public String getName() {
+        return name;
     }
 }

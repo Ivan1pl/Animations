@@ -19,7 +19,6 @@
 package com.ivan1pl.animations.events;
 
 import com.ivan1pl.animations.data.Animation;
-import lombok.Getter;
 import org.bukkit.event.HandlerList;
 
 /**
@@ -30,7 +29,6 @@ public abstract class AnimationEvent extends org.bukkit.event.Event {
     
     private static final HandlerList handlers = new HandlerList();
     
-    @Getter
     private final Animation animation;
     
     public AnimationEvent(Animation animation) {
@@ -45,5 +43,8 @@ public abstract class AnimationEvent extends org.bukkit.event.Event {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-    
+
+    public Animation getAnimation() {
+        return animation;
+    }
 }

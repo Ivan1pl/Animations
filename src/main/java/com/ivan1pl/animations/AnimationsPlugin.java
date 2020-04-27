@@ -23,10 +23,6 @@ import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.conversations.EditAnimationConversationFactory;
 import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.listeners.PlayerListener;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
-import java.util.logging.Logger;
-import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -35,12 +31,8 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class AnimationsPlugin extends JavaPlugin {
     
-    @Getter
     private static AnimationsPlugin pluginInstance;
-    
     private final AnimationsCommandExecutor executor = new AnimationsCommandExecutor();
-    
-    @Getter
     private EditAnimationConversationFactory conversationFactory;
     
     @Override
@@ -59,10 +51,13 @@ public class AnimationsPlugin extends JavaPlugin {
         conversationFactory = new EditAnimationConversationFactory(this);
         
         getLogger().info(Messages.INFO_ENABLED);
-
-/*for(ClipboardFormat format: ClipboardFormats.getAll()) {
-    Logger.getGlobal().info("Format: "+format.name());
-}*/
     }
-    
+
+    public static AnimationsPlugin getPluginInstance() {
+        return pluginInstance;
+    }
+
+    public EditAnimationConversationFactory getConversationFactory() {
+        return conversationFactory;
+    }
 }

@@ -23,8 +23,6 @@ import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.events.Event;
 import com.ivan1pl.animations.events.EventListener;
 import com.ivan1pl.animations.tasks.AnimationTask;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -35,15 +33,8 @@ import org.bukkit.event.Listener;
  */
 public abstract class BaseTrigger implements Trigger, Listener {
     
-    @Getter
-    @Setter
     private boolean started;
-    
-    @Getter
-    @Setter
     private boolean finished;
-    
-    @Getter
     private final Animation animation;
     
     public BaseTrigger(Animation animation) {
@@ -119,5 +110,24 @@ public abstract class BaseTrigger implements Trigger, Listener {
             setFinished(false);
         }
     }
-    
+
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void setStarted(boolean started) {
+        this.started = started;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
+    public Animation getAnimation() {
+        return animation;
+    }
 }

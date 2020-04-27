@@ -19,10 +19,6 @@
 package com.ivan1pl.animations.triggers;
 
 import com.ivan1pl.animations.data.Animation;
-import java.util.HashSet;
-import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,14 +26,15 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  * @author Ivan1pl
  */
 public abstract class BaseRangeTrigger extends BaseTrigger {
     
-    @Getter
-    @Setter
     private int range;
     
     private final Set<Player> playersInRange = new HashSet<>();
@@ -105,5 +102,12 @@ public abstract class BaseRangeTrigger extends BaseTrigger {
     protected void onPlayerMoved() {
         execute();
     }
-    
+
+    public int getRange() {
+        return range;
+    }
+
+    public void setRange(int range) {
+        this.range = range;
+    }
 }

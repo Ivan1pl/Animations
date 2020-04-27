@@ -3,8 +3,8 @@ main: com.ivan1pl.animations.AnimationsPlugin
 version: ${project.version}
 description: Animations plugin
 load: POSTWORLD
-depend: [WorldEdit,PluginUtils]
-api-version: 1.13
+softdepend: [worldedit-bukkit, bukkit, PluginUtils]
+api-version: 1.15
 commands:
     anim:
         description: Create or edit animation.
