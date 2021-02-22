@@ -4,7 +4,7 @@ version: ${project.version}
 description: Animations plugin
 load: POSTWORLD
 softdepend: [worldedit-bukkit, bukkit, PluginUtils]
-api-version: 1.15
+api-version: 1.16
 commands:
     anim:
         description: Create or edit animation.

@@ -100,6 +100,8 @@ public abstract class Animation implements Serializable {
     }
     
     public abstract boolean prepare(File folder);
+
+    public abstract Selection getSelection();
     
     protected abstract Location getCenter();
 
