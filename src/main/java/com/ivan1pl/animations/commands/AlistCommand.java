@@ -20,9 +20,12 @@ package com.ivan1pl.animations.commands;
 
 import com.ivan1pl.animations.constants.Messages;
 import com.ivan1pl.animations.constants.Permissions;
+import com.ivan1pl.animations.data.Animation;
 import com.ivan1pl.animations.data.Animations;
 import com.ivan1pl.animations.utils.MessageUtil;
 import java.util.List;
+
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -47,7 +50,9 @@ public class AlistCommand extends AnimationsCommand {
         MessageUtil.sendInfoMessage(cs, Messages.MSG_DISPLAYING_PAGE, new Long(page), new Long(Animations.countPages()));
         List<String> list = Animations.getPage(page);
         for (String item : list) {
-            MessageUtil.sendInfoMessage(cs, Messages.MSG_ITEM, item);
+            Animation anim = Animations.getAnimation(item);
+            Location center = anim.getSelection().getCenter();
+            MessageUtil.sendInfoMessage(cs, Messages.MSG_ITEM, item+" ("+center.getX()+","+center.getY()+","+center.getZ()+")");
         }
     }
     
