@@ -64,8 +64,7 @@ public class AnimationsLocation implements Serializable {
     }
     
     public World getWorld() {
-        //return worldId == null || Bukkit.getWorld(worldId)== null? Bukkit.getWorld("world") : Bukkit.getWorld(worldId);
-        return Bukkit.getWorlds().get(0);
+        return worldId == null || Bukkit.getWorld(worldId)== null? Bukkit.getWorlds().get(0) : Bukkit.getWorld(worldId);
     }
     
     public static AnimationsLocation fromLocation(Location loc) {
